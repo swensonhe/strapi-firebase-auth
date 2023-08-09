@@ -1,5 +1,8 @@
-import myController from './my-controller';
+
+import firebaseController from './firebaseController';
+import userController from './userController';
 
 export default {
-  myController,
+  firebaseController,
+  userController
 };

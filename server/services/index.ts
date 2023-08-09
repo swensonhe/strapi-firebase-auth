@@ -1,5 +1,5 @@
-import myService from './my-service';
+import firebaseService from "./firebaseService";
 
 export default {
-  myService,
+  firebaseService
 };

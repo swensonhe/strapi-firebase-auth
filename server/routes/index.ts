@@ -1,10 +1,7 @@
-export default [
-  {
-    method: 'GET',
-    path: '/',
-    handler: 'myController.index',
-    config: {
-      policies: [],
-    },
-  },
-];
+import admin from "./admin"
+import contentApi from "./content-api"
+
+export default {
+  admin,
+  "content-api": contentApi,
+};
