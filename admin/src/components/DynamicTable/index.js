@@ -14,21 +14,9 @@ const DynamicTable = ({
   rows,
   onConfirmDeleteAll,
 }) => {
+  console.log("rowsss", rows);
   const tableHeaders = useMemo(() => {
     return [
-      {
-        name: "uid",
-        fieldSchema: {
-          configurable: false,
-          type: "string",
-        },
-        metadatas: {
-          label: "UID",
-          sortable: true,
-          searchable: false,
-        },
-        key: "__uid_key__",
-      },
       {
         name: "email",
         fieldSchema: {
@@ -41,6 +29,32 @@ const DynamicTable = ({
           searchable: false,
         },
         key: "__email_key__",
+      },
+      {
+        name: "uid",
+        fieldSchema: {
+          configurable: false,
+          type: "string",
+        },
+        metadatas: {
+          label: "User UID",
+          sortable: true,
+          searchable: false,
+        },
+        key: "__uid_key__",
+      },
+      {
+        name: "providers",
+        fieldSchema: {
+          configurable: false,
+          type: "string",
+        },
+        metadatas: {
+          label: "Providers",
+          sortable: true,
+          searchable: false,
+        },
+        key: "__provider_key__",
       },
       {
         name: "phoneNumber",
@@ -100,12 +114,12 @@ const DynamicTable = ({
   const [entriesToDelete, setEntriesToDelete] = useState([]);
 
   const handleSelectRow = ({ name, value }) => {
-    setEntriesToDelete(prev => {
+    setEntriesToDelete((prev) => {
       if (value) {
         return prev.concat(name);
       }
 
-      return prev.filter(id => id !== name);
+      return prev.filter((id) => id !== name);
     });
   };
 

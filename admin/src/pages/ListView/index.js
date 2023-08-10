@@ -30,7 +30,7 @@ import DynamicTable from "../../components/DynamicTable";
 import { deleteUser, fetchUsers } from "../HomePage/utils/api";
 import PaginationFooter from "./PaginationFooter";
 import SearchURLQuery from "../../components/SearchURLQuery";
-import matchSorter from "match-sorter";
+import { matchSorter } from "match-sorter";
 
 /* eslint-disable react/no-array-index-key */
 function ListView({ data, slug, meta, layout }) {
@@ -104,8 +104,12 @@ function ListView({ data, slug, meta, layout }) {
         return {
           id: item.uid,
           ...item,
+          providers: item.providerData
+            .map((provider) => provider.providerId)
+            .join(","),
         };
       });
+      console.log("query.query", query.query);
       if (query.query?._q) {
         data = matchSorter(data, query.query?._q, {
           keys: ["email", "displayName"],
@@ -136,6 +140,9 @@ function ListView({ data, slug, meta, layout }) {
           return {
             id: item.uid,
             ...item,
+            providers: item.providerData
+              .map((provider) => provider.providerId)
+              .join(","),
           };
         });
         setRowsData(() => newDate);
@@ -180,11 +187,13 @@ function ListView({ data, slug, meta, layout }) {
     return <LoadingIndicatorPage />;
   }
 
+  const headSubtitle = `${rowsData?.length} entries found`;
+
   return (
     <Main aria-busy={isLoading}>
       <HeaderLayout
         primaryAction={getCreateAction()}
-        subtitle={rowsData?.length}
+        subtitle={headSubtitle}
         title={headerLayoutTitle}
         navigationAction={
           <Link startIcon={<ArrowLeft />} to="/content-manager/">

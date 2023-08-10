@@ -11,8 +11,18 @@ import { useIntl } from "react-intl";
 import CellContent from "../CellContent";
 import ConfirmDialogDelete from "../ConfirmDialogDelete";
 import { BaseCheckbox } from "@strapi/design-system/BaseCheckbox";
+import { SimpleMenu, MenuItem } from "@strapi/design-system";
+import { CarretDown } from "@strapi/icons";
 
-const TableRows = ({ canDelete, onConfirmDelete, headers, rows, withMainAction, entriesToDelete, onSelectRow }) => {
+const TableRows = ({
+  canDelete,
+  onConfirmDelete,
+  headers,
+  rows,
+  withMainAction,
+  entriesToDelete,
+  onSelectRow,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [candidateID, setCandidateID] = useState(false);
@@ -23,23 +33,26 @@ const TableRows = ({ canDelete, onConfirmDelete, headers, rows, withMainAction, 
   } = useHistory();
   const { formatMessage } = useIntl();
 
-  const onClickDelete = idToDelete => {
-    setIsOpen(prevState => !prevState);
+  const onClickDelete = (idToDelete) => {
+    setIsOpen((prevState) => !prevState);
     setCandidateID(() => idToDelete);
   };
+
+  console.log("rowsData", rowsData);
 
   return (
     <>
       <Tbody>
         {rowsData.map((data, index) => {
-          const isChecked = entriesToDelete.findIndex(id => id === data.id) !== -1;
+          const isChecked =
+            entriesToDelete.findIndex((id) => id === data.id) !== -1;
 
           const itemLineText = formatMessage(
             {
               id: "content-manager.components.DynamicTable.row-line",
               defaultMessage: "item line {number}",
             },
-            { number: index },
+            { number: index }
           );
 
           return (
@@ -75,7 +88,12 @@ const TableRows = ({ canDelete, onConfirmDelete, headers, rows, withMainAction, 
                     {typeof cellFormatter === "function" ? (
                       cellFormatter(data, { key, name, ...rest })
                     ) : (
-                      <CellContent content={data[name.split(".")[0]]} name={name} {...rest} rowId={data.id} />
+                      <CellContent
+                        content={data[name.split(".")[0]]}
+                        name={name}
+                        {...rest}
+                        rowId={data.id}
+                      />
                     )}
                   </Td>
                 );
@@ -90,8 +108,11 @@ const TableRows = ({ canDelete, onConfirmDelete, headers, rows, withMainAction, 
                           onClickDelete(data.id);
                         }}
                         label={formatMessage(
-                          { id: "app.component.table.delete", defaultMessage: "Delete {target}" },
-                          { target: itemLineText },
+                          {
+                            id: "app.component.table.delete",
+                            defaultMessage: "Delete {target}",
+                          },
+                          { target: itemLineText }
                         )}
                         noBorder
                         icon={<Trash />}
@@ -100,6 +121,26 @@ const TableRows = ({ canDelete, onConfirmDelete, headers, rows, withMainAction, 
                   </Flex>
                 </Td>
               )}
+              <Td key={data.uid} {...stopPropagation}>
+                <SimpleMenu
+                  label="Menu"
+                  as={IconButton}
+                  icon={<CarretDown />}
+                  onClick={(e) => {
+                    // e.stopPropagation();
+                  }}
+                >
+                  <MenuItem onClick={() => {}}>Reset Password</MenuItem>
+                  <MenuItem onClick={() => {}}>Disable Account</MenuItem>
+                  <MenuItem
+                    onClick={() => {}}
+                    href="https://strapi.io/"
+                    isExternal
+                  >
+                    Somewhere External
+                  </MenuItem>
+                </SimpleMenu>
+              </Td>
             </Tr>
           );
         })}

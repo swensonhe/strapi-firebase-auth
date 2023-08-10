@@ -14,14 +14,26 @@ const HomePage = () => {
   const [usersData, setUsersData] = useState({ data: [], meta: {} });
 
   const { status } = useQuery("firebase-auth-", () => fetchUsers(), {
-    onSuccess: result => {
-      setUsersData(result);
+    onSuccess: (result) => {
+      console.log("resulttt", result);
+      setUsersData({
+        ...result,
+        data: result.data.map((item) => ({
+          ...item,
+          providers: item.providerData
+            .map((provider) => provider.providerId)
+            .join(","),
+        })),
+      });
     },
 
     onError: () => {
       toggleNotification({
         type: "warning",
-        message: { id: "notification.error", defaultMessage: "An error occured" },
+        message: {
+          id: "notification.error",
+          defaultMessage: "An error occured",
+        },
       });
     },
   });
@@ -31,6 +43,8 @@ const HomePage = () => {
     return <LoadingIndicatorPage />;
   }
 
+  console.log("usersData.data", usersData.data);
+
   return (
     <Layout>
       <Helmet title="Firebase Users" />
@@ -39,7 +53,11 @@ const HomePage = () => {
           <Grid gap={4}>
             <GridItem col={12} s={12}>
               <>
-                <ListView data={usersData.data} meta={usersData.meta} slug="users-view" />
+                <ListView
+                  data={usersData.data}
+                  meta={usersData.meta}
+                  slug="users-view"
+                />
               </>
             </GridItem>
           </Grid>
