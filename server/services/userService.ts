@@ -46,13 +46,19 @@ export default ({ strapi }) => ({
 
   create: async payload => {
     try {
-      const userRecord = await strapi.firebase.auth().getUserByEmail(payload.email);
+      const userRecord = await strapi.firebase.auth().getUserByEmail(payload.email).catch(async e=>{
+        if(e.code === "auth/user-not-found"){
+
+          const response = await strapi.firebase.auth().createUser(payload);
+          return response.toJSON();
+        }
+      });
+      console.log("error",userRecord)
       if (userRecord) {
-        return userRecord.toJSON();
+        return userRecord;
       }
-      const response = await strapi.firebase.auth().createUser(payload);
-      return response.toJSON();
     } catch (e) {
+      console.log("error",e)
       throw new ApplicationError(e.message.toString());
     }
   },
