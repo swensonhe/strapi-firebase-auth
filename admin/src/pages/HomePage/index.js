@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
 import { Layout } from "@strapi/design-system/Layout";
@@ -6,25 +6,28 @@ import { Main } from "@strapi/design-system/Main";
 import { Box } from "@strapi/design-system/Box";
 import { Grid, GridItem } from "@strapi/design-system/Grid";
 import { useQuery } from "react-query";
-import { fetchUsers } from "./utils/api";
+import { fetchStrapiUsers, fetchUsers } from "./utils/api";
 import ListView from "../ListView";
+import { formatUserData } from "../../utils/users";
 
 const HomePage = () => {
   const toggleNotification = useNotification();
   const [usersData, setUsersData] = useState({ data: [], meta: {} });
+  const [strapiUsersData, setStrapiUsersData] = useState([]);
+
+  useQuery("strapi-users", () => fetchStrapiUsers(), {
+    onSuccess: (result) => {
+      console.log("resulttt", result);
+      setStrapiUsersData(result);
+    },
+  });
+
+  console.log("outtt", usersData);
 
   const { status } = useQuery("firebase-auth-", () => fetchUsers(), {
     onSuccess: (result) => {
       console.log("resulttt", result);
-      setUsersData({
-        ...result,
-        data: result.data.map((item) => ({
-          ...item,
-          providers: item.providerData
-            .map((provider) => provider.providerId)
-            .join(","),
-        })),
-      });
+      setUsersData(formatUserData(result, strapiUsersData));
     },
 
     onError: () => {

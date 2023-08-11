@@ -16,7 +16,7 @@ const SearchURLQuery = ({ label, placeholder }) => {
   const [isOpen, setIsOpen] = useState(!!value);
   const { formatMessage } = useIntl();
 
-  const handleToggle = () => setIsOpen(prev => !prev);
+  const handleToggle = () => setIsOpen((prev) => !prev);
 
   useLayoutEffect(() => {
     if (isOpen) {
@@ -31,7 +31,7 @@ const SearchURLQuery = ({ label, placeholder }) => {
     setQuery({ _q: "" }, "remove");
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (value) {
@@ -44,13 +44,16 @@ const SearchURLQuery = ({ label, placeholder }) => {
 
   if (isOpen) {
     return (
-      <div ref={wrapperRef}>
+      <div ref={wrapperRef} style={{ width: "100%" }}>
         <SearchForm onSubmit={handleSubmit}>
           <Searchbar
             name="search"
             onChange={({ target: { value } }) => setValue(value)}
             value={value}
-            clearLabel={formatMessage({ id: "clearLabel", defaultMessage: "Clear" })}
+            clearLabel={formatMessage({
+              id: "clearLabel",
+              defaultMessage: "Clear",
+            })}
             onClear={handleClear}
             size="S"
             placeholder={placeholder}

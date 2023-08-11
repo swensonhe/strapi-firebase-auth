@@ -5,9 +5,37 @@ import axios from "axios";
  * @returns {Object} users
  */
 
-const CUSTOM_VARIABLES = {
-  dashboardApiToken:
-    "b121410296f6d3822c71763558d43430ba1bb7352bc8ebd8339697ade537bdfec95b8f10910ecc96c827c826227c532a2c083dde0bdfa581993924382b055067af7250ce5f4c92b03a9abfb3f5dbb54f66c33d24151768917e05149f6891432142c1273046dd7837e1694c8c52898c21f503f487a87582c06c3e5e86a6282f6b",
+const fetchStrapiUsers = async (query = {}) => {
+  const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
+
+  if (!query.page) {
+    query.page = 1;
+  }
+
+  if (!query.pageSize) {
+    query.pageSize = 10;
+  }
+
+  let url = `${HOST}/api/users?pagination[page]=${query.page}&pagination[pageSize]=${query.pageSize}`;
+
+  if (query.nextPageToken) {
+    url += `&nextPageToken=${query.nextPageToken}`;
+  }
+
+  try {
+    const { data: users } = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("usersss2", users);
+    return users;
+  } catch (e) {
+    console.log("errorrr", e);
+    return [];
+  }
 };
 
 const fetchUsers = async (query = {}) => {
@@ -144,4 +172,11 @@ const updateUser = async (idToUpdate, payload) => {
   return user;
 };
 
-export { fetchUsers, fetchUserByID, deleteUser, updateUser, createUser };
+export {
+  fetchUsers,
+  fetchUserByID,
+  deleteUser,
+  updateUser,
+  createUser,
+  fetchStrapiUsers,
+};

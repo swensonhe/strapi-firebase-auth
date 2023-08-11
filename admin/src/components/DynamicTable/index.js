@@ -44,10 +44,23 @@ const DynamicTable = ({
         key: "__uid_key__",
       },
       {
-        name: "providers",
+        name: "strapiId",
         fieldSchema: {
           configurable: false,
           type: "string",
+        },
+        metadatas: {
+          label: "Strapi id",
+          sortable: true,
+          searchable: false,
+        },
+        key: "__uid_key__",
+      },
+      {
+        name: "providers",
+        fieldSchema: {
+          configurable: false,
+          type: "icon",
         },
         metadatas: {
           label: "Providers",

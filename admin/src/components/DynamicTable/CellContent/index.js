@@ -10,9 +10,20 @@ const TypographyMaxWidth = styled(Typography)`
   max-width: 300px;
 `;
 
-const CellContent = ({ content, fieldSchema, metadatas, name, queryInfos, rowId }) => {
+const CellContent = ({
+  content,
+  fieldSchema,
+  metadatas,
+  name,
+  queryInfos,
+  rowId,
+}) => {
   if (content === null || content === undefined) {
     return <Typography textColor="neutral800">-</Typography>;
+  }
+
+  if (fieldSchema.type === "icon") {
+    return content;
   }
 
   if (fieldSchema.type === "media" && !fieldSchema.multiple) {
@@ -37,7 +48,10 @@ CellContent.defaultProps = {
 
 CellContent.propTypes = {
   content: PropTypes.any,
-  fieldSchema: PropTypes.shape({ multiple: PropTypes.bool, type: PropTypes.string.isRequired }).isRequired,
+  fieldSchema: PropTypes.shape({
+    multiple: PropTypes.bool,
+    type: PropTypes.string.isRequired,
+  }).isRequired,
   metadatas: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   rowId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
