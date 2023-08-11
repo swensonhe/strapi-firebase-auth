@@ -52,7 +52,6 @@ function ListView({ data, slug, meta, layout }) {
 
   useQuery("strapi-users", () => fetchStrapiUsers(), {
     onSuccess: (result) => {
-      console.log("resulttt", result);
       setStrapiUsersData(result);
     },
   });
@@ -76,7 +75,6 @@ function ListView({ data, slug, meta, layout }) {
     }
 
     newObject[page + 1] = nextPageToken;
-    console.log("newObject", newObject);
     localStorage.setItem("nextPageTokens", JSON.stringify(newObject));
   };
 
@@ -94,7 +92,6 @@ function ListView({ data, slug, meta, layout }) {
 
   let fetchPaginatedUsers = async () => {
     let nextPageToken = await getNextPageToken(query.query?.page);
-    console.log("response fetch user", nextPageToken);
 
     if (nextPageToken) {
       query.query.nextPageToken = nextPageToken;
@@ -105,7 +102,6 @@ function ListView({ data, slug, meta, layout }) {
     if (response.pageToken) {
       setNextPageToken(query.query?.page, response.pageToken);
     }
-    console.log("strapiUsersDataaa", strapiUsersData);
     return formatUserData(response, strapiUsersData);
   };
 
@@ -114,14 +110,12 @@ function ListView({ data, slug, meta, layout }) {
       setIsLoading(true);
 
       let response = await fetchPaginatedUsers();
-      console.log("responseee", response);
       let data = response.data?.map((item) => {
         return {
           id: item.uid,
           ...item,
         };
       });
-      console.log("query.query", query.query);
       if (query.query?._q) {
         data = matchSorter(data, query.query?._q, {
           keys: ["email", "displayName"],

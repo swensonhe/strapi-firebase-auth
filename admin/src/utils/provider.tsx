@@ -25,9 +25,10 @@ const providerIconMapping: { [key: string]: any } = {
   anonymous: <AiOutlineUserAdd size={24} />,
 };
 
-export const MapProviderToIcon = ({ providerData }: any) =>
-  providerData.map(({ providerId }: any) => (
+export const MapProviderToIcon = ({ providerData }: any) => {
+  return providerData?.map(({ providerId }: any) => (
     <div style={{ marginLeft: 8 }}>
       {providerIconMapping[providerId] || providerId}
     </div>
   ));
+};

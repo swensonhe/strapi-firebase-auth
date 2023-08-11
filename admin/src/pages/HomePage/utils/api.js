@@ -30,10 +30,8 @@ const fetchStrapiUsers = async (query = {}) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("usersss2", users);
     return users;
   } catch (e) {
-    console.log("errorrr", e);
     return [];
   }
 };
@@ -56,7 +54,6 @@ const fetchUsers = async (query = {}) => {
   }
 
   try {
-    console.log("beforeee", url);
     const { data: users } = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
@@ -64,10 +61,8 @@ const fetchUsers = async (query = {}) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("usersss", users);
     return users;
   } catch (e) {
-    console.log("errorrr", e);
     return [];
   }
 };
@@ -142,7 +137,6 @@ const deleteUser = async (idToDelete) => {
         },
       }
     );
-    console.log(users.data);
     return users.data;
   } catch (e) {
     return {};

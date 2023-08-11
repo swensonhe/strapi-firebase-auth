@@ -17,16 +17,12 @@ const HomePage = () => {
 
   useQuery("strapi-users", () => fetchStrapiUsers(), {
     onSuccess: (result) => {
-      console.log("resulttt", result);
       setStrapiUsersData(result);
     },
   });
 
-  console.log("outtt", usersData);
-
   const { status } = useQuery("firebase-auth-", () => fetchUsers(), {
     onSuccess: (result) => {
-      console.log("resulttt", result);
       setUsersData(formatUserData(result, strapiUsersData));
     },
 
@@ -45,8 +41,6 @@ const HomePage = () => {
   if (isLoadingUsersData) {
     return <LoadingIndicatorPage />;
   }
-
-  console.log("usersData.data", usersData.data);
 
   return (
     <Layout>

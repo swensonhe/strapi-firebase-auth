@@ -29,10 +29,10 @@ export default ({ strapi }) => ({
             },
             {
               appleEmail: providerData.email,
-            },
-            {
-              alternateEmail: providerData.email,
-            },
+            }
+            // {
+            //   alternateEmail: providerData.email,
+            // },
           ],
         };
       }

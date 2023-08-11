@@ -50,11 +50,8 @@ const TableRows = ({
   };
 
   useEffect(() => {
-    console.log("effecttt");
     setRowsData(rows);
   }, [rows]);
-
-  console.log("rowsData", rowsData);
 
   return (
     <>

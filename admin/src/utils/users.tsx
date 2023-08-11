@@ -12,7 +12,6 @@ export const formatUserData = (result: any, strapiUsersData: any) => ({
         ...user,
         providers: <MapProviderToIcon providerData={user.providerData} />,
       };
-    console.log("afterrr", matchedStrapiUser);
     return {
       ...user,
       strapiId: matchedStrapiUser.id,
