@@ -14,7 +14,7 @@ import { BaseCheckbox } from "@strapi/design-system/BaseCheckbox";
 import { SimpleMenu, MenuItem } from "@strapi/design-system/v2";
 import { CarretDown } from "@strapi/icons";
 import { Select } from "@strapi/ui-primitives";
-import { Check } from "@strapi/icons";
+import { RxCross2, RxCheck } from "react-icons/rx";
 import { ResetPassword } from "../../UserManagement/ResetPassword";
 import { DisableAccount } from "../../UserManagement/DisableAccount";
 import { DeleteAccount } from "../../UserManagement/DeleteAccount";
@@ -116,22 +116,31 @@ const TableRows = ({
                   />
                 </Td>
               )}
-              {headers.map(({ key, cellFormatter, name, ...rest }) => {
-                return (
-                  <Td key={key}>
-                    {typeof cellFormatter === "function" ? (
-                      cellFormatter(data, { key, name, ...rest })
-                    ) : (
-                      <CellContent
-                        content={data[name.split(".")[0]]}
-                        name={name}
-                        {...rest}
-                        rowId={data.id}
-                      />
-                    )}
-                  </Td>
-                );
-              })}
+              {headers.map(
+                ({ key, cellFormatter, name, fieldSchema, ...rest }) => {
+                  return (
+                    <Td key={key}>
+                      {fieldSchema.type === "boolean" ? (
+                        data[name.split(".")[0]] ? (
+                          <RxCheck size={24} />
+                        ) : (
+                          <RxCross2 size={24} />
+                        )
+                      ) : typeof cellFormatter === "function" ? (
+                        cellFormatter(data, { key, name, fieldSchema, ...rest })
+                      ) : (
+                        <CellContent
+                          content={data[name.split(".")[0]]}
+                          name={name}
+                          fieldSchema={fieldSchema}
+                          {...rest}
+                          rowId={data.id}
+                        />
+                      )}
+                    </Td>
+                  );
+                }
+              )}
               <Flex alignItems="center" paddingTop={4} gap={4}>
                 {canDelete && (
                   <Box {...stopPropagation}>
