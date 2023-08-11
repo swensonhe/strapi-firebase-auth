@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Box } from "@strapi/design-system/Box";
 import { IconButton } from "@strapi/design-system/IconButton";
@@ -11,8 +11,13 @@ import { useIntl } from "react-intl";
 import CellContent from "../CellContent";
 import ConfirmDialogDelete from "../ConfirmDialogDelete";
 import { BaseCheckbox } from "@strapi/design-system/BaseCheckbox";
-import { SimpleMenu, MenuItem } from "@strapi/design-system";
+import { SimpleMenu, MenuItem } from "@strapi/design-system/v2";
 import { CarretDown } from "@strapi/icons";
+import { Select } from "@strapi/ui-primitives";
+import { RxCross2, RxCheck } from "react-icons/rx";
+import { ResetPassword } from "../../UserManagement/ResetPassword";
+import { DisableAccount } from "../../UserManagement/DisableAccount";
+import { DeleteAccount } from "../../UserManagement/DeleteAccount";
 
 const TableRows = ({
   canDelete,
@@ -27,6 +32,12 @@ const TableRows = ({
   const [isLoading, setIsLoading] = useState(false);
   const [candidateID, setCandidateID] = useState(false);
   const [rowsData, setRowsData] = useState(rows);
+  const [showResetPasswordDialogue, setShowResetPasswordDialogue] =
+    useState(false);
+  const [showDisableAccountDialogue, setShowDisableAccountDialogue] =
+    useState(false);
+  const [showDeleteAccountDialogue, setShowDeleteAccountDialogue] =
+    useState(false);
   const {
     push,
     location: { pathname },
@@ -38,7 +49,9 @@ const TableRows = ({
     setCandidateID(() => idToDelete);
   };
 
-  console.log("rowsData", rowsData);
+  useEffect(() => {
+    setRowsData(rows);
+  }, [rows]);
 
   return (
     <>
@@ -68,6 +81,27 @@ const TableRows = ({
                 condition: true,
               })}
             >
+              <ResetPassword
+                isOpen={showResetPasswordDialogue}
+                email={data.email}
+                onClose={() => {
+                  setShowResetPasswordDialogue(false);
+                }}
+              />
+              <DisableAccount
+                isOpen={showDisableAccountDialogue}
+                email={data.email}
+                onClose={() => {
+                  setShowDisableAccountDialogue(false);
+                }}
+              />
+              <DeleteAccount
+                isOpen={showDeleteAccountDialogue}
+                email={data.email}
+                onClose={() => {
+                  setShowDeleteAccountDialogue(false);
+                }}
+              />
               {withMainAction && (
                 <Td {...stopPropagation}>
                   <BaseCheckbox
@@ -82,65 +116,88 @@ const TableRows = ({
                   />
                 </Td>
               )}
-              {headers.map(({ key, cellFormatter, name, ...rest }) => {
-                return (
-                  <Td key={key}>
-                    {typeof cellFormatter === "function" ? (
-                      cellFormatter(data, { key, name, ...rest })
-                    ) : (
-                      <CellContent
-                        content={data[name.split(".")[0]]}
-                        name={name}
-                        {...rest}
-                        rowId={data.id}
-                      />
-                    )}
-                  </Td>
-                );
-              })}
-
-              {canDelete && (
-                <Td {...stopPropagation}>
-                  <Flex justifyContent="center">
-                    <Box paddingLeft={1}>
-                      <IconButton
-                        onClick={() => {
-                          onClickDelete(data.id);
-                        }}
-                        label={formatMessage(
-                          {
-                            id: "app.component.table.delete",
-                            defaultMessage: "Delete {target}",
-                          },
-                          { target: itemLineText }
-                        )}
-                        noBorder
-                        icon={<Trash />}
-                      />
-                    </Box>
-                  </Flex>
-                </Td>
+              {headers.map(
+                ({ key, cellFormatter, name, fieldSchema, ...rest }) => {
+                  return (
+                    <Td key={key}>
+                      {fieldSchema.type === "boolean" ? (
+                        data[name.split(".")[0]] ? (
+                          <RxCheck size={24} />
+                        ) : (
+                          <RxCross2 size={24} />
+                        )
+                      ) : typeof cellFormatter === "function" ? (
+                        cellFormatter(data, { key, name, fieldSchema, ...rest })
+                      ) : (
+                        <CellContent
+                          content={data[name.split(".")[0]]}
+                          name={name}
+                          fieldSchema={fieldSchema}
+                          {...rest}
+                          rowId={data.id}
+                        />
+                      )}
+                    </Td>
+                  );
+                }
               )}
-              <Td key={data.uid} {...stopPropagation}>
-                <SimpleMenu
-                  label="Menu"
-                  as={IconButton}
-                  icon={<CarretDown />}
-                  onClick={(e) => {
-                    // e.stopPropagation();
-                  }}
-                >
-                  <MenuItem onClick={() => {}}>Reset Password</MenuItem>
-                  <MenuItem onClick={() => {}}>Disable Account</MenuItem>
-                  <MenuItem
-                    onClick={() => {}}
-                    href="https://strapi.io/"
-                    isExternal
+              <Flex alignItems="center" paddingTop={4} gap={4}>
+                {canDelete && (
+                  <Box {...stopPropagation}>
+                    <Flex justifyContent="center">
+                      <Box paddingLeft={1}>
+                        <IconButton
+                          onClick={() => {
+                            onClickDelete(data.id);
+                          }}
+                          label={formatMessage(
+                            {
+                              id: "app.component.table.delete",
+                              defaultMessage: "Delete {target}",
+                            },
+                            { target: itemLineText }
+                          )}
+                          noBorder
+                          icon={<Trash />}
+                        />
+                      </Box>
+                    </Flex>
+                  </Box>
+                )}
+                <Box key={data.uid} {...stopPropagation}>
+                  <SimpleMenu
+                    label="Actions"
+                    as={IconButton}
+                    icon={<CarretDown />}
+                    onClick={(e) => {
+                      // e.stopPropagation();
+                    }}
+                    onBlur={() => {}}
                   >
-                    Somewhere External
-                  </MenuItem>
-                </SimpleMenu>
-              </Td>
+                    <MenuItem
+                      onSelect={() => {
+                        setShowResetPasswordDialogue(true);
+                      }}
+                    >
+                      Reset Password
+                    </MenuItem>
+                    <MenuItem
+                      onSelect={() => {
+                        setShowDisableAccountDialogue(true);
+                      }}
+                    >
+                      Disable Account
+                    </MenuItem>
+                    <MenuItem
+                      onSelect={() => {
+                        setShowDeleteAccountDialogue(true);
+                      }}
+                    >
+                      Delete Account
+                    </MenuItem>
+                  </SimpleMenu>
+                </Box>
+              </Flex>
             </Tr>
           );
         })}

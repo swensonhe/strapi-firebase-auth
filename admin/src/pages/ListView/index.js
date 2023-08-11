@@ -27,20 +27,34 @@ import ArrowLeft from "@strapi/icons/ArrowLeft";
 import Plus from "@strapi/icons/Plus";
 import { useHistory } from "react-router-dom";
 import DynamicTable from "../../components/DynamicTable";
-import { deleteUser, fetchUsers } from "../HomePage/utils/api";
+import {
+  deleteUser,
+  fetchStrapiUsers,
+  fetchUsers,
+} from "../HomePage/utils/api";
 import PaginationFooter from "./PaginationFooter";
 import SearchURLQuery from "../../components/SearchURLQuery";
 import { matchSorter } from "match-sorter";
+import { MapProviderToIcon } from "../../utils/provider";
+import { formatUserData } from "../../utils/users";
+import { useQuery } from "react-query";
 
 /* eslint-disable react/no-array-index-key */
 function ListView({ data, slug, meta, layout }) {
   const [rowsData, setRowsData] = useState(data);
   const [rowsMeta, setRowsMeta] = useState(meta);
   const [isLoading, setIsLoading] = useState(false);
+  const [strapiUsersData, setStrapiUsersData] = useState([]);
   const canCreate = true;
   const canDelete = true;
   const headerLayoutTitle = "Firebase Users";
   const [query] = useQueryParams();
+
+  useQuery("strapi-users", () => fetchStrapiUsers(), {
+    onSuccess: (result) => {
+      setStrapiUsersData(result);
+    },
+  });
 
   const {
     push,
@@ -61,7 +75,6 @@ function ListView({ data, slug, meta, layout }) {
     }
 
     newObject[page + 1] = nextPageToken;
-    console.log("newObject", newObject);
     localStorage.setItem("nextPageTokens", JSON.stringify(newObject));
   };
 
@@ -79,7 +92,6 @@ function ListView({ data, slug, meta, layout }) {
 
   let fetchPaginatedUsers = async () => {
     let nextPageToken = await getNextPageToken(query.query?.page);
-    console.log("response fetch user", nextPageToken);
 
     if (nextPageToken) {
       query.query.nextPageToken = nextPageToken;
@@ -90,8 +102,7 @@ function ListView({ data, slug, meta, layout }) {
     if (response.pageToken) {
       setNextPageToken(query.query?.page, response.pageToken);
     }
-
-    return response;
+    return formatUserData(response, strapiUsersData);
   };
 
   useEffect(() => {
@@ -99,17 +110,12 @@ function ListView({ data, slug, meta, layout }) {
       setIsLoading(true);
 
       let response = await fetchPaginatedUsers();
-      console.log("responseee", response);
-      let data = response?.data?.map((item) => {
+      let data = response.data?.map((item) => {
         return {
           id: item.uid,
           ...item,
-          providers: item.providerData
-            .map((provider) => provider.providerId)
-            .join(","),
         };
       });
-      console.log("query.query", query.query);
       if (query.query?._q) {
         data = matchSorter(data, query.query?._q, {
           keys: ["email", "displayName"],
@@ -120,7 +126,7 @@ function ListView({ data, slug, meta, layout }) {
       setIsLoading(false);
     };
     fetchPaginatedData();
-  }, [query.query]);
+  }, [query.query, strapiUsersData]);
 
   const { formatMessage } = useIntl();
 
@@ -140,9 +146,7 @@ function ListView({ data, slug, meta, layout }) {
           return {
             id: item.uid,
             ...item,
-            providers: item.providerData
-              .map((provider) => provider.providerId)
-              .join(","),
+            providers: <MapProviderToIcon providerData={item.providerData} />,
           };
         });
         setRowsData(() => newDate);
@@ -187,7 +191,7 @@ function ListView({ data, slug, meta, layout }) {
     return <LoadingIndicatorPage />;
   }
 
-  const headSubtitle = `${rowsData?.length} entries found`;
+  const headSubtitle = `Showing ${rowsData?.length} entries`;
 
   return (
     <Main aria-busy={isLoading}>

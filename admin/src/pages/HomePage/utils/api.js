@@ -5,7 +5,36 @@ import axios from "axios";
  * @returns {Object} users
  */
 
+const fetchStrapiUsers = async (query = {}) => {
+  const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
 
+  if (!query.page) {
+    query.page = 1;
+  }
+
+  if (!query.pageSize) {
+    query.pageSize = 10;
+  }
+
+  let url = `${HOST}/api/users?pagination[page]=${query.page}&pagination[pageSize]=${query.pageSize}`;
+
+  if (query.nextPageToken) {
+    url += `&nextPageToken=${query.nextPageToken}`;
+  }
+
+  try {
+    const { data: users } = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+    return users;
+  } catch (e) {
+    return [];
+  }
+};
 
 const fetchUsers = async (query = {}) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
@@ -25,7 +54,6 @@ const fetchUsers = async (query = {}) => {
   }
 
   try {
-    console.log("beforeee", url);
     const { data: users } = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
@@ -33,10 +61,8 @@ const fetchUsers = async (query = {}) => {
         "Content-Type": "application/json",
       },
     });
-    console.log("usersss", users);
     return users;
   } catch (e) {
-    console.log("errorrr", e);
     return [];
   }
 };
@@ -111,7 +137,6 @@ const deleteUser = async (idToDelete) => {
         },
       }
     );
-    console.log(users.data);
     return users.data;
   } catch (e) {
     return {};
@@ -141,4 +166,11 @@ const updateUser = async (idToUpdate, payload) => {
   return user;
 };
 
-export { fetchUsers, fetchUserByID, deleteUser, updateUser, createUser };
+export {
+  fetchUsers,
+  fetchUserByID,
+  deleteUser,
+  updateUser,
+  createUser,
+  fetchStrapiUsers,
+};

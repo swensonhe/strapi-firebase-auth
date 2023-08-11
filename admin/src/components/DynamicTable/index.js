@@ -14,7 +14,6 @@ const DynamicTable = ({
   rows,
   onConfirmDeleteAll,
 }) => {
-  console.log("rowsss", rows);
   const tableHeaders = useMemo(() => {
     return [
       {
@@ -47,7 +46,7 @@ const DynamicTable = ({
         name: "providers",
         fieldSchema: {
           configurable: false,
-          type: "string",
+          type: "icon",
         },
         metadatas: {
           label: "Providers",
@@ -107,6 +106,45 @@ const DynamicTable = ({
           searchable: false,
         },
         key: "__disabled_key__",
+      },
+      {
+        name: "strapiId",
+        fieldSchema: {
+          configurable: false,
+          type: "string",
+        },
+        metadatas: {
+          label: "Strapi id",
+          sortable: false,
+          searchable: false,
+        },
+        key: "__strapiid_key__",
+      },
+      {
+        name: "username",
+        fieldSchema: {
+          configurable: false,
+          type: "string",
+        },
+        metadatas: {
+          label: "username",
+          sortable: true,
+          searchable: false,
+        },
+        key: "__username_key__",
+      },
+      {
+        name: "confirmed",
+        fieldSchema: {
+          configurable: false,
+          type: "boolean",
+        },
+        metadatas: {
+          label: "confirmed",
+          sortable: true,
+          searchable: false,
+        },
+        key: "__confirmed_key__",
       },
     ];
   });
