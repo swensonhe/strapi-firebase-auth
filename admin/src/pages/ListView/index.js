@@ -191,7 +191,7 @@ function ListView({ data, slug, meta, layout }) {
     return <LoadingIndicatorPage />;
   }
 
-  const headSubtitle = `${rowsData?.length} entries found`;
+  const headSubtitle = `Showing ${rowsData?.length} entries`;
 
   return (
     <Main aria-busy={isLoading}>
