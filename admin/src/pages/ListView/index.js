@@ -132,6 +132,7 @@ function ListView({ data, slug, meta, layout }) {
 
   const handleConfirmDeleteData = useCallback(
     async (idsToDelete) => {
+      console.log("idsToDelete",idsToDelete) 
       try {
         setIsLoading(true);
         if (Array.isArray(idsToDelete)) {

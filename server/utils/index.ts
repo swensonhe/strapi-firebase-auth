@@ -1,4 +1,3 @@
-"use strict";
 import utils from "@strapi/utils";
 const { sanitize } = utils;
 
@@ -8,7 +7,7 @@ export const sanitizeOutput = (user, ctx) => {
   return sanitize.contentAPI.output(user, schema, { auth });
 };
 
-export const getService = name => {
+export const getService = (name) => {
   return strapi.plugin("users-permissions").service(name);
 };
 
@@ -18,14 +17,14 @@ export const getService = name => {
  * @returns referralCode
  */
 
-export const generateReferralCode = length => {
+export const generateReferralCode = (length) => {
   let referralCode = "";
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  var charactersLength = characters.length;
+  const charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
-    referralCode += characters.charAt(Math.floor(Math.random() * charactersLength));
+    referralCode += characters.charAt(
+      Math.floor(Math.random() * charactersLength),
+    );
   }
   return referralCode;
 };
-
-

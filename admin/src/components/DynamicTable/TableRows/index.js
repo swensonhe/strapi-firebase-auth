@@ -45,6 +45,7 @@ const TableRows = ({
   const { formatMessage } = useIntl();
 
   const onClickDelete = (idToDelete) => {
+    
     setIsOpen((prevState) => !prevState);
     setCandidateID(() => idToDelete);
   };
@@ -57,6 +58,7 @@ const TableRows = ({
     <>
       <Tbody>
         {rowsData.map((data, index) => {
+         
           const isChecked =
             entriesToDelete.findIndex((id) => id === data.id) !== -1;
 
@@ -148,7 +150,8 @@ const TableRows = ({
                       <Box paddingLeft={1}>
                         <IconButton
                           onClick={() => {
-                            onClickDelete(data.id);
+                            
+                            onClickDelete(data.uid);
                           }}
                           label={formatMessage(
                             {
