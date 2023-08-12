@@ -1,4 +1,4 @@
-import  utils from "@strapi/utils";
+import utils from "@strapi/utils";
 const { PaginationError } = utils.errors;
 
 /**
@@ -45,12 +45,14 @@ const ___calculatePageCount = (total, pageSize) => {
  * @returns array after performing pagination on it and meta object
  */
 
-export default  (data, pagination) => {
+export default (data, pagination) => {
   let isPaginated = false;
   const total = data.length;
 
   if (!Array.isArray(data)) {
-    throw new PaginationError(`Wrong data type expected Array recieved ${typeof data}`);
+    throw new PaginationError(
+      `Wrong data type expected Array recieved ${typeof data}`,
+    );
   }
 
   // If no pagination provided, use the default one

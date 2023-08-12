@@ -125,6 +125,7 @@ const fetchUserByID = async (userID) => {
  */
 
 const deleteUser = async (idToDelete) => {
+  console.log("idToDelete",idToDelete)
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
   try {
     const { data: users } = await axios.delete(

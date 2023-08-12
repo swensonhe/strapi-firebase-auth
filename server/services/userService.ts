@@ -1,5 +1,3 @@
-"use strict";
-
 import utils from "@strapi/utils";
 const { ApplicationError } = utils.errors;
 import paginate from "../utils/paginate";
@@ -7,8 +5,6 @@ import paginate from "../utils/paginate";
 const PHONE = "phone";
 
 export default ({ strapi }) => ({
-
-
   get: async (entityId: string) => {
     try {
       const user = await strapi.firebase.auth().getUser(entityId);
@@ -29,14 +25,13 @@ export default ({ strapi }) => ({
             },
             {
               appleEmail: providerData.email,
-            }
-            // {
-            //   alternateEmail: providerData.email,
-            // },
+            },
           ],
         };
       }
-      const localUser = await strapi.db.query("plugin::users-permissions.user").findOne({ where: query });
+      const localUser = await strapi.db
+        .query("plugin::users-permissions.user")
+        .findOne({ where: query });
       firebaseUser.localUser = localUser;
       return firebaseUser;
     } catch (e) {
@@ -44,14 +39,71 @@ export default ({ strapi }) => ({
     }
   },
 
-  create: async payload => {
+  create: async (payload) => {
     try {
-      const userRecord = await strapi.firebase.auth().getUserByEmail(payload.email);
+      const userRecord = await strapi.firebase
+        .auth()
+        .getUserByEmail(payload.email)
+        .catch(async (e) => {
+          if (e.code === "auth/user-not-found") {
+            const response = await strapi.firebase.auth().createUser(payload);
+            const userExists = await strapi
+              .plugin("firebase-auth")
+              .service("firebaseService")
+              .checkIfUserExists(response);
+            if (!userExists) {
+              // create strapi user
+              await strapi
+                .plugin("firebase-auth")
+                .service("firebaseService")
+                .createStrapiUser(response);
+            }
+            return response.toJSON();
+          }
+        });
+
       if (userRecord) {
-        return userRecord.toJSON();
+        return userRecord;
       }
-      const response = await strapi.firebase.auth().createUser(payload);
-      return response.toJSON();
+    } catch (e) {
+      console.log("error", e);
+      throw new ApplicationError(e.message.toString());
+    }
+  },
+  createFirebaseUser: async (payload) => {
+    try {
+      const userRecord = await strapi.firebase
+        .auth()
+        .getUserByEmail(payload.email)
+        .catch(async (e) => {
+          if (e.code === "auth/user-not-found") {
+            const response = await strapi.firebase.auth().createUser(payload);
+            return response.toJSON();
+          }
+        });
+
+      if (userRecord) {
+        return userRecord;
+      }
+    } catch (e) {
+      throw new ApplicationError(e.message.toString());
+    }
+  },
+  createStrapiUser: async (payload) => {
+    try {
+      const userRecord = await strapi
+        .plugin("firebase-auth")
+        .service("firebaseService")
+        .checkIfUserExists(payload);
+      if (!userRecord) {
+        // create strapi user
+        await strapi
+          .plugin("firebase-auth")
+          .service("firebaseService")
+          .createStrapiUser(payload);
+      }
+
+      return userRecord;
     } catch (e) {
       throw new ApplicationError(e.message.toString());
     }
@@ -59,11 +111,16 @@ export default ({ strapi }) => ({
 
   register: async (userID, payload) => {
     try {
-      const res = await strapi.plugin("firebase-auth").service("userService").create(payload);
+      const res = await strapi
+        .plugin("firebase-auth")
+        .service("userService")
+        .create(payload);
       const actionCodeSettings = {
         url: process.env.BASE_URL,
       };
-      const link = await strapi.firebase.auth().generatePasswordResetLink(payload.email, actionCodeSettings);
+      const link = await strapi.firebase
+        .auth()
+        .generatePasswordResetLink(payload.email, actionCodeSettings);
       await strapi.plugin("users-permissions").service("user").edit(userID, {
         firebaseUserID: res.uid,
         passwordResetLink: link,
@@ -74,33 +131,78 @@ export default ({ strapi }) => ({
   },
 
   list: async (pagination, nextPageToken) => {
-    let response = await strapi.firebase.auth().listUsers(parseInt(pagination.pageSize), nextPageToken);
+    const response = await strapi.firebase
+      .auth()
+      .listUsers(parseInt(pagination.pageSize), nextPageToken);
 
     const { meta } = paginate(response.users, pagination);
     return { data: response.users, pageToken: response.pageToken, meta };
   },
 
-  update: async (entityId, payload) => {
+  updateFirebaseUser: async (entityId, payload) => {
     try {
       return await strapi.firebase.auth().updateUser(entityId, payload);
     } catch (e) {
       throw new ApplicationError(e.message.toString());
     }
   },
-
-  delete: async entityId => {
+  updateStrapiUser: async (entityId, payload) => {
     try {
-      const candidateUser = await strapi.plugin("firebase-auth").service("userService").get(entityId);
-      await strapi.firebase.auth().deleteUser(entityId);
-      return candidateUser;
+      return strapi
+        .query("plugin::users-permissions.user")
+        .update({ where: { firebaseUserID: entityId }, data: payload });
     } catch (e) {
       throw new ApplicationError(e.message.toString());
     }
   },
-
-  deleteMany: async entityIDs => {
+  update: async (entityId, payload) => {
     try {
-      const response = await strapi.firebase.auth().deleteUsers(JSON.parse(entityIDs));
+      const firebasePromise = strapi.firebase
+        .auth()
+        .updateUser(entityId, payload);
+      const strapiPromise = strapi
+        .query("plugin::users-permissions.user")
+        .update({ where: { firebaseUserID: entityId }, data: payload });
+
+      return Promise.allSettled([firebasePromise, strapiPromise]);
+    } catch (e) {
+      throw new ApplicationError(e.message.toString());
+    }
+  },
+  delete: async (entityId) => {
+    try {
+      const firebasePromise = strapi.firebase.auth().deleteUser(entityId);
+      const strapiPromise = strapi
+        .query("plugin::users-permissions.user")
+        .delete({ where: { firebaseUserID: entityId } });
+      return Promise.allSettled([firebasePromise, strapiPromise]);
+    } catch (e) {
+      throw new ApplicationError(e.message.toString());
+    }
+  },
+  deleteFirebaseUser: async (entityId) => {
+    try {
+      const response = await strapi.firebase.auth().deleteUser(entityId);
+      return response;
+    } catch (e) {
+      throw new ApplicationError(e.message.toString());
+    }
+  },
+  deleteStrapiUser: async (entityId) => {
+    try {
+      const response = await strapi
+        .query("plugin::users-permissions.user")
+        .delete({ where: { firebaseUserID: entityId } });
+      return response;
+    } catch (e) {
+      throw new ApplicationError(e.message.toString());
+    }
+  },
+  deleteMany: async (entityIDs) => {
+    try {
+      const response = await strapi.firebase
+        .auth()
+        .deleteUsers(JSON.parse(entityIDs));
       return response;
     } catch (e) {
       throw new ApplicationError(e.message.toString());
