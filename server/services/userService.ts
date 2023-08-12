@@ -155,7 +155,7 @@ export default ({ strapi }) => ({
       throw new ApplicationError(e.message.toString());
     }
   },
-  updateFirebaseStrapiUser: async (entityId, payload) => {
+  update: async (entityId, payload) => {
     try {
       const firebasePromise = strapi.firebase
         .auth()
@@ -169,7 +169,7 @@ export default ({ strapi }) => ({
       throw new ApplicationError(e.message.toString());
     }
   },
-  deleteFirebaseStrapiUserRecord: async (entityId) => {
+  delete: async (entityId) => {
     try {
       const firebasePromise = strapi.firebase.auth().deleteUser(entityId);
       const strapiPromise = strapi
@@ -180,7 +180,7 @@ export default ({ strapi }) => ({
       throw new ApplicationError(e.message.toString());
     }
   },
-  deleteFirebaseUserRecord: async (entityId) => {
+  deleteFirebaseUser: async (entityId) => {
     try {
       const response = await strapi.firebase.auth().deleteUser(entityId);
       return response;
@@ -188,7 +188,7 @@ export default ({ strapi }) => ({
       throw new ApplicationError(e.message.toString());
     }
   },
-  deleteStrapiUserRecord: async (entityId) => {
+  deleteStrapiUser: async (entityId) => {
     try {
       const response = await strapi
         .query("plugin::users-permissions.user")
