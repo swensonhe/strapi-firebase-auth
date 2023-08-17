@@ -6,7 +6,7 @@ const RBAC_ACTIONS = [
   {
     section: "plugins",
     displayName: "firebase Auth settings",
-    uid: "is-admin",
+    uid: "settings",
     pluginName: "firebase-auth",
   },
   {
