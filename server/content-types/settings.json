@@ -1,0 +1,24 @@
+{
+  "kind": "singleType",
+  "collectionName": "firebase_auth_settings",
+  "info": {
+    "singularName": "firebase-auth-setting",
+    "pluralName": "firebase-auth-settings",
+    "displayName": "Firebase-Auth"
+  },
+  "options": {"draftAndPublish": false},
+  "pluginOptions": {
+    "content-manager": {
+      "visible": false
+
+    },"content-type-builder": {
+      "visible": false
+    }
+  },
+  "attributes":{
+    "DASHBOARD_API_TOKEN": {
+      "type": "string",
+      "require": true
+    }
+  }
+}
