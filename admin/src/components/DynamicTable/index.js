@@ -56,19 +56,6 @@ const DynamicTable = ({
         key: "__provider_key__",
       },
       {
-        name: "phoneNumber",
-        fieldSchema: {
-          configurable: false,
-          type: "string",
-        },
-        metadatas: {
-          label: "Phone",
-          sortable: false,
-          searchable: false,
-        },
-        key: "__phoneNumber_key__",
-      },
-      {
         name: "displayName",
         fieldSchema: {
           configurable: false,

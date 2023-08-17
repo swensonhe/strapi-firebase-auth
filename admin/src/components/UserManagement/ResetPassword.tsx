@@ -68,7 +68,14 @@ export const ResetPassword = ({
               Cancel
             </Button>
           }
-          endAction={<Button variant="danger-light">Send</Button>}
+          endAction={
+            <Button
+              variant="danger-light"
+              disabled={!isFirebaseIncluded && !isStrapiIncluded}
+            >
+              Send
+            </Button>
+          }
         />
       </Dialog>
     </>
