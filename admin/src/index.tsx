@@ -72,6 +72,7 @@ export default {
     app.registerPlugin(plugin);
   },
 
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   bootstrap(app: any) {},
 
   async registerTrads(app: any) {
