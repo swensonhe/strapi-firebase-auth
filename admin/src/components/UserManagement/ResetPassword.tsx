@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { Box } from "@strapi/design-system";
+import { Checkbox } from "@strapi/design-system";
 import {
   Dialog,
   DialogBody,
@@ -19,6 +21,9 @@ export const ResetPassword = ({
   email,
   onClose,
 }: ResetPasswordProps) => {
+  console.log("emailll", email);
+  const [isStrapiIncluded, setIsStrapiIncluded] = useState(false);
+  const [isFirebaseIncluded, setIsFirebaseIncluded] = useState(false);
   return (
     <>
       <Dialog onClose={onClose} title="Reset password" isOpen={isOpen}>
@@ -32,6 +37,28 @@ export const ResetPassword = ({
             </Flex>
             <Flex justifyContent="flex-start">
               <Typography>{email}</Typography>
+            </Flex>
+            <Flex justifyContent="flex-start" textAlign="center" marginTop={2}>
+              <Typography>Reset user in:</Typography>
+            </Flex>
+            <Flex justifyContent="flex-start">
+              <Checkbox
+                onValueChange={(value: boolean) => setIsStrapiIncluded(value)}
+                value={isStrapiIncluded}
+              >
+                Strapi
+              </Checkbox>
+
+              <Box marginLeft={4}>
+                <Checkbox
+                  onValueChange={(value: boolean) =>
+                    setIsFirebaseIncluded(value)
+                  }
+                  value={isFirebaseIncluded}
+                >
+                  Firebase
+                </Checkbox>
+              </Box>
             </Flex>
           </Flex>
         </DialogBody>

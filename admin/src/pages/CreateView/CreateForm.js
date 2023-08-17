@@ -11,9 +11,11 @@ import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
 import { useHistory } from "react-router-dom";
 import { createUser } from "../HomePage/utils/api";
 import { Flex } from "@strapi/design-system/Flex";
+import { ApiDestinationDialogue } from "../../components/UserManagement/ApiDestinationDialogue";
 
 const CreateForm = () => {
   const [userData, setUserData] = useState({});
+  const [isCreateDialogueOpen, setIsCreateDialogueOpen] = useState(false);
   const [originalUserData, setOriginalUserData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const toggleNotification = useNotification();
@@ -36,10 +38,17 @@ const CreateForm = () => {
     }));
   };
 
-  const updateUserHandler = async () => {
+  const updateUserHandler = async (isStrapiIncluded, isFirebaseIncluded) => {
     setIsLoading(true);
     try {
-      const createdUser = await createUser(userData);
+      let destination;
+      if (isStrapiIncluded && isFirebaseIncluded) {
+        destination = null;
+      } else if (isStrapiIncluded) {
+        destination = "strapi";
+      } else if (isFirebaseIncluded) destination = "firebase";
+      console.log("destination", destination);
+      const createdUser = await createUser(userData, destination);
       console.log({ createdUser });
       setUserData(() => createdUser);
       setOriginalUserData(() => createdUser);
@@ -72,9 +81,17 @@ const CreateForm = () => {
 
   return (
     <Main>
+      <ApiDestinationDialogue
+        isOpen={isCreateDialogueOpen}
+        onClose={() => setIsCreateDialogueOpen(false)}
+        onSubmit={updateUserHandler}
+        title="Create User"
+      />
       <Header
         title="Create User"
-        onSave={updateUserHandler}
+        onSave={() => {
+          setIsCreateDialogueOpen(true);
+        }}
         isCreatingEntry
         initialData={originalUserData}
         modifiedData={userData}

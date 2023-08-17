@@ -11,14 +11,21 @@ import EditForm from "./EditForm";
 const EditView = () => {
   const { id } = useParams();
   const toggleNotification = useNotification();
-  const { status, data } = useQuery(`firebase-auth-${id}`, () => fetchUserByID(id), {
-    onError: () => {
-      toggleNotification({
-        type: "warning",
-        message: { id: "notification.error", defaultMessage: "An error occured" },
-      });
-    },
-  });
+  const { status, data } = useQuery(
+    `firebase-auth-${id}`,
+    () => fetchUserByID(id),
+    {
+      onError: () => {
+        toggleNotification({
+          type: "warning",
+          message: {
+            id: "notification.error",
+            defaultMessage: "An error occured",
+          },
+        });
+      },
+    }
+  );
 
   const isLoadingUsersData = status !== "success" && status !== "error";
 

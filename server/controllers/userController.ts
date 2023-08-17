@@ -23,6 +23,7 @@ export default {
 
   create: async (ctx) => {
     const { destination } = ctx.params;
+    console.log("paramssss", destination);
     switch (destination) {
       case STRAPI_DESTINATION:
         ctx.body = await strapi

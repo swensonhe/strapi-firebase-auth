@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Box } from "@strapi/design-system";
 import { Checkbox } from "@strapi/design-system";
 import {
@@ -11,46 +11,38 @@ import {
 } from "@strapi/design-system";
 import { ExclamationMarkCircle } from "@strapi/icons";
 
-interface DisableAccountProps {
+interface ApiDestinationDialogueProps {
   isOpen: boolean;
-  email: boolean;
   onClose: () => void;
+  onSubmit: (isStrapiIncluded: boolean, isFirebaseIncluded: boolean) => void;
+  title: string;
+  submitText?: string;
 }
 
-export const DisableAccount = ({
+export const ApiDestinationDialogue = ({
   isOpen,
-  email,
   onClose,
-}: DisableAccountProps) => {
+  onSubmit,
+  submitText = "Save",
+  title,
+}: ApiDestinationDialogueProps) => {
   const [isStrapiIncluded, setIsStrapiIncluded] = useState(false);
   const [isFirebaseIncluded, setIsFirebaseIncluded] = useState(false);
   return (
     <>
-      <Dialog onClose={onClose} title="Disable Account" isOpen={isOpen}>
-        <DialogBody icon={<ExclamationMarkCircle />}>
+      <Dialog onClose={onClose} title={title} isOpen={isOpen}>
+        <DialogBody>
           <Flex direction="column" alignItems="center" gap={2}>
-            <Flex justifyContent="flex-start">
-              <Typography textColor="danger700">
-                Users with disabled accounts aren't able to sign in.
-              </Typography>
+            <Flex justifyContent="flex-start" textAlign="center">
+              <Typography>Select destination</Typography>
             </Flex>
             <Flex justifyContent="flex-start" marginTop={2}>
-              <Typography variant="sigma">User account</Typography>
-            </Flex>
-            <Flex justifyContent="flex-start">
-              <Typography>{email}</Typography>
-            </Flex>
-            <Flex justifyContent="flex-start" textAlign="center" marginTop={2}>
-              <Typography>Disable user in:</Typography>
-            </Flex>
-            <Flex justifyContent="flex-start">
               <Checkbox
                 onValueChange={(value: boolean) => setIsStrapiIncluded(value)}
                 value={isStrapiIncluded}
               >
                 Strapi
               </Checkbox>
-
               <Box marginLeft={4}>
                 <Checkbox
                   onValueChange={(value: boolean) =>
@@ -70,7 +62,16 @@ export const DisableAccount = ({
               Cancel
             </Button>
           }
-          endAction={<Button variant="danger">Disable</Button>}
+          endAction={
+            <Button
+              variant="danger"
+              onClick={() => {
+                onSubmit(isStrapiIncluded, isFirebaseIncluded);
+              }}
+            >
+              {submitText}
+            </Button>
+          }
         />
       </Dialog>
     </>

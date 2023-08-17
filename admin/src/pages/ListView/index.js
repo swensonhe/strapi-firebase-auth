@@ -38,6 +38,8 @@ import { matchSorter } from "match-sorter";
 import { MapProviderToIcon } from "../../utils/provider";
 import { formatUserData } from "../../utils/users";
 import { useQuery } from "react-query";
+import { TextInput } from "@strapi/design-system/TextInput";
+import { Textarea } from "@strapi/design-system";
 
 /* eslint-disable react/no-array-index-key */
 function ListView({ data, slug, meta, layout }) {
@@ -131,14 +133,20 @@ function ListView({ data, slug, meta, layout }) {
   const { formatMessage } = useIntl();
 
   const handleConfirmDeleteData = useCallback(
-    async (idsToDelete) => {
-      console.log("idsToDelete",idsToDelete) 
+    async (idsToDelete, isStrapiIncluded, isFirebaseIncluded) => {
+      console.log("idsToDelete", idsToDelete);
+      let destination;
+      if (isStrapiIncluded && isFirebaseIncluded) {
+        destination = null;
+      } else if (isStrapiIncluded) {
+        destination = "strapi";
+      } else if (isFirebaseIncluded) destination = "firebase";
       try {
         setIsLoading(true);
         if (Array.isArray(idsToDelete)) {
           await Promise.all(idsToDelete.map((id) => deleteUser(id)));
         } else {
-          await deleteUser(idsToDelete);
+          await deleteUser(idsToDelete, destination);
         }
 
         let response = await fetchPaginatedUsers();
@@ -245,6 +253,20 @@ function ListView({ data, slug, meta, layout }) {
           />
         </>
       </ContentLayout>
+      <Textarea
+        id="json"
+        name="json"
+        onChange={() => {}}
+        label="Firebase json configuration"
+        style={{ height: 300 }}
+      ></Textarea>
+      <TextInput
+        id="firebase_api_key"
+        name="firebase_api_key"
+        onChange={() => {}}
+        label="Firebase api key"
+        //value={userData.displayName}
+      />
     </Main>
   );
 }

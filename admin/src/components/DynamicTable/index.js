@@ -111,7 +111,7 @@ const DynamicTable = ({
         name: "strapiId",
         fieldSchema: {
           configurable: false,
-          type: "string",
+          type: "object",
         },
         metadatas: {
           label: "Strapi id",

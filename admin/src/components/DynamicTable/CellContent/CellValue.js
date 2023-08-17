@@ -12,7 +12,10 @@ const CellValue = ({ type, value }) => {
   }
 
   if (type === "datetime") {
-    formattedValue = formatDate(value, { dateStyle: "full", timeStyle: "short" });
+    formattedValue = formatDate(value, {
+      dateStyle: "full",
+      timeStyle: "short",
+    });
   }
 
   if (type === "time") {
@@ -41,7 +44,7 @@ const CellValue = ({ type, value }) => {
     formattedValue = formatNumber(value, { maximumFractionDigits: 0 });
   }
 
-  return toString(formattedValue);
+  return type === "object" ? formattedValue : toString(formattedValue);
 };
 
 CellValue.propTypes = {

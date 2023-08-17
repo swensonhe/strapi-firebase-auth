@@ -36,6 +36,7 @@ const HomePage = () => {
       });
     },
   });
+  console.log("usersdata", usersData);
   const isLoadingUsersData = status !== "success" && status !== "error";
 
   if (isLoadingUsersData) {

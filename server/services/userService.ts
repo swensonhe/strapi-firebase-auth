@@ -41,6 +41,7 @@ export default ({ strapi }) => ({
 
   create: async (payload) => {
     try {
+      console.log("createee");
       const userRecord = await strapi.firebase
         .auth()
         .getUserByEmail(payload.email)
@@ -71,6 +72,7 @@ export default ({ strapi }) => ({
     }
   },
   createFirebaseUser: async (payload) => {
+    console.log("firebaseee");
     try {
       const userRecord = await strapi.firebase
         .auth()
@@ -90,6 +92,7 @@ export default ({ strapi }) => ({
     }
   },
   createStrapiUser: async (payload) => {
+    console.log("strapiii");
     try {
       const userRecord = await strapi
         .plugin("firebase-auth")

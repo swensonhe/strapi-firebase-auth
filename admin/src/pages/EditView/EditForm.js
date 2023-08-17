@@ -313,6 +313,17 @@ const EditForm = ({ data }) => {
           </GridItem>
         </Grid>
       </ContentLayout>
+      <Box>
+        <ContentLayout marginTop={8}>
+          <Grid gap={4}>
+            <GridItem col={9} s={12}>
+              <Box background="neutral0" borderColor="neutral150" hasRadius>
+                <Stack spacing={2} padding={3} gap={2}></Stack>
+              </Box>
+            </GridItem>
+          </Grid>
+        </ContentLayout>
+      </Box>
     </Main>
   );
 };
