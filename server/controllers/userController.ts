@@ -22,8 +22,8 @@ export default {
   },
 
   create: async (ctx) => {
-    const { destination } = ctx.params;
-    console.log("paramssss", destination);
+    const { destination } = ctx.request.query;
+
     switch (destination) {
       case STRAPI_DESTINATION:
         ctx.body = await strapi
@@ -54,7 +54,7 @@ export default {
   },
 
   update: async (ctx) => {
-    const { destination } = ctx.params;
+    const { destination } = ctx.request.query;
     switch (destination) {
       case STRAPI_DESTINATION:
         ctx.body = await strapi
@@ -78,7 +78,7 @@ export default {
   },
 
   delete: async (ctx: DefaultContext | Context) => {
-    const { destination } = ctx.params;
+    const { destination } = ctx.request.query;
     switch (destination) {
       case STRAPI_DESTINATION:
         ctx.body = await strapi
