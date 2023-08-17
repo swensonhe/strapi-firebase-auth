@@ -2,13 +2,13 @@ export default [
   {
     method: "GET",
     path: "/settings",
-    handler: "settings.getToken",
+    handler: "settingsController.getToken",
     config: { policies: [] },
   },
   {
     method: "POST",
     path: "/settings",
-    handler: "settings.setToken",
+    handler: "settingsController.setToken",
     config: { policies: [] },
   },
 ];

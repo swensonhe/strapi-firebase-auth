@@ -1,0 +1,26 @@
+{
+  "kind": "singleType",
+  "collectionName": "firebase_auth_configurations",
+  "info": {
+    "singularName": "firebase-auth-configuration",
+    "pluralName": "firebase-auth-configurations",
+    "displayName": "Firebase-auth configuration"
+  },
+  "options": {
+    "draftAndPublish": false,
+    "content-manager": {
+      "visible": false
+
+    },"content-type-builder": {
+      "visible": false
+    }
+  },
+  "attributes": {
+    "token": {
+      "type": "text"
+    },
+    "firebase-config-json": {
+      "type": "json"
+    }
+  }
+}
