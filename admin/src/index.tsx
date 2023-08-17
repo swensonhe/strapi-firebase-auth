@@ -1,13 +1,17 @@
-import { prefixPluginTranslations } from '@strapi/helper-plugin';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { prefixPluginTranslations } from "@strapi/helper-plugin";
 
-import pluginPkg from '../../package.json';
-import pluginId from './pluginId';
-import Initializer from './components/Initializer';
-import PluginIcon from './components/PluginIcon';
+import pluginPkg from "../../package.json";
+import pluginId from "./pluginId";
+import Initializer from "./components/Initializer";
+import PluginIcon from "./components/PluginIcon";
+import pluginPermissions from "./utils/permissions";
+import getTrad from "./utils/getTrad";
 
 const name = pluginPkg.strapi.name;
 
 export default {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register(app: any) {
     app.addMenuLink({
       to: `/plugins/${pluginId}`,
@@ -17,7 +21,9 @@ export default {
         defaultMessage: name,
       },
       Component: async () => {
-        const component = await import(/* webpackChunkName: "[request]" */ './pages/App');
+        const component = await import(
+          /* webpackChunkName: "[request]" */ "./pages/App"
+        );
 
         return component;
       },
@@ -29,6 +35,33 @@ export default {
         // },
       ],
     });
+    app.createSettingSection(
+      {
+        id: pluginId,
+        intlLabel: {
+          id: getTrad("SettingsNav.section-label"),
+          defaultMessage: "Firebase-Auth Plugin",
+        },
+      },
+      [
+        {
+          intlLabel: {
+            id: getTrad("Settings.firebase-auth.plugin.title"),
+            defaultMessage: "Settings",
+          },
+          id: "settings",
+          to: `/settings/${pluginId}`,
+          async Component() {
+            const component = await import(
+              /* webpackChunkName: "email-settings-page" */ "./pages/Settings"
+            );
+
+            return component;
+          },
+          permissions: pluginPermissions.settings,
+        },
+      ],
+    );
     const plugin = {
       id: pluginId,
       initializer: Initializer,
@@ -59,7 +92,7 @@ export default {
               locale,
             };
           });
-      })
+      }),
     );
 
     return Promise.resolve(importedTrads);
