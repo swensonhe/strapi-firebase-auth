@@ -68,6 +68,7 @@ export const ApiDestinationDialogue = ({
               onClick={() => {
                 onSubmit(isStrapiIncluded, isFirebaseIncluded);
               }}
+              disabled={!isFirebaseIncluded && !isStrapiIncluded}
             >
               {submitText}
             </Button>

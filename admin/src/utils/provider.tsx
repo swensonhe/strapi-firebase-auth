@@ -11,6 +11,7 @@ import {
 } from "react-icons/ai";
 import React from "react";
 import { MdPassword } from "react-icons/md";
+import { Flex } from "@strapi/design-system";
 
 const providerIconMapping: { [key: string]: any } = {
   password: <MdPassword size={24} />,
@@ -27,8 +28,10 @@ const providerIconMapping: { [key: string]: any } = {
 
 export const MapProviderToIcon = ({ providerData }: any) => {
   return providerData?.map(({ providerId }: any) => (
-    <div style={{ marginLeft: 8 }}>
+    <Flex gap={2}>
+    <div>
       {providerIconMapping[providerId] || providerId}
     </div>
+    </Flex>
   ));
 };

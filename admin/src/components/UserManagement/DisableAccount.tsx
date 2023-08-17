@@ -70,7 +70,14 @@ export const DisableAccount = ({
               Cancel
             </Button>
           }
-          endAction={<Button variant="danger">Disable</Button>}
+          endAction={
+            <Button
+              variant="danger"
+              disabled={!isFirebaseIncluded && !isStrapiIncluded}
+            >
+              Disable
+            </Button>
+          }
         />
       </Dialog>
     </>

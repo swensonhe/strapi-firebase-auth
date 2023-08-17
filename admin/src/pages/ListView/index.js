@@ -253,20 +253,6 @@ function ListView({ data, slug, meta, layout }) {
           />
         </>
       </ContentLayout>
-      <Textarea
-        id="json"
-        name="json"
-        onChange={() => {}}
-        label="Firebase json configuration"
-        style={{ height: 300 }}
-      ></Textarea>
-      <TextInput
-        id="firebase_api_key"
-        name="firebase_api_key"
-        onChange={() => {}}
-        label="Firebase api key"
-        //value={userData.displayName}
-      />
     </Main>
   );
 }

@@ -79,6 +79,7 @@ export const DeleteAccount = ({
               onClick={() => {
                 onDelete(isStrapiIncluded, isFirebaseIncluded);
               }}
+              disabled={!isFirebaseIncluded && !isStrapiIncluded}
             >
               Delete
             </Button>
