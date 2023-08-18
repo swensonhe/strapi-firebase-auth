@@ -1,3 +1,5 @@
+import settings from "./settings";
+
 export default {
   type: "content-api",
   routes: [
@@ -65,5 +67,6 @@ export default {
         policies: [],
       },
     },
+    ...settings,
   ],
 };

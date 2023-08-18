@@ -5,8 +5,8 @@ import serviceAccount from "../keys/andrew-golf-firebase-adminsdk-5p9ia-9c1238b1
 const RBAC_ACTIONS = [
   {
     section: "plugins",
-    displayName: "firebase Auth settings",
-    uid: "settings",
+    displayName: "Access firebase Auth Configurations",
+    uid: "is-admin",
     pluginName: "firebase-auth",
   },
   {
