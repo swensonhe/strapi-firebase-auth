@@ -82,6 +82,7 @@ const TableRows = ({
             isStrapiIncluded,
             isFirebaseIncluded
           );
+          setShowDisableAccountDialogue({ isOpen: false, email: null });
           setRowsData(() => newRowsData);
           setCandidateID(() => "");
         }}
