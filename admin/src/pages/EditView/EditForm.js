@@ -174,7 +174,7 @@ const EditForm = ({ data }) => {
               paddingTop={2}
               shadow="tableShadow"
             >
-              {userData.providerData.map((provider) => {
+              {userData.providerData?.map((provider) => {
                 return (
                   <Flex
                     paddingTop={2}
@@ -225,7 +225,7 @@ const EditForm = ({ data }) => {
                 direction="column"
                 alignItems="flex-start"
               >
-                {userData.metadata.lastSignInTime && (
+                {userData.metadata?.lastSignInTime && (
                   <MetaWrapper>
                     <Typography
                       variant="sigma"
@@ -246,25 +246,27 @@ const EditForm = ({ data }) => {
                     </Typography>
                   </MetaWrapper>
                 )}
-                <MetaWrapper>
-                  <Typography
-                    variant="sigma"
-                    textColor="neutral600"
-                    id="relations-title"
-                  >
-                    Creation Time
-                  </Typography>
-                  <Typography
-                    variant="sigma"
-                    textColor="neutral600"
-                    id="relations-title"
-                  >
-                    {format(
-                      new Date(userData.metadata.creationTime),
-                      "yyyy/MM/dd kk:mm"
-                    )}
-                  </Typography>
-                </MetaWrapper>
+                {userData.metadata?.creationTime && (
+                  <MetaWrapper>
+                    <Typography
+                      variant="sigma"
+                      textColor="neutral600"
+                      id="relations-title"
+                    >
+                      Creation Time
+                    </Typography>
+                    <Typography
+                      variant="sigma"
+                      textColor="neutral600"
+                      id="relations-title"
+                    >
+                      {format(
+                        new Date(userData.metadata?.creationTime),
+                        "yyyy/MM/dd kk:mm"
+                      )}
+                    </Typography>
+                  </MetaWrapper>
+                )}
               </Flex>
             </Box>
             <Box marginTop={5} marginBottom={5} />
