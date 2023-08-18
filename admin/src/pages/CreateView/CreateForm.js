@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Stack } from "@strapi/design-system/Stack";
 import { Main } from "@strapi/design-system/Main";
-import { Grid, GridItem } from "@strapi/design-system/Grid";
 import { ContentLayout } from "@strapi/design-system/Layout";
 import { Box } from "@strapi/design-system/Box";
 import { TextInput } from "@strapi/design-system/TextInput";
@@ -52,15 +51,12 @@ const CreateForm = () => {
       console.log({ createdUser });
       setUserData(() => createdUser);
       setOriginalUserData(() => createdUser);
+      setIsCreateDialogueOpen(false);
       setIsLoading(false);
       toggleNotification({
         type: "success",
         message: { id: "notification.success", defaultMessage: "Saved" },
       });
-      // push({
-      //   pathname: `/plugins/firebase-auth/${createdUser.uid}`,
-      //   state: { from: pathname },
-      // });
     } catch (e) {
       console.log("err --> ", e);
       toggleNotification({
