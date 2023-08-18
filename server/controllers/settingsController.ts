@@ -12,13 +12,29 @@ export default {
     try {
       const { token } = ctx.request.body;
       console.log("token", token);
-      const x = await strapi.entityService.create(
+      const isExist = await strapi.entityService.findOne(
         "plugin::firebase-auth.firebase-auth-configuration",
-        {
-          data: { token },
-        },
+        1,
       );
-      console.log("xxx", x);
+      if (!isExist) {
+        ctx.body = await strapi.entityService.create(
+          "plugin::firebase-auth.firebase-auth-configuration",
+          {
+            data: { token },
+          },
+        );
+      } else {
+        ctx.body = await strapi.entityService.update(
+          "plugin::firebase-auth.firebase-auth-configuration",
+          1,
+          {
+            data: {
+              token,
+              "firebase-config-json": isExist["firebase-config-json"],
+            },
+          },
+        );
+      }
     } catch (error) {
       console.log("error", error);
     }
