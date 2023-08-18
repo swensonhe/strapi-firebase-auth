@@ -8,7 +8,7 @@ import axios from "axios";
 const fetchStrapiUserById = async (userId) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
 
-  let url = `${HOST}/api/users/${userId}`;
+  const url = `${HOST}/api/users/${userId}`;
 
   try {
     const { data: user } = await axios.get(url, {
@@ -57,6 +57,7 @@ const fetchStrapiUsers = async (query = {}) => {
 
 const fetchUsers = async (query = {}) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
+  console.log("host", HOST);
 
   if (!query.page) {
     query.page = 1;
@@ -106,7 +107,7 @@ const createUser = async (userPayload, destination) => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-      }
+      },
     );
     return user;
   } catch (e) {
@@ -131,7 +132,7 @@ const fetchUserByID = async (userID) => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-      }
+      },
     );
     return user;
   } catch (e) {
@@ -159,7 +160,7 @@ const deleteUser = async (idToDelete, destination) => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-      }
+      },
     );
     return users.data;
   } catch (e) {
@@ -187,7 +188,7 @@ const updateUser = async (idToUpdate, payload, destination) => {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return user;
 };

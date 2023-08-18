@@ -7,11 +7,13 @@
     "displayName": "Firebase-auth configuration"
   },
   "options": {
-    "draftAndPublish": false,
+    "draftAndPublish": false
+  },
+  "pluginOptions": {
     "content-manager": {
       "visible": false
-
-    },"content-type-builder": {
+    },
+    "content-type-builder": {
       "visible": false
     }
   },

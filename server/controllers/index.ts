@@ -1,6 +1,6 @@
 import firebaseController from "./firebaseController";
 import userController from "./userController";
-import settingsController from "./settings";
+import settingsController from "./settingsController";
 
 export default {
   firebaseController,

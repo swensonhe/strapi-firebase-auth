@@ -1,4 +1,4 @@
-import settingsRoute from "./settings";
+import settingsRoute from "./settingsRoutes";
 
 export default {
   type: "admin",
