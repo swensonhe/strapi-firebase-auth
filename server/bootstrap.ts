@@ -1,6 +1,5 @@
 import { Strapi } from "@strapi/strapi";
 import admin, { ServiceAccount } from "firebase-admin";
-import serviceAccount from "../keys/andrew-golf-firebase-adminsdk-5p9ia-9c1238b1f5.json";
 
 const RBAC_ACTIONS = [
   {
@@ -20,6 +19,13 @@ const RBAC_ACTIONS = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async ({ strapi }: { strapi: Strapi | any }) => {
   try {
+    const res = await strapi.entityService.findOne(
+      "plugin::firebase-auth.firebase-auth-configuration",
+      1,
+    );
+
+    const jsonObject = res["firebase-config-json"];
+    const serviceAccount = JSON.parse(jsonObject.firebaseConfigJson);
     // bootstrap phase
     await strapi.admin.services.permission.actionProvider.registerMany(
       RBAC_ACTIONS,

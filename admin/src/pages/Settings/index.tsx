@@ -1,18 +1,64 @@
 import React, { useState } from "react";
 import { JSONInput, Flex, Textarea, Box, Button } from "@strapi/design-system";
-import { saveToken } from "./api";
+import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
+import { saveFirebaseConfig, saveToken } from "./api";
 
 function SettingsPage() {
+  const toggleNotification = useNotification();
   const [firebaseJsonValue, setFirebaseJsonValue] = useState("");
   const [apiToken, setApiToken] = useState("");
   const [loading, setLoading] = useState(false);
-  const handleFirebaseJsonSubmit = async () => {
-    console.log("submit", firebaseJsonValue);
-  };
 
   const handleTokenSubmit = async () => {
-    await saveToken(apiToken);
+    try {
+      setLoading(true);
+      await saveToken(apiToken);
+      setLoading(false);
+      toggleNotification({
+        type: "success",
+        message: {
+          id: "notification.success",
+          defaultMessage: "Data submitted successfully",
+        },
+      });
+    } catch (error) {
+      toggleNotification({
+        type: "warning",
+        message: {
+          id: "notification.error",
+          defaultMessage: "some thing went wrong",
+        },
+      });
+    }
   };
+
+  const handleFirebaseJsonSubmit = async () => {
+    try {
+      setLoading(true);
+      await saveFirebaseConfig(firebaseJsonValue);
+      setLoading(false);
+      toggleNotification({
+        type: "success",
+        message: {
+          id: "notification.success",
+          defaultMessage: "Data submitted successfully",
+        },
+      });
+    } catch (error) {
+      toggleNotification({
+        type: "warning",
+        message: {
+          id: "notification.error",
+          defaultMessage: "some thing went wrong",
+        },
+      });
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <LoadingIndicatorPage />;
+  }
   return (
     <Flex
       style={{ padding: 32 }}
@@ -36,7 +82,7 @@ function SettingsPage() {
           }}
           justifyContent="flex-end"
         >
-          <Button loading={loading} size="L" onClick={handleFirebaseJsonSubmit}>
+          <Button size="L" onClick={handleFirebaseJsonSubmit}>
             Submit
           </Button>
         </Flex>
@@ -55,7 +101,7 @@ function SettingsPage() {
           style={{ marginTop: 16, width: "100%", padding: 16 }}
           justifyContent="flex-end"
         >
-          <Button loading={loading} size="L" onClick={handleTokenSubmit}>
+          <Button size="L" onClick={handleTokenSubmit}>
             Submit
           </Button>
         </Flex>

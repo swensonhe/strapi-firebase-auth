@@ -1,4 +1,4 @@
-import settings from "./settings";
+import settings from "./settingsRoutes";
 
 export default {
   type: "content-api",
