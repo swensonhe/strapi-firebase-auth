@@ -45,7 +45,7 @@ const ___calculatePageCount = (total, pageSize) => {
  * @returns array after performing pagination on it and meta object
  */
 
-export default (data, pagination) => {
+export default (data, totalUserscount, pagination) => {
   let isPaginated = false;
   const total = data.length;
 
@@ -80,7 +80,10 @@ export default (data, pagination) => {
     pagination.page = Number(pagination.page);
     pagination.pageSize = Number(pagination.pageSize);
     if (!hasWithCount || pagination.withCount) {
-      pagination.pageCount = ___calculatePageCount(total, pagination.pageSize);
+      pagination.pageCount = ___calculatePageCount(
+        totalUserscount,
+        pagination.pageSize,
+      );
 
       if (hasWithCount) {
         delete pagination.withCount;

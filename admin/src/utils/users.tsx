@@ -3,9 +3,9 @@ import React from "react";
 
 export const formatUserData = (result: any, strapiUsersData: any) => ({
   ...result,
-  data: result.data.map((user: any) => {
+  data: result?.data?.map((user: any) => {
     const matchedStrapiUser = strapiUsersData.find(
-      (strapiUser: any) => strapiUser.email === user.email
+      (strapiUser: any) => strapiUser.email === user.email,
     );
     if (!matchedStrapiUser)
       return {
