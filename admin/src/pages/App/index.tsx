@@ -9,9 +9,9 @@ import React from "react";
 import { Switch, Route } from "react-router-dom";
 import { NotFound } from "@strapi/helper-plugin";
 import pluginId from "../../pluginId";
-import HomePage from "../HomePage";
-import EditView from "../EditView";
-import CreateView from "../CreateView";
+import { HomePage } from "../HomePage/HomePage";
+import { EditView } from "../EditView/EditView";
+import { CreateView } from "../CreateView/CreateView";
 
 const App = () => {
   return (

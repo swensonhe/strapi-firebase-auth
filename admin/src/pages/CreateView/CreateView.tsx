@@ -1,9 +1,9 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Layout } from "@strapi/design-system/Layout";
+import { Layout } from "@strapi/design-system";
 import CreateForm from "./CreateForm";
 
-const CreateView = () => {
+export const CreateView = () => {
   return (
     <Layout>
       <Helmet title="Firebase User" />
@@ -11,5 +11,3 @@ const CreateView = () => {
     </Layout>
   );
 };
-
-export default CreateView;

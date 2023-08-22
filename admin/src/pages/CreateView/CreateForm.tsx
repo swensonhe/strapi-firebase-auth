@@ -1,35 +1,30 @@
 import React, { useState } from "react";
-import { Stack } from "@strapi/design-system/Stack";
-import { Main } from "@strapi/design-system/Main";
-import { ContentLayout } from "@strapi/design-system/Layout";
-import { Box } from "@strapi/design-system/Box";
-import { TextInput } from "@strapi/design-system/TextInput";
-import Header from "./Header";
-import { ToggleInput } from "@strapi/design-system/ToggleInput";
+import { Stack } from "@strapi/design-system";
+import { Main } from "@strapi/design-system";
+import { ContentLayout } from "@strapi/design-system";
+import { Box } from "@strapi/design-system";
+import { TextInput } from "@strapi/design-system";
+import { ToggleInput } from "@strapi/design-system";
 import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
-import { useHistory } from "react-router-dom";
 import { createUser } from "../HomePage/utils/api";
-import { Grid, GridItem } from "@strapi/design-system/Grid";
+import { Grid, GridItem } from "@strapi/design-system";
+import { Header } from "../Header/Header";
 
 const CreateForm = () => {
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState<any>({});
   const [originalUserData, setOriginalUserData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const toggleNotification = useNotification();
-  const {
-    push,
-    location: { pathname },
-  } = useHistory();
-  const onTextInputChange = (e) => {
+  const onTextInputChange = (e: any) => {
     e.preventDefault();
-    setUserData((prevState) => ({
+    setUserData((prevState: any) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const onToggleInputChange = (e) => {
-    setUserData((prevState) => ({
+  const onToggleInputChange = (e: any) => {
+    setUserData((prevState: any) => ({
       ...prevState,
       [e.target.name]: e.target.checked,
     }));

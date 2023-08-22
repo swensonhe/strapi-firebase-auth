@@ -1,6 +1,7 @@
 import utils from "@strapi/utils";
 const { ApplicationError } = utils.errors;
 import paginate from "../utils/paginate";
+import { formatUserData } from "../utils/users";
 
 const PHONE = "phone";
 
@@ -134,13 +135,18 @@ export default ({ strapi }) => ({
       .auth()
       .listUsers(parseInt(pagination.pageSize), nextPageToken);
     const totalUserscount = await strapi.firebase.auth().listUsers();
+    const strapiUsers = await strapi.db
+      .query("plugin::users-permissions.user")
+      .findMany();
+
+    const allUsers = formatUserData(response, strapiUsers);
 
     const { meta } = paginate(
       response.users,
       totalUserscount.users.length,
-      pagination,
+      pagination
     );
-    return { data: response.users, pageToken: response.pageToken, meta };
+    return { data: allUsers.users, pageToken: response.pageToken, meta };
   },
 
   updateFirebaseUser: async (entityId, payload) => {

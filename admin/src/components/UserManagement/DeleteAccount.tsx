@@ -13,7 +13,7 @@ import { ExclamationMarkCircle } from "@strapi/icons";
 
 interface DeleteAccountProps {
   isOpen: boolean;
-  email: boolean;
+  email: string;
   onClose: () => void;
   onDelete: (isStrapiIncluded: boolean, isFirebaseIncluded: boolean) => void;
 }

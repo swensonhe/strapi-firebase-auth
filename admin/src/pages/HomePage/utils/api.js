@@ -173,12 +173,10 @@ const deleteUser = async (idToDelete, destination) => {
  * @returns {Object} user
  */
 
-const updateUser = async (idToUpdate, payload, destination) => {
+const updateUser = async (idToUpdate, payload) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
   const { data: user } = await axios.patch(
-    `${HOST}/api/firebase-auth/users/${idToUpdate}${
-      destination ? `?destination=${destination}` : ""
-    }`,
+    `${HOST}/api/firebase-auth/users/${idToUpdate}`,
     payload,
     {
       headers: {

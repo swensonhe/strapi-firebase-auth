@@ -1,17 +1,22 @@
 import React, { useLayoutEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { useIntl } from "react-intl";
-import SearchIcon from "@strapi/icons/Search";
-import { Searchbar, SearchForm } from "@strapi/design-system/Searchbar";
-import { IconButton } from "@strapi/design-system/IconButton";
-import { Icon } from "@strapi/design-system/Icon";
+import { SearchIcon } from "@strapi/icons";
+import { Searchbar, SearchForm } from "@strapi/design-system";
+import { IconButton } from "@strapi/design-system";
+import { Icon } from "@strapi/design-system";
 import useQueryParams from "../../hooks/useQueryParams";
 
-const SearchURLQuery = ({ label, placeholder }) => {
-  const wrapperRef = useRef(null);
+interface SearchURLQuery {
+  label: string;
+  placeholder: string;
+}
+
+const SearchURLQuery = ({ label, placeholder }: SearchURLQuery) => {
+  const wrapperRef: any = useRef(null);
   const iconButtonRef = useRef(null);
 
-  const [{ query }, setQuery] = useQueryParams();
+  const { query, setQuery } = useQueryParams();
   const [value, setValue] = useState(query?._q || "");
   const [isOpen, setIsOpen] = useState(!!value);
   const { formatMessage } = useIntl();
@@ -21,7 +26,7 @@ const SearchURLQuery = ({ label, placeholder }) => {
   useLayoutEffect(() => {
     if (isOpen) {
       setTimeout(() => {
-        wrapperRef.current.querySelector("input").focus();
+        wrapperRef.current?.querySelector("input").focus();
       }, 0);
     }
   }, [isOpen]);
@@ -31,7 +36,7 @@ const SearchURLQuery = ({ label, placeholder }) => {
     setQuery({ _q: "" }, "remove");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
 
     if (value) {
@@ -48,7 +53,7 @@ const SearchURLQuery = ({ label, placeholder }) => {
         <SearchForm onSubmit={handleSubmit}>
           <Searchbar
             name="search"
-            onChange={({ target: { value } }) => setValue(value)}
+            onChange={({ target: { value } }: any) => setValue(value)}
             value={value}
             clearLabel={formatMessage({
               id: "clearLabel",

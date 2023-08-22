@@ -3,7 +3,7 @@ import { prefixPluginTranslations } from "@strapi/helper-plugin";
 
 import pluginPkg from "../../package.json";
 import pluginId from "./pluginId";
-import Initializer from "./components/Initializer";
+import { Initializer } from "./components/Initializer/Initializer";
 import PluginIcon from "./components/PluginIcon";
 import pluginPermissions from "./utils/permissions";
 import getTrad from "./utils/getTrad";
@@ -60,7 +60,7 @@ export default {
           },
           permissions: pluginPermissions.settings,
         },
-      ],
+      ]
     );
     const plugin = {
       id: pluginId,
@@ -93,7 +93,7 @@ export default {
               locale,
             };
           });
-      }),
+      })
     );
 
     return Promise.resolve(importedTrads);

@@ -6,7 +6,7 @@
     "strict": true
   },
 
-  "include": ["admin", "custom.d.ts"],
+  "include": ["admin", "custom.d.ts", "server/utils/users.ts"],
 
   "exclude": [
     "node_modules/",

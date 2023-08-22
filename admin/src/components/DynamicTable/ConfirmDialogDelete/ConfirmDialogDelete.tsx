@@ -1,15 +1,26 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { useIntl } from "react-intl";
-import { Dialog, DialogBody, DialogFooter } from "@strapi/design-system/Dialog";
-import { Stack } from "@strapi/design-system/Stack";
-import { Flex } from "@strapi/design-system/Flex";
-import { Typography } from "@strapi/design-system/Typography";
-import { Button } from "@strapi/design-system/Button";
-import ExclamationMarkCircle from "@strapi/icons/ExclamationMarkCircle";
-import Trash from "@strapi/icons/Trash";
+import { Dialog, DialogBody, DialogFooter } from "@strapi/design-system";
+import { Stack } from "@strapi/design-system";
+import { Flex } from "@strapi/design-system";
+import { Typography } from "@strapi/design-system";
+import { Button } from "@strapi/design-system";
+import { ExclamationMarkCircle } from "@strapi/icons";
+import { Trash } from "@strapi/icons";
 
-const ConfirmDialogDelete = ({ isConfirmButtonLoading, isOpen, onToggleDialog, onConfirm }) => {
+interface ConfirmDialogDeleteProps {
+  isConfirmButtonLoading: boolean;
+  isOpen: boolean;
+  onToggleDialog: () => void;
+  onConfirm: () => void;
+}
+
+export const ConfirmDialogDelete = ({
+  isConfirmButtonLoading,
+  isOpen,
+  onToggleDialog,
+  onConfirm,
+}: ConfirmDialogDeleteProps) => {
   const { formatMessage } = useIntl();
   return (
     <Dialog
@@ -25,7 +36,9 @@ const ConfirmDialogDelete = ({ isConfirmButtonLoading, isOpen, onToggleDialog, o
       <DialogBody icon={<ExclamationMarkCircle />}>
         <Stack size={2}>
           <Flex justifyContent="center">
-            <Typography id="confirm-description">Are you sure you want to delete this?</Typography>
+            <Typography id="confirm-description">
+              Are you sure you want to delete this?
+            </Typography>
           </Flex>
         </Stack>
       </DialogBody>
@@ -50,12 +63,3 @@ const ConfirmDialogDelete = ({ isConfirmButtonLoading, isOpen, onToggleDialog, o
     </Dialog>
   );
 };
-
-ConfirmDialogDelete.propTypes = {
-  isConfirmButtonLoading: PropTypes.bool.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  onConfirm: PropTypes.func.isRequired,
-  onToggleDialog: PropTypes.func.isRequired,
-};
-
-export default ConfirmDialogDelete;

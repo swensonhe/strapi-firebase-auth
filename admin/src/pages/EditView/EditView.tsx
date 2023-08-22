@@ -1,15 +1,14 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Layout } from "@strapi/design-system/Layout";
+import { Layout } from "@strapi/design-system";
 import { useParams } from "react-router-dom";
 import { fetchUserByID } from "../HomePage/utils/api";
 import { useQuery } from "react-query";
 import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
+import { EditForm } from "./EditForm";
 
-import EditForm from "./EditForm";
-
-const EditView = () => {
-  const { id } = useParams();
+export const EditView = () => {
+  const { id }: any = useParams();
   const toggleNotification = useNotification();
   const { status, data } = useQuery(
     `firebase-auth-${id}`,
@@ -40,5 +39,3 @@ const EditView = () => {
     </Layout>
   );
 };
-
-export default EditView;

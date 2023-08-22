@@ -13,7 +13,7 @@ import { ExclamationMarkCircle } from "@strapi/icons";
 
 interface DisableAccountProps {
   isOpen: boolean;
-  email: boolean;
+  email: string;
   onClose: () => void;
 }
 

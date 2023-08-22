@@ -1,12 +1,4 @@
-import React, {
-  memo,
-  useCallback,
-  useEffect,
-  useState,
-  useLayoutEffect,
-  useRef,
-} from "react";
-import PropTypes from "prop-types";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import get from "lodash/get";
 import {
@@ -15,48 +7,36 @@ import {
   useQueryParams,
   useNotification,
 } from "@strapi/helper-plugin";
-import { Main } from "@strapi/design-system/Main";
+import { Main } from "@strapi/design-system";
 import {
   ContentLayout,
   HeaderLayout,
   ActionLayout,
-} from "@strapi/design-system/Layout";
-import { Button } from "@strapi/design-system/Button";
-import { Link } from "@strapi/design-system/Link";
-import ArrowLeft from "@strapi/icons/ArrowLeft";
-import Plus from "@strapi/icons/Plus";
+} from "@strapi/design-system";
+import { Button } from "@strapi/design-system";
+import { Link } from "@strapi/design-system";
+import { ArrowLeft } from "@strapi/icons";
+import { Plus } from "@strapi/icons";
 import { useHistory } from "react-router-dom";
-import DynamicTable from "../../components/DynamicTable";
-import {
-  deleteUser,
-  fetchStrapiUsers,
-  fetchUsers,
-} from "../HomePage/utils/api";
-import PaginationFooter from "./PaginationFooter";
-import SearchURLQuery from "../../components/SearchURLQuery";
+import { FirebaseTable } from "../../components/DynamicTable/FirebaseTable";
+import { deleteUser, fetchUsers } from "../HomePage/utils/api";
+import { PaginationFooter } from "./PaginationFooter";
+import SearchURLQuery from "../../components/SearchURLQuery/SearchURLQuery";
 import { matchSorter } from "match-sorter";
-import { MapProviderToIcon } from "../../utils/provider";
-import { formatUserData } from "../../utils/users";
-import { useQuery } from "react-query";
-import { TextInput } from "@strapi/design-system/TextInput";
-import { Textarea } from "@strapi/design-system";
+
+interface ListViewProps {
+  data: any;
+  slug: any;
+  meta: any;
+}
 
 /* eslint-disable react/no-array-index-key */
-function ListView({ data, slug, meta, layout }) {
+function ListView({ data, slug, meta }: ListViewProps) {
   const [rowsData, setRowsData] = useState(data);
   const [rowsMeta, setRowsMeta] = useState(meta);
   const [isLoading, setIsLoading] = useState(false);
-  const [strapiUsersData, setStrapiUsersData] = useState([]);
-  const canCreate = true;
-  const canDelete = true;
   const headerLayoutTitle = "Firebase Users";
   const [query] = useQueryParams();
-
-  useQuery("strapi-users", () => fetchStrapiUsers(), {
-    onSuccess: (result) => {
-      setStrapiUsersData(result);
-    },
-  });
 
   const {
     push,
@@ -67,21 +47,20 @@ function ListView({ data, slug, meta, layout }) {
 
   useFocusWhenNavigate();
 
-  let setNextPageToken = (page, nextPageToken) => {
-    page = !page ? 1 : page;
-    page = parseInt(page);
+  let setNextPageToken = (page: string, nextPageToken: string) => {
+    const formattedPage = parseInt(page) || 1;
     const storeObject = localStorage.getItem("nextPageTokens");
-    let newObject = {};
+    let newObject: any = {};
     if (storeObject) {
       newObject = JSON.parse(storeObject);
     }
 
-    newObject[page + 1] = nextPageToken;
+    newObject[formattedPage + 1] = nextPageToken;
     localStorage.setItem("nextPageTokens", JSON.stringify(newObject));
   };
 
-  let getNextPageToken = async (page) => {
-    page = parseInt(page);
+  let getNextPageToken = async (page: string) => {
+    const formattedPage = parseInt(page);
     const storeObject = localStorage.getItem("nextPageTokens");
 
     if (!storeObject) {
@@ -89,7 +68,7 @@ function ListView({ data, slug, meta, layout }) {
     }
     const newObject = JSON.parse(storeObject);
 
-    return newObject[page];
+    return newObject[formattedPage];
   };
 
   let fetchPaginatedUsers = async () => {
@@ -104,7 +83,7 @@ function ListView({ data, slug, meta, layout }) {
     if (response.pageToken) {
       setNextPageToken(query.query?.page, response.pageToken);
     }
-    return formatUserData(response, strapiUsersData);
+    return response;
   };
 
   useEffect(() => {
@@ -112,7 +91,7 @@ function ListView({ data, slug, meta, layout }) {
       setIsLoading(true);
 
       let response = await fetchPaginatedUsers();
-      let data = response.data?.map((item) => {
+      let data = response.data?.map((item: any) => {
         return {
           id: item.uid,
           ...item,
@@ -128,14 +107,14 @@ function ListView({ data, slug, meta, layout }) {
       setIsLoading(false);
     };
     fetchPaginatedData();
-  }, [query.query, strapiUsersData]);
+  }, [query.query]);
 
   const { formatMessage } = useIntl();
 
   const handleConfirmDeleteData = useCallback(
     async (idsToDelete, isStrapiIncluded, isFirebaseIncluded) => {
       console.log("idsToDelete", idsToDelete);
-      let destination;
+      let destination = null;
       if (isStrapiIncluded && isFirebaseIncluded) {
         destination = null;
       } else if (isStrapiIncluded) {
@@ -144,18 +123,17 @@ function ListView({ data, slug, meta, layout }) {
       try {
         setIsLoading(true);
         if (Array.isArray(idsToDelete)) {
-          await Promise.all(idsToDelete.map((id) => deleteUser(id)));
+          await Promise.all(idsToDelete.map((id) => deleteUser(id, null)));
         } else {
           await deleteUser(idsToDelete, destination);
         }
 
         let response = await fetchPaginatedUsers();
 
-        let newDate = response.data.map((item) => {
+        let newDate = response.data.map((item: any) => {
           return {
             id: item.uid,
             ...item,
-            providers: <MapProviderToIcon providerData={item.providerData} />,
           };
         });
         setRowsData(() => newDate);
@@ -238,35 +216,18 @@ function ListView({ data, slug, meta, layout }) {
       />
       <ContentLayout>
         <>
-          <DynamicTable
-            isBulkable={true}
-            canCreate={canCreate}
-            canDelete={canDelete}
-            contentTypeName={headerLayoutTitle}
+          <FirebaseTable
             onConfirmDelete={handleConfirmDeleteData}
             onConfirmDeleteAll={handleConfirmDeleteData}
             isLoading={isLoading}
             rows={rowsData}
-            action={getCreateAction({ variant: "secondary" })}
+            action={getCreateAction()}
           />
-          <PaginationFooter
-            pagination={{ pageCount: rowsMeta?.pagination?.pageCount || 1 }}
-          />
+          <PaginationFooter pageCount={rowsMeta?.pagination?.pageCount || 1} />
         </>
       </ContentLayout>
     </Main>
   );
 }
-
-ListView.propTypes = {
-  data: PropTypes.array.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  getData: PropTypes.func.isRequired,
-  getDataSucceeded: PropTypes.func.isRequired,
-  pagination: PropTypes.shape({
-    total: PropTypes.number.isRequired,
-    pageCount: PropTypes.number,
-  }).isRequired,
-};
 
 export default memo(ListView);

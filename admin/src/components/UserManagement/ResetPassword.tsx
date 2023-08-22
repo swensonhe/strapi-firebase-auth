@@ -12,7 +12,7 @@ import {
 
 interface ResetPasswordProps {
   isOpen: boolean;
-  email: boolean;
+  email: string;
   onClose: () => void;
 }
 

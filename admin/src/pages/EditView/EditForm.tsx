@@ -1,21 +1,21 @@
 import React, { useState } from "react";
-import { Stack } from "@strapi/design-system/Stack";
-import { Main } from "@strapi/design-system/Main";
-import { Grid, GridItem } from "@strapi/design-system/Grid";
-import { ContentLayout } from "@strapi/design-system/Layout";
-import { Box } from "@strapi/design-system/Box";
-import { TextInput } from "@strapi/design-system/TextInput";
-import { Link } from "@strapi/design-system/Link";
-import Header from "./Header";
-import { ToggleInput } from "@strapi/design-system/ToggleInput";
+import { Stack } from "@strapi/design-system";
+import { Main } from "@strapi/design-system";
+import { Grid, GridItem } from "@strapi/design-system";
+import { ContentLayout } from "@strapi/design-system";
+import { Box } from "@strapi/design-system";
+import { TextInput } from "@strapi/design-system";
+import { Link } from "@strapi/design-system";
+import { Header } from "../Header/Header";
+import { ToggleInput } from "@strapi/design-system";
 import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
-import { Divider } from "@strapi/design-system/Divider";
-import Pencil from "@strapi/icons/Pencil";
-import { Typography } from "@strapi/design-system/Typography";
+import { Divider } from "@strapi/design-system";
+import { Pencil } from "@strapi/icons";
+import { Typography } from "@strapi/design-system";
 import styled from "styled-components";
 import { format } from "date-fns";
 import { updateUser } from "../HomePage/utils/api";
-import { Flex } from "@strapi/design-system/Flex";
+import { Flex } from "@strapi/design-system";
 
 const USERS_URL =
   "/content-manager/collectionType/plugin::users-permissions.user";
@@ -46,22 +46,27 @@ const MetaWrapper = styled(Box)`
   padding: 5px;
 `;
 
-const EditForm = ({ data }) => {
+interface EditFormProps {
+  data: any;
+}
+
+export const EditForm = ({ data }: EditFormProps) => {
   const [userData, setUserData] = useState(data);
   const [originalUserData, setOriginalUserData] = useState(data);
   const [isLoading, setIsLoading] = useState(false);
   const toggleNotification = useNotification();
+  console.log("dataaaa", data);
 
-  const onTextInputChange = (e) => {
+  const onTextInputChange = (e: any) => {
     e.preventDefault();
-    setUserData((prevState) => ({
+    setUserData((prevState: any) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const onToggleInputChange = (e) => {
-    setUserData((prevState) => ({
+  const onToggleInputChange = (e: any) => {
+    setUserData((prevState: any) => ({
       ...prevState,
       [e.target.name]: e.target.checked,
     }));
@@ -174,7 +179,7 @@ const EditForm = ({ data }) => {
               paddingTop={2}
               shadow="tableShadow"
             >
-              {userData.providerData?.map((provider) => {
+              {userData.providerData?.map((provider: any) => {
                 return (
                   <Flex
                     paddingTop={2}
@@ -315,19 +320,6 @@ const EditForm = ({ data }) => {
           </GridItem>
         </Grid>
       </ContentLayout>
-      <Box>
-        <ContentLayout marginTop={8}>
-          <Grid gap={4}>
-            <GridItem col={9} s={12}>
-              <Box background="neutral0" borderColor="neutral150" hasRadius>
-                <Stack spacing={2} padding={3} gap={2}></Stack>
-              </Box>
-            </GridItem>
-          </Grid>
-        </ContentLayout>
-      </Box>
     </Main>
   );
 };
-
-export default EditForm;
