@@ -41,7 +41,6 @@ export default ({ strapi }) => ({
 
   create: async (payload) => {
     try {
-      console.log("createee");
       const userRecord = await strapi.firebase
         .auth()
         .getUserByEmail(payload.email)
@@ -67,12 +66,10 @@ export default ({ strapi }) => ({
         return userRecord;
       }
     } catch (e) {
-      console.log("error", e);
       throw new ApplicationError(e.message.toString());
     }
   },
   createFirebaseUser: async (payload) => {
-    console.log("firebaseee");
     try {
       const userRecord = await strapi.firebase
         .auth()
@@ -92,7 +89,6 @@ export default ({ strapi }) => ({
     }
   },
   createStrapiUser: async (payload) => {
-    console.log("strapiii");
     try {
       const userRecord = await strapi
         .plugin("firebase-auth")
@@ -137,8 +133,13 @@ export default ({ strapi }) => ({
     const response = await strapi.firebase
       .auth()
       .listUsers(parseInt(pagination.pageSize), nextPageToken);
+    const totalUserscount = await strapi.firebase.auth().listUsers();
 
-    const { meta } = paginate(response.users, pagination);
+    const { meta } = paginate(
+      response.users,
+      totalUserscount.users.length,
+      pagination,
+    );
     return { data: response.users, pageToken: response.pageToken, meta };
   },
 

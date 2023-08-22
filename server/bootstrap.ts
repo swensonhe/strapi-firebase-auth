@@ -1,6 +1,8 @@
 import { Strapi } from "@strapi/strapi";
 import admin, { ServiceAccount } from "firebase-admin";
 
+import checkValidJson from "./utils/check-valid-json";
+
 const RBAC_ACTIONS = [
   {
     section: "plugins",
@@ -19,17 +21,23 @@ const RBAC_ACTIONS = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async ({ strapi }: { strapi: Strapi | any }) => {
   try {
+    // bootstrap phase
+    await strapi.admin.services.permission.actionProvider.registerMany(
+      RBAC_ACTIONS
+    );
+
+    // get firebase configs json from db
     const res = await strapi.entityService.findOne(
       "plugin::firebase-auth.firebase-auth-configuration",
       1
     );
 
     const jsonObject = res["firebase-config-json"];
-    const serviceAccount = JSON.parse(jsonObject.firebaseConfigJson);
-    // bootstrap phase
-    await strapi.admin.services.permission.actionProvider.registerMany(
-      RBAC_ACTIONS
-    );
+
+    if (!jsonObject || !jsonObject.firebaseConfigJson) return;
+    const serviceAccount = checkValidJson(jsonObject.firebaseConfigJson);
+
+    if (!serviceAccount) return;
 
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount as ServiceAccount),
