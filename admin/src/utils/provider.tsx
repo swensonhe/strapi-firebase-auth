@@ -27,11 +27,11 @@ const providerIconMapping: { [key: string]: any } = {
 };
 
 export const MapProviderToIcon = ({ providerData }: any) => {
-  return providerData?.map(({ providerId }: any) => (
+  return (
     <Flex gap={2}>
-    <div>
-      {providerIconMapping[providerId] || providerId}
-    </div>
+      {providerData?.map(({ providerId }: any) => (
+        <div>{providerIconMapping[providerId] || providerId}</div>
+      ))}
     </Flex>
-  ));
+  );
 };
