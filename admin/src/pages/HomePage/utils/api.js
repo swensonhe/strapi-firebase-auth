@@ -93,13 +93,11 @@ const fetchUsers = async (query = {}) => {
  * @returns {Object} user
  */
 
-const createUser = async (userPayload, destination) => {
+const createUser = async (userPayload) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
   try {
     const { data: user } = await axios.post(
-      `${HOST}/api/firebase-auth/users${
-        destination ? `?destination=${destination}` : ""
-      }`,
+      `${HOST}/api/firebase-auth/users`,
       userPayload,
       {
         headers: {
@@ -107,7 +105,7 @@ const createUser = async (userPayload, destination) => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-      },
+      }
     );
     return user;
   } catch (e) {
@@ -132,7 +130,7 @@ const fetchUserByID = async (userID) => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-      },
+      }
     );
     return user;
   } catch (e) {
@@ -160,7 +158,7 @@ const deleteUser = async (idToDelete, destination) => {
           Accept: "application/json",
           "Content-Type": "application/json",
         },
-      },
+      }
     );
     return users.data;
   } catch (e) {
@@ -188,7 +186,7 @@ const updateUser = async (idToUpdate, payload, destination) => {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-    },
+    }
   );
   return user;
 };

@@ -98,7 +98,7 @@ function ListView({ data, slug, meta, layout }) {
     if (nextPageToken) {
       query.query.nextPageToken = nextPageToken;
     }
-
+    console.log("query.query", query.query);
     const response = await fetchUsers(query.query);
 
     if (response.pageToken) {
@@ -200,7 +200,8 @@ function ListView({ data, slug, meta, layout }) {
     return <LoadingIndicatorPage />;
   }
 
-  const headSubtitle = `Showing ${rowsData?.length} entries`;
+  const headSubtitle = `Showing ${rowsData?.length || 0} entries`;
+  console.log("isss", rowsData, rowsMeta);
 
   return (
     <Main aria-busy={isLoading}>

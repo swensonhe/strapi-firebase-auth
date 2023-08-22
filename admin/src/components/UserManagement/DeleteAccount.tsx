@@ -24,8 +24,8 @@ export const DeleteAccount = ({
   onClose,
   onDelete,
 }: DeleteAccountProps) => {
-  const [isStrapiIncluded, setIsStrapiIncluded] = useState(false);
-  const [isFirebaseIncluded, setIsFirebaseIncluded] = useState(false);
+  const [isStrapiIncluded, setIsStrapiIncluded] = useState(true);
+  const [isFirebaseIncluded, setIsFirebaseIncluded] = useState(true);
   return (
     <>
       <Dialog onClose={onClose} title="Delete Account" isOpen={isOpen}>
