@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Box } from "@strapi/design-system";
 import { Flex } from "@strapi/design-system";
 import { PaginationURLQuery, PageSizeURLQuery } from "@strapi/helper-plugin";

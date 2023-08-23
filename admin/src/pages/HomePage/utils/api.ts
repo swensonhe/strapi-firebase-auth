@@ -1,11 +1,15 @@
 import axios from "axios";
+import { User } from "../../../model/User";
+import { Query } from "../../../model/Request";
 
 /**
  * @description Fetch users
  * @returns {Object} users
  */
 
-const fetchStrapiUserById = async (userId) => {
+declare let CUSTOM_VARIABLES: any;
+
+const fetchStrapiUserById = async (userId: string) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
 
   const url = `${HOST}/api/users/${userId}`;
@@ -24,7 +28,7 @@ const fetchStrapiUserById = async (userId) => {
   }
 };
 
-const fetchStrapiUsers = async (query = {}) => {
+const fetchStrapiUsers = async (query: Query = {}) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
 
   if (!query.page) {
@@ -55,7 +59,7 @@ const fetchStrapiUsers = async (query = {}) => {
   }
 };
 
-const fetchUsers = async (query = {}) => {
+const fetchUsers = async (query: Query = {}) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
   console.log("host", HOST);
 
@@ -93,7 +97,7 @@ const fetchUsers = async (query = {}) => {
  * @returns {Object} user
  */
 
-const createUser = async (userPayload) => {
+const createUser = async (userPayload: User) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
   try {
     const { data: user } = await axios.post(
@@ -119,7 +123,7 @@ const createUser = async (userPayload) => {
  * @returns {Object} user
  */
 
-const fetchUserByID = async (userID) => {
+const fetchUserByID = async (userID: string) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
   try {
     const { data: user } = await axios.get(
@@ -144,7 +148,7 @@ const fetchUserByID = async (userID) => {
  * @returns {Object} user
  */
 
-const deleteUser = async (idToDelete, destination) => {
+const deleteUser = async (idToDelete: string, destination: string | null) => {
   console.log("idToDelete", idToDelete);
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
   try {
@@ -173,7 +177,7 @@ const deleteUser = async (idToDelete, destination) => {
  * @returns {Object} user
  */
 
-const updateUser = async (idToUpdate, payload) => {
+const updateUser = async (idToUpdate: string, payload: User) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
   const { data: user } = await axios.patch(
     `${HOST}/api/firebase-auth/users/${idToUpdate}`,

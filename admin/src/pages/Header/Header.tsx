@@ -8,12 +8,13 @@ import { Box } from "@strapi/design-system";
 import { Button } from "@strapi/design-system";
 import { Link } from "@strapi/design-system";
 import { ArrowLeft } from "@strapi/icons";
+import { User } from "../../model/User";
 
 interface HeaderProps {
   title: string;
   onSave: () => void;
-  initialData: any;
-  modifiedData: any;
+  initialData: User | null;
+  modifiedData: User | null;
   isCreatingEntry?: boolean;
   status?: string;
 }

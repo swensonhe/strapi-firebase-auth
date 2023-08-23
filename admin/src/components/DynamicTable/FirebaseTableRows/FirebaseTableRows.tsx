@@ -15,6 +15,7 @@ import { DeleteAccount } from "../../UserManagement/DeleteAccount";
 import { Typography } from "@strapi/design-system";
 import styled from "styled-components";
 import { MapProviderToIcon } from "../../../utils/provider";
+import { User } from "../../../model/User";
 
 const TypographyMaxWidth = styled(Typography)`
   max-width: 300px;
@@ -36,9 +37,9 @@ interface FirebaseTableRowsProps {
     candidateID: string | null,
     isStrapiIncluded: boolean,
     isFirebaseIncluded: boolean
-  ) => void;
-  rows: any[];
-  entriesToDelete: any[];
+  ) => Promise<User[]>;
+  rows: User[];
+  entriesToDelete: string[];
   onSelectRow: ({ name, value }: { name: string; value: boolean }) => void;
 }
 
@@ -49,7 +50,7 @@ export const FirebaseTableRows = ({
   onSelectRow,
 }: FirebaseTableRowsProps) => {
   const [candidateID, setCandidateID] = useState<string | null>(null);
-  const [rowsData, setRowsData] = useState<any>(rows);
+  const [rowsData, setRowsData] = useState<User[]>(rows);
   const [showResetPasswordDialogue, setShowResetPasswordDialogue] = useState({
     isOpen: false,
     email: "",
@@ -104,12 +105,12 @@ export const FirebaseTableRows = ({
             isFirebaseIncluded
           );
           setShowDisableAccountDialogue({ isOpen: false, email: "" });
-          setRowsData(() => newRowsData);
+          setRowsData(newRowsData);
           setCandidateID(() => "");
         }}
       />
       <Tbody>
-        {rowsData.map((data: any) => {
+        {rowsData.map((data: User) => {
           console.log("dataaa", data);
           const isChecked =
             entriesToDelete.findIndex((id) => id === data.id) !== -1;

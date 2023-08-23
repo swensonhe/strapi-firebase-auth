@@ -9,34 +9,42 @@ import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
 import { createUser } from "../HomePage/utils/api";
 import { Grid, GridItem } from "@strapi/design-system";
 import { Header } from "../Header/Header";
+import { User } from "../../model/User";
 
 const CreateForm = () => {
-  const [userData, setUserData] = useState<any>({});
-  const [originalUserData, setOriginalUserData] = useState({});
+  const [userData, setUserData] = useState<User | null>(null);
+  const [originalUserData, setOriginalUserData] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const toggleNotification = useNotification();
   const onTextInputChange = (e: any) => {
     e.preventDefault();
-    setUserData((prevState: any) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }));
+    setUserData(
+      (prevState: User | null) =>
+        ({
+          ...prevState,
+          [e.target.name]: e.target.value,
+        }) as User | null
+    );
   };
 
   const onToggleInputChange = (e: any) => {
-    setUserData((prevState: any) => ({
-      ...prevState,
-      [e.target.name]: e.target.checked,
-    }));
+    setUserData(
+      (prevState: User | null) =>
+        ({
+          ...prevState,
+          [e.target.name]: e.target.checked,
+        }) as User | null
+    );
   };
 
   const updateUserHandler = async () => {
+    if (!userData) return;
     setIsLoading(true);
     try {
       const createdUser = await createUser(userData);
       console.log({ createdUser });
-      setUserData(() => createdUser);
-      setOriginalUserData(() => createdUser);
+      setUserData(createdUser);
+      setOriginalUserData(createdUser);
       setIsLoading(false);
       toggleNotification({
         type: "success",
@@ -52,7 +60,7 @@ const CreateForm = () => {
         },
       });
       setIsLoading(false);
-      setUserData(() => {});
+      setUserData(null);
     }
   };
 
@@ -80,7 +88,7 @@ const CreateForm = () => {
                   autoComplete="new-password"
                   onChange={onTextInputChange}
                   label="Display Name"
-                  value={userData.displayName}
+                  value={userData?.displayName}
                 />
                 <TextInput
                   id="email"
@@ -88,7 +96,7 @@ const CreateForm = () => {
                   autoComplete="new-password"
                   onChange={onTextInputChange}
                   label="Email"
-                  value={userData.email}
+                  value={userData?.email}
                 />
                 <TextInput
                   id="phoneNumber"
@@ -96,7 +104,7 @@ const CreateForm = () => {
                   autoComplete="new-password"
                   onChange={onTextInputChange}
                   label="Phone Number"
-                  value={userData.phoneNumber}
+                  value={userData?.phoneNumber}
                 />
                 <TextInput
                   id="password"
@@ -105,14 +113,14 @@ const CreateForm = () => {
                   onChange={onTextInputChange}
                   autoComplete="new-password"
                   label="Password"
-                  value={userData.password}
+                  value={userData?.password}
                 />
                 <ToggleInput
                   label="Disabled"
                   name="disabled"
                   onLabel="True"
                   offLabel="False"
-                  checked={Boolean(userData.disabled)}
+                  checked={Boolean(userData?.disabled)}
                   onChange={onToggleInputChange}
                 />
                 <ToggleInput
@@ -120,7 +128,7 @@ const CreateForm = () => {
                   name="emailVerified"
                   onLabel="True"
                   offLabel="False"
-                  checked={Boolean(userData.emailVerified)}
+                  checked={Boolean(userData?.emailVerified)}
                   onChange={onToggleInputChange}
                 />
               </Stack>

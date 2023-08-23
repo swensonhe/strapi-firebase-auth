@@ -3,6 +3,7 @@ import { DynamicTable as Table } from "@strapi/helper-plugin";
 import { FirebaseTableRows } from "./FirebaseTableRows/FirebaseTableRows";
 import { ConfirmDialogDelete } from "./ConfirmDialogDelete/ConfirmDialogDelete";
 import { tableHeaders } from "./TableHeaders";
+import { User } from "../../model/User";
 
 interface FirebaseTableProps {
   action: React.ReactNode;
@@ -11,8 +12,8 @@ interface FirebaseTableProps {
     candidateID: string | null,
     isStrapiIncluded: boolean,
     isFirebaseIncluded: boolean
-  ) => void;
-  rows: any[];
+  ) => Promise<User[]>;
+  rows: User[];
   onConfirmDeleteAll: (
     idsToDelete: string[],
     isStrapiIncluded: boolean,

@@ -16,6 +16,7 @@ import styled from "styled-components";
 import { format } from "date-fns";
 import { updateUser } from "../HomePage/utils/api";
 import { Flex } from "@strapi/design-system";
+import { ProviderItem, User } from "../../model/User";
 
 const USERS_URL =
   "/content-manager/collectionType/plugin::users-permissions.user";
@@ -47,11 +48,11 @@ const MetaWrapper = styled(Box)`
 `;
 
 interface EditFormProps {
-  data: any;
+  data: User;
 }
 
 export const EditForm = ({ data }: EditFormProps) => {
-  const [userData, setUserData] = useState(data);
+  const [userData, setUserData] = useState<User>(data);
   const [originalUserData, setOriginalUserData] = useState(data);
   const [isLoading, setIsLoading] = useState(false);
   const toggleNotification = useNotification();
@@ -59,14 +60,14 @@ export const EditForm = ({ data }: EditFormProps) => {
 
   const onTextInputChange = (e: any) => {
     e.preventDefault();
-    setUserData((prevState: any) => ({
+    setUserData((prevState: User) => ({
       ...prevState,
       [e.target.name]: e.target.value,
     }));
   };
 
   const onToggleInputChange = (e: any) => {
-    setUserData((prevState: any) => ({
+    setUserData((prevState: User) => ({
       ...prevState,
       [e.target.name]: e.target.checked,
     }));
@@ -179,7 +180,7 @@ export const EditForm = ({ data }: EditFormProps) => {
               paddingTop={2}
               shadow="tableShadow"
             >
-              {userData.providerData?.map((provider: any) => {
+              {userData.providerData?.map((provider: ProviderItem) => {
                 return (
                   <Flex
                     paddingTop={2}

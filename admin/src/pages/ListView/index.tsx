@@ -23,20 +23,23 @@ import { deleteUser, fetchUsers } from "../HomePage/utils/api";
 import { PaginationFooter } from "./PaginationFooter";
 import SearchURLQuery from "../../components/SearchURLQuery/SearchURLQuery";
 import { matchSorter } from "match-sorter";
+import { User } from "../../model/User";
+import { ResponseMeta } from "../../model/Meta";
 
 interface ListViewProps {
   data: any;
   slug: any;
-  meta: any;
+  meta: ResponseMeta;
 }
 
 /* eslint-disable react/no-array-index-key */
 function ListView({ data, slug, meta }: ListViewProps) {
-  const [rowsData, setRowsData] = useState(data);
-  const [rowsMeta, setRowsMeta] = useState(meta);
-  const [isLoading, setIsLoading] = useState(false);
+  const [rowsData, setRowsData] = useState<User[]>(data);
+  const [rowsMeta, setRowsMeta] = useState<ResponseMeta>(meta);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const headerLayoutTitle = "Firebase Users";
   const [query] = useQueryParams();
+  console.log("rowsMeta", rowsMeta, slug);
 
   const {
     push,
@@ -155,6 +158,7 @@ function ListView({ data, slug, meta }: ListViewProps) {
           type: "warning",
           message: errorMessage,
         });
+        return Promise.reject([]);
       }
     },
     [slug, toggleNotification, formatMessage]
