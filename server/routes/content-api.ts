@@ -24,7 +24,7 @@ export default {
       path: "/users",
       handler: "userController.list",
       config: {
-        policies: [],
+        policies: ["isAuth"],
       },
     },
     {
