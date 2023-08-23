@@ -16,7 +16,7 @@ import styled from "styled-components";
 import { format } from "date-fns";
 import { updateUser } from "../HomePage/utils/api";
 import { Flex } from "@strapi/design-system";
-import { ProviderItem, User } from "../../model/User";
+import { ProviderItem, User } from "../../../../model/User";
 
 const USERS_URL =
   "/content-manager/collectionType/plugin::users-permissions.user";

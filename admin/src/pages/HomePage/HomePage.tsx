@@ -8,8 +8,8 @@ import { Grid, GridItem } from "@strapi/design-system";
 import { useQuery } from "react-query";
 import { fetchUsers } from "./utils/api";
 import ListView from "../ListView";
-import { User } from "../../model/User";
-import { ResponseMeta } from "../../model/Meta";
+import { User } from "../../../../model/User";
+import { ResponseMeta } from "../../../../model/Meta";
 
 const INITIAL_USERS_DATA = {
   data: [],

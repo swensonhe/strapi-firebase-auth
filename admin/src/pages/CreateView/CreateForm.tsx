@@ -9,7 +9,7 @@ import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
 import { createUser } from "../HomePage/utils/api";
 import { Grid, GridItem } from "@strapi/design-system";
 import { Header } from "../Header/Header";
-import { User } from "../../model/User";
+import { User } from "../../../../model/User";
 
 const CreateForm = () => {
   const [userData, setUserData] = useState<User | null>(null);

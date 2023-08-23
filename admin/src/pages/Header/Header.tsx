@@ -8,7 +8,7 @@ import { Box } from "@strapi/design-system";
 import { Button } from "@strapi/design-system";
 import { Link } from "@strapi/design-system";
 import { ArrowLeft } from "@strapi/icons";
-import { User } from "../../model/User";
+import { User } from "../../../../model/User";
 
 interface HeaderProps {
   title: string;

@@ -15,7 +15,7 @@ import { DeleteAccount } from "../../UserManagement/DeleteAccount";
 import { Typography } from "@strapi/design-system";
 import styled from "styled-components";
 import { MapProviderToIcon } from "../../../utils/provider";
-import { User } from "../../../model/User";
+import { User } from "../../../../../model/User";
 
 const TypographyMaxWidth = styled(Typography)`
   max-width: 300px;

@@ -1,6 +1,6 @@
 import axios from "axios";
-import { User } from "../../../model/User";
-import { Query } from "../../../model/Request";
+import { User } from "../../../../../model/User";
+import { Query } from "../../../../../model/Request";
 
 /**
  * @description Fetch users

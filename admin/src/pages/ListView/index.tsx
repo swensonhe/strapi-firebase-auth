@@ -23,8 +23,8 @@ import { deleteUser, fetchUsers } from "../HomePage/utils/api";
 import { PaginationFooter } from "./PaginationFooter";
 import SearchURLQuery from "../../components/SearchURLQuery/SearchURLQuery";
 import { matchSorter } from "match-sorter";
-import { User } from "../../model/User";
-import { ResponseMeta } from "../../model/Meta";
+import { User } from "../../../../model/User";
+import { ResponseMeta } from "../../../../model/Meta";
 
 interface ListViewProps {
   data: any;

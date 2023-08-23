@@ -3,7 +3,7 @@ import { DynamicTable as Table } from "@strapi/helper-plugin";
 import { FirebaseTableRows } from "./FirebaseTableRows/FirebaseTableRows";
 import { ConfirmDialogDelete } from "./ConfirmDialogDelete/ConfirmDialogDelete";
 import { tableHeaders } from "./TableHeaders";
-import { User } from "../../model/User";
+import { User } from "../../../../model/User";
 
 interface FirebaseTableProps {
   action: React.ReactNode;

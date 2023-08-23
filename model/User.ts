@@ -30,6 +30,7 @@ export interface StrapiUser {
   strapiId: string;
   id: string;
   username: string;
+  email: string;
   password: string | null;
   passwordHash: string;
   passwordSalt: string;
