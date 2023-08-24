@@ -1,27 +1,14 @@
-import axios from "axios";
 import { User } from "../../../../../model/User";
 import { Query } from "../../../../../model/Request";
-
-/**
- * @description Fetch users
- * @returns {Object} users
- */
-
-declare let CUSTOM_VARIABLES: any;
+import { getFetchClient } from "@strapi/helper-plugin";
+import pluginId from "../../../pluginId";
 
 const fetchStrapiUserById = async (userId: string) => {
-  const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
-
-  const url = `${HOST}/api/users/${userId}`;
+  const url = `/${pluginId}/users/${userId}`;
 
   try {
-    const { data: user } = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
+    const { get } = getFetchClient();
+    const { data: user } = await get(url);
     return user;
   } catch (e) {
     return [];
@@ -29,8 +16,6 @@ const fetchStrapiUserById = async (userId: string) => {
 };
 
 const fetchStrapiUsers = async (query: Query = {}) => {
-  const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
-
   if (!query.page) {
     query.page = 1;
   }
@@ -39,20 +24,16 @@ const fetchStrapiUsers = async (query: Query = {}) => {
     query.pageSize = 10;
   }
 
-  let url = `${HOST}/api/users?pagination[page]=${query.page}&pagination[pageSize]=${query.pageSize}`;
+  let url = `/${pluginId}/users?pagination[page]=${query.page}&pagination[pageSize]=${query.pageSize}`;
 
   if (query.nextPageToken) {
     url += `&nextPageToken=${query.nextPageToken}`;
   }
 
   try {
-    const { data: users } = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
+    const { get } = getFetchClient();
+    const { data: users } = await get(url);
+
     return users;
   } catch (e) {
     return [];
@@ -71,20 +52,15 @@ const fetchUsers = async (query: Query = {}) => {
     query.pageSize = 10;
   }
 
-  let url = `${HOST}/api/firebase-auth/users?pagination[page]=${query.page}&pagination[pageSize]=${query.pageSize}`;
+  let url = `/${pluginId}/users?pagination[page]=${query.page}&pagination[pageSize]=${query.pageSize}`;
 
   if (query.nextPageToken) {
     url += `&nextPageToken=${query.nextPageToken}`;
   }
 
   try {
-    const { data: users } = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
+    const { get } = getFetchClient();
+    const { data: users } = await get(url);
     return users;
   } catch (e) {
     return [];
@@ -98,19 +74,10 @@ const fetchUsers = async (query: Query = {}) => {
  */
 
 const createUser = async (userPayload: User) => {
-  const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
+  const url = `${pluginId}/users`;
   try {
-    const { data: user } = await axios.post(
-      `${HOST}/api/firebase-auth/users`,
-      userPayload,
-      {
-        headers: {
-          Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const { post } = getFetchClient();
+    const { data: user } = await post(url, userPayload);
     return user;
   } catch (e) {
     return [];
@@ -124,18 +91,10 @@ const createUser = async (userPayload: User) => {
  */
 
 const fetchUserByID = async (userID: string) => {
-  const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
+  const url = `${pluginId}/users/${userID}`;
   try {
-    const { data: user } = await axios.get(
-      `${HOST}/api/firebase-auth/users/${userID}`,
-      {
-        headers: {
-          Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const { get } = getFetchClient();
+    const { data: user } = await get(url);
     return user;
   } catch (e) {
     return [];
@@ -149,21 +108,13 @@ const fetchUserByID = async (userID: string) => {
  */
 
 const deleteUser = async (idToDelete: string, destination: string | null) => {
-  console.log("idToDelete", idToDelete);
-  const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
+  const url = `${pluginId}/users/${idToDelete}${
+    destination ? `?destination=${destination}` : ""
+  }`;
   try {
-    const { data: users } = await axios.delete(
-      `${HOST}/api/firebase-auth/users/${idToDelete}${
-        destination ? `?destination=${destination}` : ""
-      }`,
-      {
-        headers: {
-          Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const { del } = getFetchClient();
+    const { data: users } = await del(url);
+
     return users.data;
   } catch (e) {
     return {};
@@ -178,18 +129,10 @@ const deleteUser = async (idToDelete: string, destination: string | null) => {
  */
 
 const updateUser = async (idToUpdate: string, payload: User) => {
-  const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
-  const { data: user } = await axios.patch(
-    `${HOST}/api/firebase-auth/users/${idToUpdate}`,
-    payload,
-    {
-      headers: {
-        Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const url = `${pluginId}/users/${idToUpdate}`;
+  const { put } = getFetchClient();
+  const { data: user } = await put(url, payload);
+
   return user;
 };
 
