@@ -8,7 +8,7 @@ import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
 import { EditForm } from "./EditForm";
 
 export const EditView = () => {
-  const { id }: any = useParams();
+  const { id }: { id: string } = useParams();
   const toggleNotification = useNotification();
   const { status, data } = useQuery(
     `firebase-auth-${id}`,

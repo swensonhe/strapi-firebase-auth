@@ -17,7 +17,7 @@ export const saveToken = async (apiToken: string) => {
           Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
           "Content-Type": "application/json",
         },
-      },
+      }
     );
     return data;
   } catch (e) {
@@ -37,7 +37,7 @@ export const saveFirebaseConfig = async (json: string) => {
           Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
           "Content-Type": "application/json",
         },
-      },
+      }
     );
     return data;
   } catch (e) {
