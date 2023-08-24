@@ -23,13 +23,13 @@ export default async ({ strapi }: { strapi: Strapi | any }) => {
   try {
     // bootstrap phase
     await strapi.admin.services.permission.actionProvider.registerMany(
-      RBAC_ACTIONS
+      RBAC_ACTIONS,
     );
 
     // get firebase configs json from db
     const res = await strapi.entityService.findOne(
       "plugin::firebase-auth.firebase-auth-configuration",
-      1
+      1,
     );
 
     const jsonObject = res["firebase-config-json"];

@@ -1,7 +1,7 @@
 import settings from "./settingsRoutes";
 
 export default {
-  type: "content-api",
+  // type: "content-api",
   routes: [
     {
       method: "POST",
@@ -24,7 +24,7 @@ export default {
       path: "/users",
       handler: "userController.list",
       config: {
-        policies: ["isAuth"],
+        policies: [],
       },
     },
     {
