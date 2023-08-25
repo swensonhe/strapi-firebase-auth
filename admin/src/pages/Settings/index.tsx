@@ -1,36 +1,12 @@
 import React, { useState } from "react";
-import { JSONInput, Flex, Textarea, Box, Button } from "@strapi/design-system";
+import { JSONInput, Flex, Box, Button } from "@strapi/design-system";
 import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
-import { saveFirebaseConfig, saveToken } from "./api";
+import { saveFirebaseConfig } from "./api";
 
 function SettingsPage() {
   const toggleNotification = useNotification();
   const [firebaseJsonValue, setFirebaseJsonValue] = useState("");
-  const [apiToken, setApiToken] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const handleTokenSubmit = async () => {
-    try {
-      setLoading(true);
-      await saveToken(apiToken);
-      setLoading(false);
-      toggleNotification({
-        type: "success",
-        message: {
-          id: "notification.success",
-          defaultMessage: "Data submitted successfully",
-        },
-      });
-    } catch (error) {
-      toggleNotification({
-        type: "warning",
-        message: {
-          id: "notification.error",
-          defaultMessage: "some thing went wrong",
-        },
-      });
-    }
-  };
 
   const handleFirebaseJsonSubmit = async () => {
     try {
