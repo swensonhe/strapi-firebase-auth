@@ -1,9 +1,9 @@
 {
-  "name": "firebase-auth",
-  "version": "0.0.1",
+  "name": "@swensonhe/strapi-firebase-auth",
+  "version": "1.0.0",
   "description": "This is a Strapi plugin connect and authenticate users using firebase",
   "strapi": {
-    "name": "firebase-auth",
+    "name": "@swensonhe/strapi-firebase-auth",
     "displayName": "Firebase Auth",
     "description": "This is a Strapi plugin connect and authenticate users using firebase",
     "kind": "plugin"
@@ -49,17 +49,17 @@
     "styled-components": "^5.3.6"
   },
   "author": {
-    "name": "Swenson He, LLC"
+    "name": "SwensonHe, LLC"
   },
   "maintainers": [
     {
       "name": "Eslam Mahmoud"
     },
     {
-      "name": "Eslam Mahmoud"
+      "name": "James Wesly"
     },
     {
-      "name": "Mohammed Akram"
+      "name": "Muhammad Akram"
     }
   ],
   "engines": {
