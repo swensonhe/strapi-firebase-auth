@@ -1,11 +1,16 @@
 {
   "name": "firebase-auth",
-  "version": "0.0.0",
-  "description": "This is the description of the plugin.",
+  "version": "0.0.1",
+  "description": "This is a Strapi plugin connect and authenticate users using firebase",
   "strapi": {
     "name": "firebase-auth",
-    "description": "Description of firebase-auth plugin",
+    "displayName": "Firebase Auth",
+    "description": "This is a Strapi plugin connect and authenticate users using firebase",
     "kind": "plugin"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/strapi/strapi-plugin-seo.git"
   },
   "dependencies": {
     "@strapi/design-system": "^1.6.3",
@@ -44,11 +49,17 @@
     "styled-components": "^5.3.6"
   },
   "author": {
-    "name": "A Strapi developer"
+    "name": "Swenson He, LLC"
   },
   "maintainers": [
     {
-      "name": "A Strapi developer"
+      "name": "Eslam Mahmoud"
+    },
+    {
+      "name": "Eslam Mahmoud"
+    },
+    {
+      "name": "Mohammed Akram"
     }
   ],
   "engines": {
