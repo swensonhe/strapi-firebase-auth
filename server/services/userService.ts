@@ -144,7 +144,7 @@ export default ({ strapi }) => ({
     const { meta } = paginate(
       response.users,
       totalUserscount.users.length,
-      pagination
+      pagination,
     );
     return { data: allUsers.users, pageToken: response.pageToken, meta };
   },

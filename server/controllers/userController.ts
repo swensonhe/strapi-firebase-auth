@@ -7,6 +7,7 @@ const FIREBASE_DESTINATION = "firebase";
 
 export default {
   list: async (ctx: DefaultContext | Context) => {
+    console.log("ctx user", ctx.state);
     let { pagination, nextPageToken } = ctx.query;
 
     if (!pagination) {

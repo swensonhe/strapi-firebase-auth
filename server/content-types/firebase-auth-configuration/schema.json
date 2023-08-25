@@ -18,9 +18,6 @@
     }
   },
   "attributes": {
-    "token": {
-      "type": "text"
-    },
     "firebase-config-json": {
       "type": "json"
     }
