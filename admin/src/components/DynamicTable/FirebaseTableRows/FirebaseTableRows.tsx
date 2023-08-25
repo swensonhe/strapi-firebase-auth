@@ -34,13 +34,13 @@ const CellLink = styled(Td)`
 
 interface FirebaseTableRowsProps {
   onConfirmDelete: (
-    candidateID: string | null,
+    candidateID: string | string[],
     isStrapiIncluded: boolean,
     isFirebaseIncluded: boolean
   ) => Promise<User[]>;
   rows: User[];
-  entriesToDelete: string[];
-  onSelectRow: ({ name, value }: { name: string; value: boolean }) => void;
+  entriesToDelete?: string[];
+  onSelectRow?: ({ name, value }: { name: string; value: boolean }) => void;
 }
 
 export const FirebaseTableRows = ({
@@ -49,7 +49,8 @@ export const FirebaseTableRows = ({
   entriesToDelete,
   onSelectRow,
 }: FirebaseTableRowsProps) => {
-  const [candidateID, setCandidateID] = useState<string | null>(null);
+  console.log("onSelectRow", onSelectRow, entriesToDelete);
+  const [candidateID, setCandidateID] = useState<string>("");
   const [rowsData, setRowsData] = useState<User[]>(rows);
   const [showResetPasswordDialogue, setShowResetPasswordDialogue] = useState({
     isOpen: false,
@@ -94,10 +95,10 @@ export const FirebaseTableRows = ({
       <DeleteAccount
         isOpen={showDeleteAccountDialogue.isOpen}
         email={showDeleteAccountDialogue.email}
-        onClose={() => {
+        onToggleDialog={() => {
           setShowDeleteAccountDialogue({ isOpen: false, email: "" });
         }}
-        onDelete={async (isStrapiIncluded, isFirebaseIncluded) => {
+        onConfirm={async (isStrapiIncluded, isFirebaseIncluded) => {
           console.log("candidateID", candidateID);
           const newRowsData = await onConfirmDelete(
             candidateID,
@@ -106,13 +107,15 @@ export const FirebaseTableRows = ({
           );
           setShowDisableAccountDialogue({ isOpen: false, email: "" });
           setRowsData(newRowsData);
-          setCandidateID(() => "");
+          setCandidateID("");
         }}
+        isSingleRecord
       />
       <Tbody>
         {rowsData.map((data: User) => {
           console.log("dataaa", data);
           const isChecked =
+            entriesToDelete &&
             entriesToDelete.findIndex((id) => id === data.id) !== -1;
 
           console.log("data.email", data.email);
@@ -125,8 +128,10 @@ export const FirebaseTableRows = ({
                     defaultMessage: `Select {target}`,
                   })}
                   checked={isChecked}
-                  onChange={() => {
-                    onSelectRow({ name: data.id, value: !isChecked });
+                  onChange={(e: any) => {
+                    console.log("changeee", e.target.checked);
+                    onSelectRow &&
+                      onSelectRow({ name: data.id, value: e.target.checked });
                   }}
                 />
               </Box>

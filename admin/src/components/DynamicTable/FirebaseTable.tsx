@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { DynamicTable as Table } from "@strapi/helper-plugin";
 import { FirebaseTableRows } from "./FirebaseTableRows/FirebaseTableRows";
-import { ConfirmDialogDelete } from "./ConfirmDialogDelete/ConfirmDialogDelete";
+import { DeleteAccount } from "../UserManagement/DeleteAccount";
 import { tableHeaders } from "./TableHeaders";
 import { User } from "../../../../model/User";
 
@@ -9,13 +9,13 @@ interface FirebaseTableProps {
   action: React.ReactNode;
   isLoading: boolean;
   onConfirmDelete: (
-    candidateID: string | null,
+    candidateID: string | string[],
     isStrapiIncluded: boolean,
     isFirebaseIncluded: boolean
   ) => Promise<User[]>;
   rows: User[];
   onConfirmDeleteAll: (
-    idsToDelete: string[],
+    idsToDelete: string | string[],
     isStrapiIncluded: boolean,
     isFirebaseIncluded: boolean
   ) => void;
@@ -28,21 +28,11 @@ export const FirebaseTable = ({
   rows,
   onConfirmDeleteAll,
 }: FirebaseTableProps) => {
-  const [entriesToDelete, setEntriesToDelete] = useState<string[]>([]);
-
-  const handleSelectRow = ({ name, value }: { name: string; value: any }) => {
-    setEntriesToDelete((prev) => {
-      if (value) {
-        return prev.concat(name);
-      }
-
-      return prev.filter((id) => id !== name);
-    });
-  };
+  console.log("hiii");
 
   return (
     <Table
-      components={{ ConfirmDialogDelete }}
+      components={{ ConfirmDialogDeleteAll: DeleteAccount }}
       contentType="Firebase Users"
       action={action}
       isLoading={isLoading}
@@ -52,12 +42,7 @@ export const FirebaseTable = ({
       withBulkActions
       onConfirmDeleteAll={onConfirmDeleteAll}
     >
-      <FirebaseTableRows
-        onConfirmDelete={onConfirmDelete}
-        rows={rows}
-        onSelectRow={handleSelectRow}
-        entriesToDelete={entriesToDelete}
-      />
+      <FirebaseTableRows onConfirmDelete={onConfirmDelete} rows={rows} />
     </Table>
   );
 };

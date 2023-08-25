@@ -102,7 +102,7 @@ function ListView({ data, slug, meta }: ListViewProps) {
       });
       if (query.query?._q) {
         data = matchSorter(data, query.query?._q, {
-          keys: ["email", "displayName"],
+          keys: ["email", "displayName", "username"],
         });
       }
       setRowsData(() => data);
@@ -114,55 +114,61 @@ function ListView({ data, slug, meta }: ListViewProps) {
 
   const { formatMessage } = useIntl();
 
-  const handleConfirmDeleteData = useCallback(
-    async (idsToDelete, isStrapiIncluded, isFirebaseIncluded) => {
-      console.log("idsToDelete", idsToDelete);
-      let destination = null;
-      if (isStrapiIncluded && isFirebaseIncluded) {
-        destination = null;
-      } else if (isStrapiIncluded) {
-        destination = "strapi";
-      } else if (isFirebaseIncluded) destination = "firebase";
-      try {
-        setIsLoading(true);
-        if (Array.isArray(idsToDelete)) {
-          await Promise.all(idsToDelete.map((id) => deleteUser(id, null)));
-        } else {
-          await deleteUser(idsToDelete, destination);
-        }
-
-        let response = await fetchPaginatedUsers();
-
-        let newDate = response.data.map((item: any) => {
-          return {
-            id: item.uid,
-            ...item,
-          };
-        });
-        setRowsData(() => newDate);
-        setRowsMeta(() => response.meta);
-        setIsLoading(false);
-        toggleNotification({
-          type: "success",
-          message: { id: "notification.success", defaultMessage: "Deleted" },
-        });
-        return rowsData;
-      } catch (err) {
-        const errorMessage = get(
-          err,
-          "response.payload.message",
-          formatMessage({ id: "error.record.delete" })
-        );
-        setIsLoading(false);
-        toggleNotification({
-          type: "warning",
-          message: errorMessage,
-        });
-        return Promise.reject([]);
+  const handleConfirmDeleteData = async (
+    idsToDelete: string | string[],
+    isStrapiIncluded: boolean,
+    isFirebaseIncluded: boolean
+  ) => {
+    console.log(
+      "idsToDelete",
+      idsToDelete,
+      isStrapiIncluded,
+      isFirebaseIncluded
+    );
+    let destination: string | null = null;
+    if (isStrapiIncluded && isFirebaseIncluded) {
+      destination = null;
+    } else if (isStrapiIncluded) {
+      destination = "strapi";
+    } else if (isFirebaseIncluded) destination = "firebase";
+    try {
+      setIsLoading(true);
+      if (Array.isArray(idsToDelete)) {
+        await Promise.all(idsToDelete.map((id) => deleteUser(id, null)));
+      } else {
+        await deleteUser(idsToDelete, destination);
       }
-    },
-    [slug, toggleNotification, formatMessage]
-  );
+
+      let response = await fetchPaginatedUsers();
+
+      let newDate = response.data.map((item: any) => {
+        return {
+          id: item.uid,
+          ...item,
+        };
+      });
+      setRowsData(() => newDate);
+      setRowsMeta(() => response.meta);
+      setIsLoading(false);
+      toggleNotification({
+        type: "success",
+        message: { id: "notification.success", defaultMessage: "Deleted" },
+      });
+      return rowsData;
+    } catch (err) {
+      const errorMessage = get(
+        err,
+        "response.payload.message",
+        formatMessage({ id: "error.record.delete" })
+      );
+      setIsLoading(false);
+      toggleNotification({
+        type: "warning",
+        message: errorMessage,
+      });
+      return Promise.reject([]);
+    }
+  };
 
   const getCreateAction = () => (
     <Button

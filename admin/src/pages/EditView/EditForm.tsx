@@ -77,8 +77,11 @@ export const EditForm = ({ data }: EditFormProps) => {
     setIsLoading(true);
     try {
       const updatedUser = await updateUser(userData.uid, userData);
-      setUserData(() => updatedUser);
-      setOriginalUserData(() => updatedUser);
+      if (updatedUser[0].status === "rejected")
+        throw new Error("Error updating user");
+      console.log("updatedUser", updatedUser);
+      setUserData(() => updatedUser[0].value);
+      setOriginalUserData(() => updatedUser[0].value);
       setIsLoading(false);
       toggleNotification({
         type: "success",

@@ -42,7 +42,8 @@ const CreateForm = () => {
     setIsLoading(true);
     try {
       const createdUser = await createUser(userData);
-      console.log({ createdUser });
+      console.log("createddd", { createdUser });
+      if (!createdUser) throw new Error("Error creating user");
       setUserData(createdUser);
       setOriginalUserData(createdUser);
       setIsLoading(false);
@@ -83,20 +84,22 @@ const CreateForm = () => {
             <Box background="neutral0" borderColor="neutral150" hasRadius>
               <Stack spacing={4} padding={3}>
                 <TextInput
-                  id="displayName"
-                  name="displayName"
-                  autoComplete="new-password"
-                  onChange={onTextInputChange}
-                  label="Display Name"
-                  value={userData?.displayName}
-                />
-                <TextInput
                   id="email"
                   name="email"
                   autoComplete="new-password"
                   onChange={onTextInputChange}
                   label="Email"
                   value={userData?.email}
+                  error={!userData?.email ? "Email is required" : ""}
+                  required
+                />
+                <TextInput
+                  id="displayName"
+                  name="displayName"
+                  autoComplete="new-password"
+                  onChange={onTextInputChange}
+                  label="Display Name"
+                  value={userData?.displayName}
                 />
                 <TextInput
                   id="phoneNumber"

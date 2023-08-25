@@ -113,7 +113,7 @@ const createUser = async (userPayload: User) => {
     );
     return user;
   } catch (e) {
-    return [];
+    return null;
   }
 };
 

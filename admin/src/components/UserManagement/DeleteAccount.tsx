@@ -14,21 +14,29 @@ import { ExclamationMarkCircle } from "@strapi/icons";
 interface DeleteAccountProps {
   isOpen: boolean;
   email: string;
-  onClose: () => void;
-  onDelete: (isStrapiIncluded: boolean, isFirebaseIncluded: boolean) => void;
+  onToggleDialog: () => void;
+  onConfirm: (isStrapiIncluded: boolean, isFirebaseIncluded: boolean) => void;
+  isSingleRecord?: boolean;
 }
 
 export const DeleteAccount = ({
   isOpen,
   email,
-  onClose,
-  onDelete,
+  onConfirm,
+  onToggleDialog,
+  isSingleRecord = false,
 }: DeleteAccountProps) => {
   const [isStrapiIncluded, setIsStrapiIncluded] = useState(true);
   const [isFirebaseIncluded, setIsFirebaseIncluded] = useState(true);
+
+  useEffect(() => {
+    setIsStrapiIncluded(true);
+    setIsFirebaseIncluded(true);
+  }, [isOpen]);
+
   return (
     <>
-      <Dialog onClose={onClose} title="Delete Account" isOpen={isOpen}>
+      <Dialog onClose={onToggleDialog} title="Delete Account" isOpen={isOpen}>
         <DialogBody icon={<ExclamationMarkCircle />}>
           <Flex direction="column" alignItems="center" gap={2}>
             <Flex justifyContent="flex-start" textAlign="center">
@@ -37,39 +45,49 @@ export const DeleteAccount = ({
                 can't be undeleted.
               </Typography>
             </Flex>
-            <Flex justifyContent="flex-start" marginTop={2}>
-              <Typography variant="sigma">User account</Typography>
-            </Flex>
-            <Flex justifyContent="flex-start">
-              <Typography>{email}</Typography>
-            </Flex>
-            <Flex justifyContent="flex-start" textAlign="center" marginTop={2}>
-              <Typography>Delete user from:</Typography>
-            </Flex>
-            <Flex justifyContent="flex-start">
-              <Checkbox
-                onValueChange={(value: boolean) => setIsStrapiIncluded(value)}
-                value={isStrapiIncluded}
-              >
-                Strapi
-              </Checkbox>
-
-              <Box marginLeft={4}>
-                <Checkbox
-                  onValueChange={(value: boolean) =>
-                    setIsFirebaseIncluded(value)
-                  }
-                  value={isFirebaseIncluded}
+            {isSingleRecord && (
+              <>
+                <Flex justifyContent="flex-start" marginTop={2}>
+                  <Typography variant="sigma">User account</Typography>
+                </Flex>
+                <Flex justifyContent="flex-start">
+                  <Typography>{email}</Typography>
+                </Flex>
+                <Flex
+                  justifyContent="flex-start"
+                  textAlign="center"
+                  marginTop={2}
                 >
-                  Firebase
-                </Checkbox>
-              </Box>
-            </Flex>
+                  <Typography>Delete user from:</Typography>
+                </Flex>
+                <Flex justifyContent="flex-start">
+                  <Checkbox
+                    onValueChange={(value: boolean) =>
+                      setIsStrapiIncluded(value)
+                    }
+                    value={isStrapiIncluded}
+                  >
+                    Strapi
+                  </Checkbox>
+
+                  <Box marginLeft={4}>
+                    <Checkbox
+                      onValueChange={(value: boolean) =>
+                        setIsFirebaseIncluded(value)
+                      }
+                      value={isFirebaseIncluded}
+                    >
+                      Firebase
+                    </Checkbox>
+                  </Box>
+                </Flex>
+              </>
+            )}
           </Flex>
         </DialogBody>
         <DialogFooter
           startAction={
-            <Button onClick={onClose} variant="tertiary">
+            <Button onClick={onToggleDialog} variant="tertiary">
               Cancel
             </Button>
           }
@@ -77,7 +95,7 @@ export const DeleteAccount = ({
             <Button
               variant="danger"
               onClick={() => {
-                onDelete(isStrapiIncluded, isFirebaseIncluded);
+                onConfirm(isStrapiIncluded, isFirebaseIncluded);
               }}
               disabled={!isFirebaseIncluded && !isStrapiIncluded}
             >
