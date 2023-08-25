@@ -41,8 +41,6 @@ const fetchStrapiUsers = async (query: Query = {}) => {
 };
 
 const fetchUsers = async (query: Query = {}) => {
-  const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
-
   if (!query.page) {
     query.page = 1;
   }
@@ -137,7 +135,7 @@ const updateUser = async (idToUpdate: string, payload: User) => {
 
 const resetUserPassword = async (
   idToUpdate: string,
-  payload: { password: string }
+  payload: { password: string },
 ) => {
   const url = `${pluginId}/users/resetPassword/${idToUpdate}`;
   const { put } = getFetchClient();

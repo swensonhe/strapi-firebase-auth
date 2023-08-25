@@ -10,6 +10,7 @@ export default ({ strapi }) => ({
     try {
       const user = await strapi.firebase.auth().getUser(entityId);
       const firebaseUser = user.toJSON();
+      console.log("user", firebaseUser);
       const providerData = firebaseUser.providerData[0];
       let query;
       if (providerData.providerId === PHONE) {

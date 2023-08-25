@@ -35,7 +35,7 @@ export default {
       },
     },
     {
-      method: "PATCH",
+      method: "PUT",
       path: "/users/:id",
       handler: "userController.update",
       config: {

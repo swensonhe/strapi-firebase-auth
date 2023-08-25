@@ -1,42 +1,12 @@
-import axios from "axios";
-import { auth } from "@strapi/helper-plugin";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare let CUSTOM_VARIABLES: any;
-
-const token = auth.getToken();
-export const saveToken = async (apiToken: string) => {
-  const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
-  try {
-    const { data } = await axios.post(
-      `${HOST}/api/firebase-auth/settings/token`,
-      { token: apiToken },
-      {
-        headers: {
-          Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return data;
-  } catch (e) {
-    return [];
-  }
-};
+import { getFetchClient } from "@strapi/helper-plugin";
+import pluginId from "../../pluginId";
 
 export const saveFirebaseConfig = async (json: string) => {
-  const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
   try {
-    const { data } = await axios.post(
-      `${HOST}/api/firebase-auth/settings/firebase-config`,
-      { firebaseConfigJson: json },
-      {
-        headers: {
-          Authorization: `Bearer ${CUSTOM_VARIABLES.dashboardApiToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const url = `/${pluginId}/settings/firebase-config`;
+    const { post } = getFetchClient();
+    const { data } = await post(url, { firebaseConfigJson: json });
+
     return data;
   } catch (e) {
     return [];
