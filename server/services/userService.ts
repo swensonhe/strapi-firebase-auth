@@ -179,6 +179,36 @@ export default ({ strapi }) => ({
       throw new ApplicationError(e.message.toString());
     }
   },
+  resetPasswordFirebaseUser: async (entityId, payload) => {
+    try {
+      return await strapi.firebase.auth().updateUser(entityId, payload);
+    } catch (e) {
+      throw new ApplicationError(e.message.toString());
+    }
+  },
+  resetPasswordStrapiUser: async (entityId, payload) => {
+    try {
+      return strapi
+        .query("plugin::users-permissions.user")
+        .update({ where: { firebaseUserID: entityId }, data: payload });
+    } catch (e) {
+      throw new ApplicationError(e.message.toString());
+    }
+  },
+  resetPassword: async (entityId, payload) => {
+    try {
+      const firebasePromise = strapi.firebase
+        .auth()
+        .updateUser(entityId, payload);
+      const strapiPromise = strapi
+        .query("plugin::users-permissions.user")
+        .update({ where: { firebaseUserID: entityId }, data: payload });
+
+      return Promise.allSettled([firebasePromise, strapiPromise]);
+    } catch (e) {
+      throw new ApplicationError(e.message.toString());
+    }
+  },
   delete: async (entityId) => {
     try {
       const firebasePromise = strapi.firebase.auth().deleteUser(entityId);

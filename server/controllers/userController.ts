@@ -1,4 +1,6 @@
 import { Strapi } from "@strapi/strapi";
+import utils from "@strapi/utils";
+const { ValidationError } = utils.errors;
 import { Context, DefaultContext } from "koa";
 declare const strapi: Strapi;
 
@@ -7,7 +9,6 @@ const FIREBASE_DESTINATION = "firebase";
 
 export default {
   list: async (ctx: DefaultContext | Context) => {
-    console.log("ctx user", ctx.state);
     let { pagination, nextPageToken } = ctx.query;
 
     if (!pagination) {
@@ -107,5 +108,37 @@ export default {
       .plugin("firebase-auth")
       .service("userService")
       .deleteMany(ctx.query.ids);
+  },
+  resetPassword: async (ctx) => {
+    const { destination } = ctx.request.query;
+    if (!ctx.request.body.password || ctx.request.body.password.length < 6) {
+      throw new ValidationError("Password maybe empty or less than 6");
+    }
+    switch (destination) {
+      case STRAPI_DESTINATION:
+        ctx.body = await strapi
+          .plugin("firebase-auth")
+          .service("userService")
+          .resetPasswordStrapiUser(ctx.params.id, {
+            password: ctx.request.body.password,
+          });
+        break;
+      case FIREBASE_DESTINATION:
+        ctx.body = await strapi
+          .plugin("firebase-auth")
+          .service("userService")
+          .resetPasswordFirebaseUser(ctx.params.id, {
+            password: ctx.request.body.password,
+          });
+        break;
+      default:
+        ctx.body = await strapi
+          .plugin("firebase-auth")
+          .service("userService")
+          .resetPassword(ctx.params.id, {
+            password: ctx.request.body.password,
+          });
+        break;
+    }
   },
 };

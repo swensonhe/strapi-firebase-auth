@@ -136,6 +136,17 @@ const updateUser = async (idToUpdate: string, payload: User) => {
   return user;
 };
 
+const resetUserPassword = async (
+  idToUpdate: string,
+  payload: { password: string },
+) => {
+  const url = `${pluginId}/users/resetPassword/${idToUpdate}`;
+  const { put } = getFetchClient();
+  const { data: user } = await put(url, payload);
+
+  return user;
+};
+
 export {
   fetchUsers,
   fetchUserByID,
@@ -144,4 +155,5 @@ export {
   createUser,
   fetchStrapiUsers,
   fetchStrapiUserById,
+  resetUserPassword,
 };
