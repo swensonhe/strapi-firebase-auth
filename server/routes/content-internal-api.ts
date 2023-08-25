@@ -50,6 +50,14 @@ export default {
         policies: [],
       },
     },
+    {
+      method: "PUT",
+      path: "/users/resetPassword/:id",
+      handler: "userController.resetPassword",
+      config: {
+        policies: [],
+      },
+    },
     ...settings,
   ],
 };
