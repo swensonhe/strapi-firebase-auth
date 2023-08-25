@@ -87,25 +87,6 @@ function SettingsPage() {
           </Button>
         </Flex>
       </Box>
-      <Box style={{ width: "100%", height: 200 }}>
-        <Textarea
-          id="dashboard_api_key"
-          name="dashboard_api_key"
-          label="Dashboard api key"
-          style={{ height: 200 }}
-          value={apiToken}
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          onChange={(e: any) => setApiToken(e.target.value)}
-        ></Textarea>
-        <Flex
-          style={{ marginTop: 16, width: "100%", padding: 16 }}
-          justifyContent="flex-end"
-        >
-          <Button size="L" onClick={handleTokenSubmit}>
-            Submit
-          </Button>
-        </Flex>
-      </Box>
     </Flex>
   );
 }

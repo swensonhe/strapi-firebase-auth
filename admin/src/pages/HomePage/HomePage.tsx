@@ -25,7 +25,6 @@ export const HomePage = () => {
 
   const { status } = useQuery("firebase-auth-", () => fetchUsers(), {
     onSuccess: (result) => {
-      console.log("resulttt", result);
       setUsersData(result);
     },
 
@@ -39,7 +38,6 @@ export const HomePage = () => {
       });
     },
   });
-  console.log("usersdata", usersData);
   const isLoadingUsersData = status !== "success" && status !== "error";
 
   if (isLoadingUsersData) {

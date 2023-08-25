@@ -28,8 +28,6 @@ export const FirebaseTable = ({
   rows,
   onConfirmDeleteAll,
 }: FirebaseTableProps) => {
-  console.log("hiii");
-
   return (
     <Table
       components={{ ConfirmDialogDeleteAll: DeleteAccount }}

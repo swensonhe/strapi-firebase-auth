@@ -42,7 +42,6 @@ const CreateForm = () => {
     setIsLoading(true);
     try {
       const createdUser = await createUser(userData);
-      console.log("createddd", { createdUser });
       if (!createdUser) throw new Error("Error creating user");
       setUserData(createdUser);
       setOriginalUserData(createdUser);

@@ -1,5 +1,4 @@
 export default (policyContext, config, { strapi }) => {
-  console.log("policyContext.state", policyContext.state.user);
   if (policyContext.state?.user?.role?.name === "Administrator") {
     // Go to next policy or will reach the controller's action.
     return true;
@@ -10,9 +9,7 @@ export default (policyContext, config, { strapi }) => {
 
 // async (policyContext) => {
 //   const headers = policyContext.request.headers;
-//   console.log("token", headers);
 //   // const currentUser = policyContext.state.user;
-//   // console.log("currentUser", currentUser);
 //   // const { id: userID } = currentUser;
 
 //   // if (currentUser.role.name !== "Authenticated") {
@@ -30,6 +27,5 @@ export default (policyContext, config, { strapi }) => {
 //     authorization: `Bearer ${token}`,
 //   };
 
-//   console.log("token", token);
 //   return true;
 // };

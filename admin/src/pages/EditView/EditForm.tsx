@@ -56,7 +56,6 @@ export const EditForm = ({ data }: EditFormProps) => {
   const [originalUserData, setOriginalUserData] = useState(data);
   const [isLoading, setIsLoading] = useState(false);
   const toggleNotification = useNotification();
-  console.log("dataaaa", data);
 
   const onTextInputChange = (e: any) => {
     e.preventDefault();
@@ -79,7 +78,6 @@ export const EditForm = ({ data }: EditFormProps) => {
       const updatedUser = await updateUser(userData.uid, userData);
       if (updatedUser[0].status === "rejected")
         throw new Error("Error updating user");
-      console.log("updatedUser", updatedUser);
       setUserData(() => updatedUser[0].value);
       setOriginalUserData(() => updatedUser[0].value);
       setIsLoading(false);

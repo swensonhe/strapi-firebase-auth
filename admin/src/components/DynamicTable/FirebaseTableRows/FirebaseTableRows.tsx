@@ -10,12 +10,13 @@ import { SimpleMenu, MenuItem } from "@strapi/design-system";
 import { CarretDown } from "@strapi/icons";
 import { RxCross2, RxCheck } from "react-icons/rx";
 import { ResetPassword } from "../../UserManagement/ResetPassword";
-import { DisableAccount } from "../../UserManagement/DisableAccount";
 import { DeleteAccount } from "../../UserManagement/DeleteAccount";
 import { Typography } from "@strapi/design-system";
 import styled from "styled-components";
 import { MapProviderToIcon } from "../../../utils/provider";
 import { User } from "../../../../../model/User";
+import { resetUserPassword } from "../../../pages/HomePage/utils/api";
+import { useNotification } from "@strapi/helper-plugin";
 
 const TypographyMaxWidth = styled(Typography)`
   max-width: 300px;
@@ -49,14 +50,9 @@ export const FirebaseTableRows = ({
   entriesToDelete,
   onSelectRow,
 }: FirebaseTableRowsProps) => {
-  console.log("onSelectRow", onSelectRow, entriesToDelete);
   const [candidateID, setCandidateID] = useState<string>("");
   const [rowsData, setRowsData] = useState<User[]>(rows);
   const [showResetPasswordDialogue, setShowResetPasswordDialogue] = useState({
-    isOpen: false,
-    email: "",
-  });
-  const [showDisableAccountDialogue, setShowDisableAccountDialogue] = useState({
     isOpen: false,
     email: "",
   });
@@ -75,6 +71,7 @@ export const FirebaseTableRows = ({
   }, [rows]);
 
   const history = useHistory();
+  const toggleNotification = useNotification();
 
   return (
     <>
@@ -84,12 +81,24 @@ export const FirebaseTableRows = ({
         onClose={() => {
           setShowResetPasswordDialogue({ isOpen: false, email: "" });
         }}
-      />
-      <DisableAccount
-        isOpen={showDisableAccountDialogue.isOpen}
-        email={showDisableAccountDialogue.email}
-        onClose={() => {
-          setShowDisableAccountDialogue({ isOpen: false, email: "" });
+        onConfirm={async (newPassword: string) => {
+          try {
+            await resetUserPassword(candidateID, { password: newPassword });
+            setCandidateID("");
+            setShowResetPasswordDialogue({ isOpen: false, email: "" });
+            toggleNotification({
+              type: "success",
+              message: { id: "notification.success", defaultMessage: "Saved" },
+            });
+          } catch (err) {
+            toggleNotification({
+              type: "success",
+              message: {
+                id: "notification.error",
+                defaultMessage: "Error resetting password, please try again",
+              },
+            });
+          }
         }}
       />
       <DeleteAccount
@@ -99,13 +108,12 @@ export const FirebaseTableRows = ({
           setShowDeleteAccountDialogue({ isOpen: false, email: "" });
         }}
         onConfirm={async (isStrapiIncluded, isFirebaseIncluded) => {
-          console.log("candidateID", candidateID);
           const newRowsData = await onConfirmDelete(
             candidateID,
             isStrapiIncluded,
             isFirebaseIncluded
           );
-          setShowDisableAccountDialogue({ isOpen: false, email: "" });
+          setShowDeleteAccountDialogue({ isOpen: false, email: "" });
           setRowsData(newRowsData);
           setCandidateID("");
         }}
@@ -113,12 +121,10 @@ export const FirebaseTableRows = ({
       />
       <Tbody>
         {rowsData.map((data: User) => {
-          console.log("dataaa", data);
           const isChecked =
             entriesToDelete &&
             entriesToDelete.findIndex((id) => id === data.id) !== -1;
 
-          console.log("data.email", data.email);
           return (
             <Tr key={data.uid}>
               <Box style={{ paddingLeft: 4, paddingRight: 4 }}>
@@ -129,7 +135,6 @@ export const FirebaseTableRows = ({
                   })}
                   checked={isChecked}
                   onChange={(e: any) => {
-                    console.log("changeee", e.target.checked);
                     onSelectRow &&
                       onSelectRow({ name: data.id, value: e.target.checked });
                   }}
@@ -201,6 +206,7 @@ export const FirebaseTableRows = ({
                   >
                     <MenuItem
                       onClick={() => {
+                        setCandidateID(() => data.uid);
                         setShowResetPasswordDialogue({
                           isOpen: true,
                           email: data.email,
@@ -208,16 +214,6 @@ export const FirebaseTableRows = ({
                       }}
                     >
                       Reset Password
-                    </MenuItem>
-                    <MenuItem
-                      onClick={() => {
-                        setShowDisableAccountDialogue({
-                          isOpen: true,
-                          email: data.email,
-                        });
-                      }}
-                    >
-                      Disable Account
                     </MenuItem>
                     <MenuItem
                       onClick={() => {

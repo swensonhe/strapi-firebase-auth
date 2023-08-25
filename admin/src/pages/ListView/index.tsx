@@ -39,7 +39,6 @@ function ListView({ data, slug, meta }: ListViewProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const headerLayoutTitle = "Firebase Users";
   const [query] = useQueryParams();
-  console.log("rowsMeta", rowsMeta, slug);
 
   const {
     push,
@@ -80,7 +79,6 @@ function ListView({ data, slug, meta }: ListViewProps) {
     if (nextPageToken) {
       query.query.nextPageToken = nextPageToken;
     }
-    console.log("query.query", query.query);
     const response = await fetchUsers(query.query);
 
     if (response.pageToken) {
@@ -105,8 +103,8 @@ function ListView({ data, slug, meta }: ListViewProps) {
           keys: ["email", "displayName", "username"],
         });
       }
-      setRowsData(() => data);
-      setRowsMeta(() => response.meta);
+      setRowsData(data);
+      setRowsMeta(response.meta);
       setIsLoading(false);
     };
     fetchPaginatedData();
@@ -119,12 +117,6 @@ function ListView({ data, slug, meta }: ListViewProps) {
     isStrapiIncluded: boolean,
     isFirebaseIncluded: boolean
   ) => {
-    console.log(
-      "idsToDelete",
-      idsToDelete,
-      isStrapiIncluded,
-      isFirebaseIncluded
-    );
     let destination: string | null = null;
     if (isStrapiIncluded && isFirebaseIncluded) {
       destination = null;
@@ -189,7 +181,6 @@ function ListView({ data, slug, meta }: ListViewProps) {
   }
 
   const headSubtitle = `Showing ${rowsData?.length || 0} entries`;
-  console.log("isss", rowsData, rowsMeta);
 
   return (
     <Main aria-busy={isLoading}>

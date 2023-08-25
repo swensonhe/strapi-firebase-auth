@@ -5,7 +5,6 @@ import { auth } from "@strapi/helper-plugin";
 declare let CUSTOM_VARIABLES: any;
 
 const token = auth.getToken();
-console.log("tokennnnn", token);
 export const saveToken = async (apiToken: string) => {
   const HOST = process.env.STRAPI_ADMIN_BACKEND_URL;
   try {
@@ -21,7 +20,6 @@ export const saveToken = async (apiToken: string) => {
     );
     return data;
   } catch (e) {
-    console.log("e", e);
     return [];
   }
 };
@@ -41,7 +39,6 @@ export const saveFirebaseConfig = async (json: string) => {
     );
     return data;
   } catch (e) {
-    console.log("e", e);
     return [];
   }
 };
