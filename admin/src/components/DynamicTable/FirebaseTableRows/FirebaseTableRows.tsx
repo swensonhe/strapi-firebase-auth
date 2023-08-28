@@ -140,9 +140,13 @@ export const FirebaseTableRows = ({
                   }}
                 />
               </Box>
+              <Td key={data.email} style={{ padding: 16 }}>
+                <TypographyMaxWidth ellipsis textColor="neutral800">
+                  {data.email}
+                </TypographyMaxWidth>
+              </Td>
               <CellLink
-                key={data.email}
-                style={{ padding: 16 }}
+                key={data.uid}
                 onClick={() => {
                   push({
                     pathname: `${pathname}/${data.uid}`,
@@ -151,14 +155,9 @@ export const FirebaseTableRows = ({
                 }}
               >
                 <TypographyMaxWidth ellipsis textColor="neutral800">
-                  {data.email}
-                </TypographyMaxWidth>
-              </CellLink>
-              <Td key={data.uid}>
-                <TypographyMaxWidth ellipsis textColor="neutral800">
                   {data.uid}
                 </TypographyMaxWidth>
-              </Td>
+              </CellLink>
               <Td>
                 <MapProviderToIcon
                   providerData={data.providerData}

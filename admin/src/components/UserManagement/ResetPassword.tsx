@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { Box } from "@strapi/design-system";
-import { Checkbox } from "@strapi/design-system";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogBody,
@@ -25,16 +23,11 @@ export const ResetPassword = ({
   onConfirm,
 }: ResetPasswordProps) => {
   const [newPassword, setNewPassword] = useState("");
-  const [confirmedPassword, setConfirmedPassword] = useState("");
   const [isNewPasswordChange, setIsNewPasswordChanged] = useState(false);
-  const [isConfirmedPasswordChange, setIsConfirmedPasswordChanged] =
-    useState(false);
 
   const resetState = () => {
     setNewPassword("");
-    setConfirmedPassword("");
     setIsNewPasswordChanged(false);
-    setIsConfirmedPasswordChanged(false);
   };
 
   const handleClose = () => {
@@ -60,7 +53,7 @@ export const ResetPassword = ({
             <Flex justifyContent="flex-start">
               <Typography>{email}</Typography>
             </Flex>
-            <div style={{ marginTop: 4 }}>
+            <div style={{ marginTop: 10 }}>
               <TextInput
                 type="password"
                 label="New password"
@@ -82,30 +75,7 @@ export const ResetPassword = ({
                 }
               />
             </div>
-            <div>
-              <TextInput
-                type="password"
-                label="Confirm password"
-                aria-label="Password"
-                value={confirmedPassword}
-                onChange={(e: any) => {
-                  setConfirmedPassword(e.target.value);
-                  setIsConfirmedPasswordChanged(true);
-                }}
-                required
-                error={
-                  !isConfirmedPasswordChange
-                    ? ""
-                    : !confirmedPassword
-                    ? "Please confirm the new password"
-                    : confirmedPassword.length < 6
-                    ? "Password must contain at least 6 characters"
-                    : newPassword !== confirmedPassword
-                    ? "The entered passwords don't match"
-                    : ""
-                }
-              />
-            </div>
+            <div></div>
           </Flex>
         </DialogBody>
         <DialogFooter
@@ -117,11 +87,7 @@ export const ResetPassword = ({
           endAction={
             <Button
               variant="danger-light"
-              disabled={
-                newPassword === "" ||
-                newPassword !== confirmedPassword ||
-                newPassword.length < 6
-              }
+              disabled={newPassword === "" || newPassword.length < 6}
               onClick={handleConfirm}
             >
               Reset password
