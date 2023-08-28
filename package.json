@@ -1,9 +1,9 @@
 {
-  "name": "@swensonhe/strapi-firebase-auth",
+  "name": "firebase-auth",
   "version": "1.0.0",
   "description": "This is a Strapi plugin connect and authenticate users using firebase",
   "strapi": {
-    "name": "@swensonhe/strapi-firebase-auth",
+    "name": "firebase-auth",
     "displayName": "Firebase Auth",
     "description": "This is a Strapi plugin connect and authenticate users using firebase",
     "kind": "plugin"
