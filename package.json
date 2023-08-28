@@ -71,7 +71,11 @@
   },
   "scripts": {
     "develop": "tsc -p tsconfig.server.json -w",
-    "build": "tsc -p tsconfig.server.json"
+    "build": "tsc -p tsconfig.server.json",
+    "prepublishOnly": "tsc"
   },
+  "files": [
+    "dist"
+  ],
   "license": "MIT"
 }
