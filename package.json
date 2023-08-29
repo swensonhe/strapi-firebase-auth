@@ -1,6 +1,6 @@
 {
-  "name": "firebase-auth",
-  "version": "1.0.0",
+  "name": "@swensonhe/firebase-auth",
+  "version": "1.0.4",
   "description": "This is a Strapi plugin connect and authenticate users using firebase",
   "strapi": {
     "name": "firebase-auth",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/strapi/strapi-plugin-seo.git"
+    "url": "https://github.com/swensonhe/strapi-firebase-auth.git"
   },
   "dependencies": {
     "@strapi/design-system": "^1.6.3",
@@ -18,12 +18,14 @@
     "@strapi/icons": "^1.8.2",
     "@types/react-helmet": "^6.1.6",
     "firebase-admin": "^11.10.1",
+    "lodash": "^4.17.21",
     "prop-types": "^15.7.2",
     "react-icons": "^4.10.1"
   },
   "devDependencies": {
     "@strapi/typescript-utils": "^4.6.0",
     "@types/koa": "^2.13.8",
+    "@types/lodash": "^4.14.197",
     "@types/react": "^17.0.53",
     "@types/react-dom": "^18.0.28",
     "@types/react-router-dom": "^5.3.3",
@@ -66,9 +68,16 @@
     "node": ">=16.0.0 <=20.x.x",
     "npm": ">=6.0.0"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/swensonhe"
+  },
   "scripts": {
     "develop": "tsc -p tsconfig.server.json -w",
-    "build": "tsc -p tsconfig.server.json"
+    "build": "tsc -p tsconfig.server.json",
+    "prepublishOnly": "tsc"
   },
+  "files": [
+    "dist"
+  ],
   "license": "MIT"
 }

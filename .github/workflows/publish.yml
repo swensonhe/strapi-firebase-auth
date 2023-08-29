@@ -1,0 +1,26 @@
+name: Publish Package to Github Packages
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - run: echo ${{ secrets.PUBLISH_TOKEN }}
+      # Setup .npmrc file to publish to GitHub Packages
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          always-auth: true
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@swensonhe'
+      - run: yarn
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
