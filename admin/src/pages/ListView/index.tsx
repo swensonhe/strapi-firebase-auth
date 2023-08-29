@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import get from "lodash/get";
 import {
@@ -19,21 +19,37 @@ import { ArrowLeft } from "@strapi/icons";
 import { Plus } from "@strapi/icons";
 import { useHistory } from "react-router-dom";
 import { FirebaseTable } from "../../components/DynamicTable/FirebaseTable";
-import { deleteUser, fetchUsers } from "../HomePage/utils/api";
+import {
+  deleteUser,
+  fetchUsers,
+  resetUserPassword,
+} from "../HomePage/utils/api";
 import { PaginationFooter } from "./PaginationFooter";
 import SearchURLQuery from "../../components/SearchURLQuery/SearchURLQuery";
 import { matchSorter } from "match-sorter";
 import { User } from "../../../../model/User";
 import { ResponseMeta } from "../../../../model/Meta";
+import { DeleteAccount } from "../../components/UserManagement/DeleteAccount";
+import { ResetPassword } from "../../components/UserManagement/ResetPassword";
 
 interface ListViewProps {
   data: any;
-  slug: any;
   meta: ResponseMeta;
 }
 
 /* eslint-disable react/no-array-index-key */
-function ListView({ data, slug, meta }: ListViewProps) {
+function ListView({ data, meta }: ListViewProps) {
+  const [showResetPasswordDialogue, setShowResetPasswordDialogue] = useState({
+    isOpen: false,
+    email: "",
+    id: "",
+  });
+  const [showDeleteAccountDialogue, setShowDeleteAccountDialogue] = useState({
+    isOpen: false,
+    email: "",
+    id: "",
+  });
+
   const [rowsData, setRowsData] = useState<User[]>(data);
   const [rowsMeta, setRowsMeta] = useState<ResponseMeta>(meta);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -133,20 +149,20 @@ function ListView({ data, slug, meta }: ListViewProps) {
 
       let response = await fetchPaginatedUsers();
 
-      let newDate = response.data.map((item: any) => {
+      let newData = response.data.map((item: any) => {
         return {
           id: item.uid,
           ...item,
         };
       });
-      setRowsData(() => newDate);
-      setRowsMeta(() => response.meta);
+      setRowsData(newData);
+      setRowsMeta(response.meta);
       setIsLoading(false);
       toggleNotification({
         type: "success",
         message: { id: "notification.success", defaultMessage: "Deleted" },
       });
-      return rowsData;
+      return newData;
     } catch (err) {
       const errorMessage = get(
         err,
@@ -181,6 +197,49 @@ function ListView({ data, slug, meta }: ListViewProps) {
   }
 
   const headSubtitle = `Showing ${rowsData?.length || 0} entries`;
+  const handleCloseResetDialogue = () => {
+    setShowResetPasswordDialogue({ isOpen: false, email: "", id: "" });
+  };
+  const handleCloseDeleteDialogoue = () => {
+    setShowDeleteAccountDialogue({ isOpen: false, email: "", id: "" });
+  };
+
+  const resetPassword = async (newPassword: string) => {
+    try {
+      await resetUserPassword(showResetPasswordDialogue.id, {
+        password: newPassword,
+      });
+      handleCloseResetDialogue();
+      toggleNotification({
+        type: "success",
+        message: {
+          id: "notification.success",
+          defaultMessage: "Saved",
+        },
+      });
+    } catch (err) {
+      toggleNotification({
+        type: "success",
+        message: {
+          id: "notification.error",
+          defaultMessage: "Error resetting password, please try again",
+        },
+      });
+    }
+  };
+
+  const deleteAccount = async (
+    isStrapiIncluded: boolean,
+    isFirebaseIncluded: boolean
+  ) => {
+    const newRowsData = await handleConfirmDeleteData(
+      showDeleteAccountDialogue.id,
+      isStrapiIncluded,
+      isFirebaseIncluded
+    );
+    handleCloseDeleteDialogoue();
+    setRowsData(newRowsData);
+  };
 
   return (
     <Main aria-busy={isLoading}>
@@ -217,12 +276,39 @@ function ListView({ data, slug, meta }: ListViewProps) {
       />
       <ContentLayout>
         <>
+          <ResetPassword
+            isOpen={showResetPasswordDialogue.isOpen}
+            email={showResetPasswordDialogue.email}
+            onClose={handleCloseResetDialogue}
+            onConfirm={resetPassword}
+          />
+          <DeleteAccount
+            isOpen={showDeleteAccountDialogue.isOpen}
+            email={showDeleteAccountDialogue.email}
+            onToggleDialog={handleCloseDeleteDialogoue}
+            onConfirm={deleteAccount}
+            isSingleRecord
+          />
           <FirebaseTable
             onConfirmDelete={handleConfirmDeleteData}
             onConfirmDeleteAll={handleConfirmDeleteData}
             isLoading={isLoading}
             rows={rowsData}
             action={getCreateAction()}
+            onResetPasswordClick={({ email, uid }) => {
+              setShowResetPasswordDialogue({
+                isOpen: true,
+                email,
+                id: uid,
+              });
+            }}
+            onDeleteAccountClick={({ email, uid }) => {
+              setShowDeleteAccountDialogue({
+                isOpen: true,
+                email,
+                id: uid,
+              });
+            }}
           />
           <PaginationFooter pageCount={rowsMeta?.pagination?.pageCount || 1} />
         </>

@@ -19,6 +19,8 @@ interface FirebaseTableProps {
     isStrapiIncluded: boolean,
     isFirebaseIncluded: boolean
   ) => void;
+  onResetPasswordClick: (data: User) => void;
+  onDeleteAccountClick: (data: User) => void;
 }
 
 export const FirebaseTable = ({
@@ -27,6 +29,8 @@ export const FirebaseTable = ({
   onConfirmDelete,
   rows,
   onConfirmDeleteAll,
+  onResetPasswordClick,
+  onDeleteAccountClick,
 }: FirebaseTableProps) => {
   return (
     <Table
@@ -40,7 +44,11 @@ export const FirebaseTable = ({
       withBulkActions
       onConfirmDeleteAll={onConfirmDeleteAll}
     >
-      <FirebaseTableRows onConfirmDelete={onConfirmDelete} rows={rows} />
+      <FirebaseTableRows
+        onResetPasswordClick={onResetPasswordClick}
+        onDeleteAccountClick={onDeleteAccountClick}
+        rows={rows}
+      />
     </Table>
   );
 };

@@ -117,20 +117,22 @@ export const EditForm = ({ data }: EditFormProps) => {
             <Box background="neutral0" borderColor="neutral150" hasRadius>
               <Stack spacing={2} padding={3} gap={2}>
                 <TextInput
-                  id="displayName"
-                  name="displayName"
-                  autoComplete="new-password"
-                  onChange={onTextInputChange}
-                  label="Display Name"
-                  value={userData.displayName}
-                />
-                <TextInput
                   id="email"
                   name="email"
                   autoComplete="new-password"
                   onChange={onTextInputChange}
                   label="Email"
                   value={userData.email}
+                  error={!userData?.email ? "Email is required" : ""}
+                  required
+                />
+                <TextInput
+                  id="displayName"
+                  name="displayName"
+                  autoComplete="new-password"
+                  onChange={onTextInputChange}
+                  label="Display Name"
+                  value={userData.displayName}
                 />
                 <TextInput
                   id="phoneNumber"

@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
 import { Layout } from "@strapi/design-system";
@@ -52,11 +52,7 @@ export const HomePage = () => {
           <Grid gap={4}>
             <GridItem col={12} s={12}>
               <>
-                <ListView
-                  data={usersData.data}
-                  meta={usersData.meta}
-                  slug="users-view"
-                />
+                <ListView data={usersData.data} meta={usersData.meta} />
               </>
             </GridItem>
           </Grid>

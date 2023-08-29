@@ -9,14 +9,10 @@ import { BaseCheckbox } from "@strapi/design-system";
 import { SimpleMenu, MenuItem } from "@strapi/design-system";
 import { CarretDown } from "@strapi/icons";
 import { RxCross2, RxCheck } from "react-icons/rx";
-import { ResetPassword } from "../../UserManagement/ResetPassword";
-import { DeleteAccount } from "../../UserManagement/DeleteAccount";
 import { Typography } from "@strapi/design-system";
 import styled from "styled-components";
 import { MapProviderToIcon } from "../../../utils/provider";
 import { User } from "../../../../../model/User";
-import { resetUserPassword } from "../../../pages/HomePage/utils/api";
-import { useNotification } from "@strapi/helper-plugin";
 
 const TypographyMaxWidth = styled(Typography)`
   max-width: 300px;
@@ -34,32 +30,21 @@ const CellLink = styled(Td)`
 `;
 
 interface FirebaseTableRowsProps {
-  onConfirmDelete: (
-    candidateID: string | string[],
-    isStrapiIncluded: boolean,
-    isFirebaseIncluded: boolean
-  ) => Promise<User[]>;
   rows: User[];
   entriesToDelete?: string[];
   onSelectRow?: ({ name, value }: { name: string; value: boolean }) => void;
+  onResetPasswordClick: (data: User) => void;
+  onDeleteAccountClick: (data: User) => void;
 }
 
 export const FirebaseTableRows = ({
-  onConfirmDelete,
   rows,
   entriesToDelete,
   onSelectRow,
+  onResetPasswordClick,
+  onDeleteAccountClick,
 }: FirebaseTableRowsProps) => {
-  const [candidateID, setCandidateID] = useState<string>("");
   const [rowsData, setRowsData] = useState<User[]>(rows);
-  const [showResetPasswordDialogue, setShowResetPasswordDialogue] = useState({
-    isOpen: false,
-    email: "",
-  });
-  const [showDeleteAccountDialogue, setShowDeleteAccountDialogue] = useState({
-    isOpen: false,
-    email: "",
-  });
   const {
     push,
     location: { pathname },
@@ -71,54 +56,9 @@ export const FirebaseTableRows = ({
   }, [rows]);
 
   const history = useHistory();
-  const toggleNotification = useNotification();
 
   return (
     <>
-      <ResetPassword
-        isOpen={showResetPasswordDialogue.isOpen}
-        email={showResetPasswordDialogue.email}
-        onClose={() => {
-          setShowResetPasswordDialogue({ isOpen: false, email: "" });
-        }}
-        onConfirm={async (newPassword: string) => {
-          try {
-            await resetUserPassword(candidateID, { password: newPassword });
-            setCandidateID("");
-            setShowResetPasswordDialogue({ isOpen: false, email: "" });
-            toggleNotification({
-              type: "success",
-              message: { id: "notification.success", defaultMessage: "Saved" },
-            });
-          } catch (err) {
-            toggleNotification({
-              type: "success",
-              message: {
-                id: "notification.error",
-                defaultMessage: "Error resetting password, please try again",
-              },
-            });
-          }
-        }}
-      />
-      <DeleteAccount
-        isOpen={showDeleteAccountDialogue.isOpen}
-        email={showDeleteAccountDialogue.email}
-        onToggleDialog={() => {
-          setShowDeleteAccountDialogue({ isOpen: false, email: "" });
-        }}
-        onConfirm={async (isStrapiIncluded, isFirebaseIncluded) => {
-          const newRowsData = await onConfirmDelete(
-            candidateID,
-            isStrapiIncluded,
-            isFirebaseIncluded
-          );
-          setShowDeleteAccountDialogue({ isOpen: false, email: "" });
-          setRowsData(newRowsData);
-          setCandidateID("");
-        }}
-        isSingleRecord
-      />
       <Tbody>
         {rowsData.map((data: User) => {
           const isChecked =
@@ -205,22 +145,14 @@ export const FirebaseTableRows = ({
                   >
                     <MenuItem
                       onClick={() => {
-                        setCandidateID(() => data.uid);
-                        setShowResetPasswordDialogue({
-                          isOpen: true,
-                          email: data.email,
-                        });
+                        onResetPasswordClick(data);
                       }}
                     >
                       Reset Password
                     </MenuItem>
                     <MenuItem
                       onClick={() => {
-                        setShowDeleteAccountDialogue({
-                          isOpen: true,
-                          email: data.email,
-                        });
-                        setCandidateID(() => data.uid);
+                        onDeleteAccountClick(data);
                       }}
                     >
                       Delete Account
