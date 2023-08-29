@@ -1,6 +1,6 @@
 {
   "name": "@swensonhe/firebase-auth",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "This is a Strapi plugin connect and authenticate users using firebase",
   "strapi": {
     "name": "firebase-auth",
@@ -77,7 +77,7 @@
     "prepublishOnly": "npm run build"
   },
   "files": [
-    "dist/**"
+    "/dist/**"
   ],
   "license": "MIT"
 }
