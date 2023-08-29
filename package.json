@@ -1,6 +1,6 @@
 {
   "name": "@swensonhe/firebase-auth",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "This is a Strapi plugin connect and authenticate users using firebase",
   "strapi": {
     "name": "firebase-auth",
@@ -74,7 +74,7 @@
   "scripts": {
     "develop": "tsc -p tsconfig.server.json -w",
     "build": "tsc -p tsconfig.server.json",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "tsc -p tsconfig.server.json"
   },
   "files": [
     "/dist"
