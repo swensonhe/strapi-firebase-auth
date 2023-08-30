@@ -30,10 +30,6 @@ function main() {
     `${destinationDirectory}/README.md`,
   );
   fs.copyFileSync(
-    `${sourceDirectory}/LICENSE.md`,
-    `${destinationDirectory}/.npmignore`,
-  );
-  fs.copyFileSync(
     `${sourceDirectory}/.npmignore`,
     `${destinationDirectory}/.npmignore`,
   );
