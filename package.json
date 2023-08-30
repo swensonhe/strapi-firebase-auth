@@ -1,5 +1,5 @@
 {
-  "name": "strapi-plugin-firebase-auth",
+  "name": "@swensonhe/strapi-plugin-firebase-auth",
   "version": "1.0.21",
   "description": "This is a Strapi plugin connect and authenticate users using firebase",
   "strapi": {
