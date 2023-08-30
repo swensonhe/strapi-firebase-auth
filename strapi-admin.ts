@@ -1,3 +1,3 @@
-import admin from "./admin/src";
+import Admin from "./admin/src";
 
-export default admin;
+export default Admin;

@@ -60,7 +60,7 @@ export default {
           },
           permissions: pluginPermissions.settings,
         },
-      ]
+      ],
     );
     const plugin = {
       id: pluginId,
@@ -93,7 +93,7 @@ export default {
               locale,
             };
           });
-      })
+      }),
     );
 
     return Promise.resolve(importedTrads);
