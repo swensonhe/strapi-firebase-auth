@@ -110,6 +110,10 @@ export const EditForm = ({ data }: EditFormProps) => {
         onSave={updateUserHandler}
         initialData={originalUserData}
         modifiedData={userData}
+        isSubmitButtonDisabled={
+          !userData?.email ||
+          !!(userData?.password?.length && userData?.password?.length < 6)
+        }
       />
       <ContentLayout>
         <Grid gap={4}>
@@ -150,6 +154,11 @@ export const EditForm = ({ data }: EditFormProps) => {
                   onChange={onTextInputChange}
                   label="Password"
                   value={userData.password}
+                  error={
+                    userData?.password?.length && userData?.password?.length < 6
+                      ? "Password must be at least 6 characters"
+                      : ""
+                  }
                 />
                 <ToggleInput
                   label="Disabled"

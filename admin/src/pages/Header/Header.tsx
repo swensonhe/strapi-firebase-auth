@@ -17,6 +17,7 @@ interface HeaderProps {
   modifiedData: User | null;
   isCreatingEntry?: boolean;
   status?: string;
+  isSubmitButtonDisabled?: boolean;
 }
 
 export const Header = ({
@@ -26,6 +27,7 @@ export const Header = ({
   modifiedData,
   isCreatingEntry = false,
   status = "",
+  isSubmitButtonDisabled = false,
 }: HeaderProps) => {
   const { goBack } = useHistory();
   const didChangeData =
@@ -35,7 +37,7 @@ export const Header = ({
     <Flex>
       <Box>
         <Button
-          disabled={!didChangeData}
+          disabled={!didChangeData || isSubmitButtonDisabled}
           onClick={onSave}
           loading={status === "submit-pending"}
           type="submit"

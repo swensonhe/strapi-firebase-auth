@@ -76,6 +76,10 @@ const CreateForm = () => {
         isCreatingEntry
         initialData={originalUserData}
         modifiedData={userData}
+        isSubmitButtonDisabled={
+          !userData?.email ||
+          !!(userData?.password?.length && userData?.password?.length < 6)
+        }
       />
       <ContentLayout>
         <Grid gap={4}>
@@ -116,6 +120,11 @@ const CreateForm = () => {
                   autoComplete="new-password"
                   label="Password"
                   value={userData?.password}
+                  error={
+                    userData?.password?.length && userData?.password?.length < 6
+                      ? "Password must be at least 6 characters"
+                      : ""
+                  }
                 />
                 <ToggleInput
                   label="Disabled"
