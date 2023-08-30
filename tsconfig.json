@@ -1,8 +1,9 @@
 {
+ 
   "compilerOptions": {
-    "rootDir": "./",
+    "rootDir": ".",
     "outDir": "dist",
-    "target": "esnext",
+    "target": "ES5",
     "module": "commonjs",
     "jsx": "react",
     "moduleResolution": "node",
