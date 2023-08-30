@@ -1,31 +1,20 @@
 {
+  "extends": "@strapi/typescript-utils/tsconfigs/admin",
+
   "compilerOptions": {
-    "rootDir": "./",
-    "outDir": "dist",
-    "target": "esnext",
-    "module": "commonjs",
-    "jsx": "react",
-    "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "removeComments": true,
-    "sourceMap": true,
-    "downlevelIteration": true,
-    "incremental": true,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true
+    "target": "ESNext",
+    "strict": true
   },
-  "include": [
-    "./server/**/*",
-    "./admin/**/*",
-    "./strapi-server.*",
-    "./strapi-admin.*",
-  ],
+
+  "include": ["admin", "custom.d.ts", "server/utils/users.ts"],
+
   "exclude": [
-    "**/node_modules/**/*",
-    "**/__tests__/**/*",
-    "**/__mocks__/**/*",
-    "**/dist/**/*"
+    "node_modules/",
+    "dist/",
+
+    // Do not include server files in the server compilation
+    "server/",
+    // Do not include test files
+    "**/*.test.ts"
   ]
 }

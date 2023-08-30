@@ -28,7 +28,7 @@
     "@strapi/typescript-utils": "^4.6.0",
     "@types/koa": "^2.13.8",
     "@types/lodash": "^4.14.197",
-    "@types/react": "^17.0.53",
+    "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.28",
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26",
@@ -40,18 +40,13 @@
     "eslint-plugin-react": "^7.33.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "prettier": "^3.0.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^5.3.4",
     "styled-components": "^5.3.6",
     "typescript": "5.0.4"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
-    "react-router-dom": "^5.3.4",
-    "@types/react": "^17.0.0 || ^18.0.0",
-    "@types/react-dom": "^17.0.0 || ^18.0.0",
+    "react-router-dom": "5.3.4",
     "styled-components": "^5.3.6"
   },
   "author": {
@@ -72,12 +67,16 @@
     "node": ">=16.0.0 <=20.x.x",
     "npm": ">=6.0.0"
   },
+  "resolutions": {
+    "@types/react": "18.0.28",
+    "@types/react-dom": "18.0.28"
+  },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/swensonhe"
   },
   "scripts": {
     "develop": "tsc -p tsconfig.server.json -w",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.server.json",
     "prepublishOnly": "npm run build"
   },
   "files": [
