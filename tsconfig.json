@@ -21,6 +21,7 @@
     "./server/**/*",
     "./admin/**/*",
     "./strapi-server.*",
+    "./setup-package.ts",
     "./strapi-admin.*",
   ],
   "exclude": [
