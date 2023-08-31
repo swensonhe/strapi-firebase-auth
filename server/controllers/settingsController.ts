@@ -22,4 +22,16 @@ export default {
       .service("settingsService")
       .setFirebaseConfigJson(ctx);
   },
+  async getFirebaseConfigJson(ctx: DefaultContext | Context) {
+    ctx.body = await strapi
+      .plugin("firebase-auth")
+      .service("settingsService")
+      .getFirebaseConfigJson(ctx);
+  },
+  async delFirebaseConfigJson(ctx: DefaultContext | Context) {
+    ctx.body = await strapi
+      .plugin("firebase-auth")
+      .service("settingsService")
+      .delFirebaseConfigJson(ctx);
+  },
 };
