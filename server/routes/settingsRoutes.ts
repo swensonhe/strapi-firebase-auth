@@ -17,4 +17,16 @@ export default [
     handler: "settingsController.setFirebaseConfigJson",
     config: { policies: [] },
   },
+  {
+    method: "GET",
+    path: "/settings/firebase-config",
+    handler: "settingsController.getFirebaseConfigJson",
+    config: { policies: [] },
+  },
+  {
+    method: "DELETE",
+    path: "/settings/firebase-config",
+    handler: "settingsController.delFirebaseConfigJson",
+    config: { policies: [] },
+  },
 ];
