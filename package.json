@@ -1,6 +1,6 @@
 {
   "name": "@swensonhe/strapi-plugin-firebase-auth",
-  "version": "1.0.21",
+  "version": "1.0.26",
   "description": "This is a Strapi plugin connect and authenticate users using firebase",
   "strapi": {
     "name": "firebase-auth",
@@ -14,10 +14,10 @@
   },
   "dependencies": {
     "@strapi/design-system": "^1.6.3",
-    "@strapi/strapi": "4.12.7",
-    "@strapi/utils": "4.12.7",
     "@strapi/helper-plugin": "^4.12.6",
     "@strapi/icons": "^1.8.2",
+    "@strapi/strapi": "4.12.7",
+    "@strapi/utils": "4.12.7",
     "@types/react-helmet": "^6.1.6",
     "firebase-admin": "^11.10.1",
     "lodash": "^4.17.21",
@@ -40,6 +40,7 @@
     "eslint-plugin-react": "^7.33.1",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "prettier": "^3.0.1",
+    "semantic-release": "^21.1.1",
     "styled-components": "^5.3.6",
     "typescript": "5.0.4"
   },
@@ -76,11 +77,10 @@
   },
   "scripts": {
     "develop": "tsc -p tsconfig.server.json -w",
+    "publish:latest": "cd build && npm publish --tag latest",
+    "prepublish:latest": "npm run clean && npm run build && node build/setup-package.js",
     "build": "tsc",
-    "prepublishOnly": "npm run build"
+    "clean": "rm -rf build"
   },
-  "files": [
-    "/dist"
-  ],
   "license": "MIT"
 }

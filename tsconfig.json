@@ -2,7 +2,7 @@
  
   "compilerOptions": {
     "rootDir": ".",
-    "outDir": "dist",
+    "outDir": "build",
     "target": "ES5",
     "module": "commonjs",
     "jsx": "react",
@@ -21,12 +21,13 @@
     "./server/**/*",
     "./admin/**/*",
     "./strapi-server.*",
+    "./setup-package.ts",
     "./strapi-admin.*",
   ],
   "exclude": [
     "**/node_modules/**/*",
     "**/__tests__/**/*",
     "**/__mocks__/**/*",
-    "**/dist/**/*"
+    "**/build/**/*"
   ]
 }
