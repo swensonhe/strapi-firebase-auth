@@ -33,7 +33,7 @@ import { DeleteAccount } from "../../components/UserManagement/DeleteAccount";
 import { ResetPassword } from "../../components/UserManagement/ResetPassword";
 
 interface ListViewProps {
-  data: any;
+  data: User[];
   meta: ResponseMeta;
 }
 
@@ -105,23 +105,27 @@ function ListView({ data, meta }: ListViewProps) {
 
   useEffect(() => {
     const fetchPaginatedData = async () => {
-      setIsLoading(true);
+      try {
+        setIsLoading(true);
 
-      let response = await fetchPaginatedUsers();
-      let data = response.data?.map((item: any) => {
-        return {
-          id: item.uid,
-          ...item,
-        };
-      });
-      if (query.query?._q) {
-        data = matchSorter(data, query.query?._q, {
-          keys: ["email", "displayName", "username"],
+        let response = await fetchPaginatedUsers();
+        let data = response.data?.map((item: any) => {
+          return {
+            id: item.uid,
+            ...item,
+          };
         });
+        if (query.query?._q) {
+          data = matchSorter(data, query.query?._q, {
+            keys: ["email", "displayName", "username"],
+          });
+        }
+        setRowsData(data);
+        setRowsMeta(response.meta);
+        setIsLoading(false);
+      } catch (err: any) {
+        setIsLoading(false);
       }
-      setRowsData(data);
-      setRowsMeta(response.meta);
-      setIsLoading(false);
     };
     fetchPaginatedData();
   }, [query.query]);
@@ -290,7 +294,6 @@ function ListView({ data, meta }: ListViewProps) {
             isSingleRecord
           />
           <FirebaseTable
-            onConfirmDelete={handleConfirmDeleteData}
             onConfirmDeleteAll={handleConfirmDeleteData}
             isLoading={isLoading}
             rows={rowsData}

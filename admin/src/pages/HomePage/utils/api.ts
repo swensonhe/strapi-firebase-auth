@@ -55,13 +55,9 @@ const fetchUsers = async (query: Query = {}) => {
     url += `&nextPageToken=${query.nextPageToken}`;
   }
 
-  try {
-    const { get } = getFetchClient();
-    const { data: users } = await get(url);
-    return users;
-  } catch (e) {
-    return [];
-  }
+  const { get } = getFetchClient();
+  const { data: users } = await get(url);
+  return users;
 };
 
 /**
@@ -135,7 +131,7 @@ const updateUser = async (idToUpdate: string, payload: User) => {
 
 const resetUserPassword = async (
   idToUpdate: string,
-  payload: { password: string },
+  payload: { password: string }
 ) => {
   const url = `${pluginId}/users/resetPassword/${idToUpdate}`;
   const { put } = getFetchClient();

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { DynamicTable as Table } from "@strapi/helper-plugin";
 import { FirebaseTableRows } from "./FirebaseTableRows/FirebaseTableRows";
 import { DeleteAccount } from "../UserManagement/DeleteAccount";
@@ -8,11 +8,6 @@ import { User } from "../../../../model/User";
 interface FirebaseTableProps {
   action: React.ReactNode;
   isLoading: boolean;
-  onConfirmDelete: (
-    candidateID: string | string[],
-    isStrapiIncluded: boolean,
-    isFirebaseIncluded: boolean
-  ) => Promise<User[]>;
   rows: User[];
   onConfirmDeleteAll: (
     idsToDelete: string | string[],
@@ -26,7 +21,6 @@ interface FirebaseTableProps {
 export const FirebaseTable = ({
   action,
   isLoading,
-  onConfirmDelete,
   rows,
   onConfirmDeleteAll,
   onResetPasswordClick,
