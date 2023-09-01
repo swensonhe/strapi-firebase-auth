@@ -46,4 +46,7 @@ export default {
       ctx.body = isExist;
     }
   },
+  async restart() {
+    await strapi.plugin("firebase-auth").service("settingsService").restart();
+  },
 };

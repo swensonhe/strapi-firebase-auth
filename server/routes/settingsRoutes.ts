@@ -29,4 +29,10 @@ export default [
     handler: "settingsController.delFirebaseConfigJson",
     config: { policies: [] },
   },
+  {
+    method: "POST",
+    path: "/settings/restart",
+    handler: "settingsController.restart",
+    config: { policies: [] },
+  },
 ];

@@ -63,4 +63,7 @@ export default ({ strapi }) => ({
       });
     }
   },
+  async restart() {
+    setImmediate(() => strapi.reload());
+  },
 });
