@@ -31,18 +31,15 @@ export const HomePage = () => {
     meta: ResponseMeta;
   }>(INITIAL_USERS_DATA);
   const [isNotConfigured, setIsNotConfigured] = useState(false);
-  console.log("isNotConfigured", isNotConfigured);
 
   const history = useHistory();
 
-  const { status } = useQuery("firebase-auth-", () => fetchUsers(), {
+  const { isLoading } = useQuery("firebase-auth-", () => fetchUsers(), {
     onSuccess: (result) => {
-      console.log("resulttt", result);
       setUsersData(result);
     },
 
     onError: (err: any) => {
-      console.log("errorrr", err.response.status);
       if (err.response.status === 500) setIsNotConfigured(true);
       else
         toggleNotification({
@@ -54,9 +51,8 @@ export const HomePage = () => {
         });
     },
   });
-  const isLoadingUsersData = status !== "success" && status !== "error";
 
-  if (isLoadingUsersData) {
+  if (isLoading) {
     return <LoadingIndicatorPage />;
   }
 

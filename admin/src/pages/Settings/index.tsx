@@ -55,6 +55,7 @@ function SettingsPage() {
           "Firebase configuration has successfully been removed, server is restarting",
       });
       setIsDeleteDialogueOpen(false);
+      window.location.reload();
     } catch (err) {
       setLoading(false);
       toggleNotification({
