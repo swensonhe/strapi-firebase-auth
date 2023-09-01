@@ -1,7 +1,11 @@
 import { getFetchClient } from "@strapi/helper-plugin";
 import pluginId from "../../pluginId";
 
-export const restartServer = async () => {};
+export const restartServer = async () => {
+  const url = `/${pluginId}/settings/restart`;
+  const { post } = getFetchClient();
+  await post(url);
+};
 
 export const saveFirebaseConfig = async (json: string) => {
   const url = `/${pluginId}/settings/firebase-config`;

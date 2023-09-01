@@ -1,4 +1,5 @@
 import { Strapi } from "@strapi/strapi";
+import { ApplicationError } from "@strapi/utils/dist/errors";
 import { Context, DefaultContext } from "koa";
 
 declare const strapi: Strapi;
@@ -47,7 +48,15 @@ export default {
       ctx.body = isExist;
     }
   },
-  async restart() {
-    await strapi.plugin("firebase-auth").service("settingsService").restart();
+  async restart(ctx: DefaultContext | Context) {
+    try {
+      await strapi.plugin("firebase-auth").service("settingsService").restart();
+      return ctx.send({ status: 200 });
+    } catch (e) {
+      throw new ApplicationError(
+        "some thing went wrong with restarting the server",
+        { error: e.message },
+      );
+    }
   },
 };

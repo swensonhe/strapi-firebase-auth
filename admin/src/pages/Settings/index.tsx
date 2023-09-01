@@ -18,8 +18,8 @@ import { DeleteJsonConfigurationDialogue } from "./DeleteJsonConfigurationDialog
 
 function SettingsPage() {
   const toggleNotification = useNotification();
-  const [firebaseJsonValue, setFirebaseJsonValue] = useState(null);
-  const [firebaseJsonValueInput, setFirebaseJsonValueInput] = useState("");
+  const [firebaseJsonValue, setFirebaseJsonValue] = useState<any>(null);
+  const [firebaseJsonValueInput, setFirebaseJsonValueInput] = useState<any>("");
   const [isDeleteDialogueOpen, setIsDeleteDialogueOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -183,6 +183,7 @@ function SettingsPage() {
                       <a
                         href="https://console.firebase.google.com/project/_/settings/general/"
                         target="_blank"
+                        rel="noreferrer"
                       >
                         settings
                       </a>{" "}
