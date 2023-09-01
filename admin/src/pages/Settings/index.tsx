@@ -15,6 +15,7 @@ import {
 } from "./api";
 import { Trash } from "@strapi/icons";
 import { DeleteJsonConfigurationDialogue } from "./DeleteJsonConfigurationDialogue";
+import { useHistory } from "react-router-dom";
 
 function SettingsPage() {
   const toggleNotification = useNotification();
@@ -22,6 +23,7 @@ function SettingsPage() {
   const [firebaseJsonValueInput, setFirebaseJsonValueInput] = useState<any>("");
   const [isDeleteDialogueOpen, setIsDeleteDialogueOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const history = useHistory();
 
   const handleRetrieveFirebaseJsonConfig = () => {
     setLoading(true);
@@ -154,23 +156,31 @@ function SettingsPage() {
               </Flex>
             </>
           ) : (
-            <Flex gap={4}>
-              You have successfully submitted your json configuration for
-              project:{" "}
-              <span style={{ fontWeight: 700 }}>
-                {(firebaseJsonValue &&
-                  JSON.parse(firebaseJsonValue.firebaseConfigJson)
-                    .project_id) ||
-                  JSON.parse(firebaseJsonValue.firebaseConfigJson).projectId}
-              </span>
-              <button
-                onClick={() => {
-                  setIsDeleteDialogueOpen(true);
-                }}
+            <>
+              <Flex gap={4}>
+                You have successfully submitted your json configuration for
+                project:{" "}
+                <span style={{ fontWeight: 700 }}>
+                  {(firebaseJsonValue &&
+                    JSON.parse(firebaseJsonValue.firebaseConfigJson)
+                      .project_id) ||
+                    JSON.parse(firebaseJsonValue.firebaseConfigJson).projectId}
+                </span>
+                <button
+                  onClick={() => {
+                    setIsDeleteDialogueOpen(true);
+                  }}
+                >
+                  <Trash />
+                </button>
+              </Flex>
+              <Button
+                onClick={() => history.push("/plugins/firebase-auth")}
+                marginTop={4}
               >
-                <Trash />
-              </button>
-            </Flex>
+                Back to firebase plugin
+              </Button>
+            </>
           )}
           {!firebaseJsonValue ? (
             <Flex direction="column" alignItems="flex-start" marginTop={10}>
