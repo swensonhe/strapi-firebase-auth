@@ -33,7 +33,6 @@ export default {
       ctx.notFound("no firebase config Found");
       return;
     }
-    console.log("configggg", config);
     ctx.body = config["firebase-config-json"];
   },
   async delFirebaseConfigJson(ctx: DefaultContext | Context) {

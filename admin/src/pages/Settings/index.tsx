@@ -69,7 +69,6 @@ function SettingsPage() {
     try {
       setLoading(true);
       const data = await saveFirebaseConfig(firebaseJsonValueInput);
-      console.log("dataaaa", data);
       setFirebaseJsonValue(data["firebase-config-json"]);
       setLoading(false);
       toggleNotification({

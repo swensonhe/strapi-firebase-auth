@@ -12,8 +12,8 @@ const RBAC_ACTIONS = [
   },
   {
     section: "settings",
-    category: "firebase-auth",
-    displayName: "firebase Auth settings",
+    category: "Firebase Auth",
+    displayName: "Firebase Auth: Read",
     uid: "settings.read",
     pluginName: "firebase-auth",
   },

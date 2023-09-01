@@ -3,38 +3,12 @@ const { ApplicationError } = utils.errors;
 import paginate from "../utils/paginate";
 import { formatUserData } from "../utils/users";
 
-const PHONE = "phone";
-
 export default ({ strapi }) => ({
   get: async (entityId: string) => {
     try {
       const user = await strapi.firebase.auth().getUser(entityId);
       const firebaseUser = user.toJSON();
-      console.log("user", firebaseUser);
-      const providerData = firebaseUser.providerData[0];
-      let query;
-      if (providerData.providerId === PHONE) {
-        query = {
-          phoneNumber: {
-            $eq: providerData.uid,
-          },
-        };
-      } else {
-        query = {
-          $or: [
-            {
-              email: providerData.email,
-            },
-            {
-              appleEmail: providerData.email,
-            },
-          ],
-        };
-      }
-      const localUser = await strapi.db
-        .query("plugin::users-permissions.user")
-        .findOne({ where: query });
-      firebaseUser.localUser = localUser;
+
       return firebaseUser;
     } catch (e) {
       throw new ApplicationError(e.message.toString());
@@ -49,17 +23,7 @@ export default ({ strapi }) => ({
         .catch(async (e) => {
           if (e.code === "auth/user-not-found") {
             const response = await strapi.firebase.auth().createUser(payload);
-            const userExists = await strapi
-              .plugin("firebase-auth")
-              .service("firebaseService")
-              .checkIfUserExists(response);
-            if (!userExists) {
-              // create strapi user
-              await strapi
-                .plugin("firebase-auth")
-                .service("firebaseService")
-                .createStrapiUser(response);
-            }
+
             return response.toJSON();
           }
         });
@@ -67,44 +31,6 @@ export default ({ strapi }) => ({
       if (userRecord) {
         return userRecord;
       }
-    } catch (e) {
-      throw new ApplicationError(e.message.toString());
-    }
-  },
-  createFirebaseUser: async (payload) => {
-    try {
-      const userRecord = await strapi.firebase
-        .auth()
-        .getUserByEmail(payload.email)
-        .catch(async (e) => {
-          if (e.code === "auth/user-not-found") {
-            const response = await strapi.firebase.auth().createUser(payload);
-            return response.toJSON();
-          }
-        });
-
-      if (userRecord) {
-        return userRecord;
-      }
-    } catch (e) {
-      throw new ApplicationError(e.message.toString());
-    }
-  },
-  createStrapiUser: async (payload) => {
-    try {
-      const userRecord = await strapi
-        .plugin("firebase-auth")
-        .service("firebaseService")
-        .checkIfUserExists(payload);
-      if (!userRecord) {
-        // create strapi user
-        await strapi
-          .plugin("firebase-auth")
-          .service("firebaseService")
-          .createStrapiUser(payload);
-      }
-
-      return userRecord;
     } catch (e) {
       throw new ApplicationError(e.message.toString());
     }
@@ -157,25 +83,13 @@ export default ({ strapi }) => ({
       throw new ApplicationError(e.message.toString());
     }
   },
-  updateStrapiUser: async (entityId, payload) => {
-    try {
-      return strapi
-        .query("plugin::users-permissions.user")
-        .update({ where: { firebaseUserID: entityId }, data: payload });
-    } catch (e) {
-      throw new ApplicationError(e.message.toString());
-    }
-  },
   update: async (entityId, payload) => {
     try {
       const firebasePromise = strapi.firebase
         .auth()
         .updateUser(entityId, payload);
-      const strapiPromise = strapi
-        .query("plugin::users-permissions.user")
-        .update({ where: { firebaseUserID: entityId }, data: payload });
 
-      return Promise.allSettled([firebasePromise, strapiPromise]);
+      return Promise.allSettled([firebasePromise]);
     } catch (e) {
       throw new ApplicationError(e.message.toString());
     }

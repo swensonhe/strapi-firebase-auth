@@ -24,28 +24,10 @@ export default {
   },
 
   create: async (ctx) => {
-    const { destination } = ctx.request.query;
-
-    switch (destination) {
-      case STRAPI_DESTINATION:
-        ctx.body = await strapi
-          .plugin("firebase-auth")
-          .service("userService")
-          .createStrapiUser(ctx.request.body);
-        break;
-      case FIREBASE_DESTINATION:
-        ctx.body = await strapi
-          .plugin("firebase-auth")
-          .service("userService")
-          .createFirebaseUser(ctx.request.body);
-        break;
-      default:
-        ctx.body = await strapi
-          .plugin("firebase-auth")
-          .service("userService")
-          .create(ctx.request.body);
-        break;
-    }
+    ctx.body = await strapi
+      .plugin("firebase-auth")
+      .service("userService")
+      .create(ctx.request.body);
   },
 
   get: async (ctx) => {
@@ -56,27 +38,10 @@ export default {
   },
 
   update: async (ctx) => {
-    const { destination } = ctx.request.query;
-    switch (destination) {
-      case STRAPI_DESTINATION:
-        ctx.body = await strapi
-          .plugin("firebase-auth")
-          .service("userService")
-          .updateStrapiUser(ctx.params.id, ctx.request.body);
-        break;
-      case FIREBASE_DESTINATION:
-        ctx.body = await strapi
-          .plugin("firebase-auth")
-          .service("userService")
-          .updateFirebaseUser(ctx.params.id, ctx.request.body);
-        break;
-      default:
-        ctx.body = await strapi
-          .plugin("firebase-auth")
-          .service("userService")
-          .update(ctx.params.id, ctx.request.body);
-        break;
-    }
+    ctx.body = await strapi
+      .plugin("firebase-auth")
+      .service("userService")
+      .update(ctx.params.id, ctx.request.body);
   },
 
   delete: async (ctx: DefaultContext | Context) => {
