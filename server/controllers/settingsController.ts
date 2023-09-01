@@ -40,7 +40,6 @@ export default {
       .plugin("firebase-auth")
       .service("settingsService")
       .delFirebaseConfigJson(ctx);
-
     if (!isExist) {
       ctx.notFound("No Firebase configs Exists for deletion");
     } else {
