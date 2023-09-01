@@ -49,7 +49,7 @@ function SettingsPage() {
       await delFirebaseConfig();
       setFirebaseJsonValue("");
       setFirebaseJsonValueInput("");
-      restartServer();
+      // restartServer();
       setLoading(false);
       toggleNotification({
         type: "success",
@@ -81,7 +81,7 @@ function SettingsPage() {
           defaultMessage: "Data submitted successfully, server is restarting",
         },
       });
-      restartServer();
+      // restartServer();
     } catch (error) {
       toggleNotification({
         type: "warning",
@@ -133,7 +133,7 @@ function SettingsPage() {
                 onChange={setFirebaseJsonValueInput}
                 error={
                   firebaseJsonValueInput &&
-                  !isJsonString(firebaseJsonValueInput)
+                    !isJsonString(firebaseJsonValueInput)
                     ? "Please enter a valid JSON string"
                     : ""
                 }
