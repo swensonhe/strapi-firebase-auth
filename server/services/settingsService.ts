@@ -98,9 +98,9 @@ export default ({ strapi }) => ({
     }
   },
   async restart() {
-    console.log("*".repeat(100));
-    console.log("SERVER IS RESTARTING");
+    strapi.log.info("*".repeat(100));
+    strapi.log.info("SERVER IS RESTARTING");
     setImmediate(() => strapi.reload());
-    console.log("*".repeat(100));
+    strapi.log.info("*".repeat(100));
   },
 });
