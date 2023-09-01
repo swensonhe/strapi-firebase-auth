@@ -1,31 +1,69 @@
-# Strapi plugin firebase-auth
+# Strapi plugin Firebase Auth
+
+A plugin for [Strapi Headless CMS](https://github.com/strapi/strapi) that provides end to end Firebase Authentication  feature/Integration with the moderation panel, Show users , create, update, delete and Authenticate Firebase users in one place
 
 A quick description of firebase-auth.
 
 
-## Step 1 -- Install Fireabse Admin
-`npm install firebase-admin`
+## Step 1 -- Install the plugin
+### Via command line
+
+(Use **yarn** to install this plugin within your Strapi project (recommended). [Install yarn with these docs](https://yarnpkg.com/lang/en/docs/install/).)
+
+```bash
+yarn add @swensonhe/strapi-plugin-firebase-auth
+```
+
+After successful installation you've to re-build your Strapi instance. To archive that simply use:
+
+```bash
+yarn build
+yarn develop
+```
+
+or just run Strapi in the development mode with `--watch-admin` option:
+
+```bash
+yarn develop --watch-admin
+```
+
+The **Firebase Auth** plugin should appear in the **Plugins** section of Strapi sidebar after you run app again.
+
+As a next step you must configure your the plugin by the way you want to. See [**Configuration**](#🔧-configuration) section.
+
+All done. Enjoy 🎉
+
+### Working in development mode
 
 ##Step 2  -- Add service account key (.json)
-go to settings page and submit he .json file 
+go to settings page and submit the .json file 
 
 
 
 ##Step 4 -- add plugin to Strapi:
 
-```
-./api/config/plugins.js
 
 ...  
 
+## 🔧 Configuration
+### In `v1.0.28` and older + default configuration state
+
+To setup amend default plugin configuration we recommend to put following snippet as part of `config/plugins.js` or `config/<env>/plugins.js` file. If the file does not exist yet, you have to create it manually. If you've got already configurations for other plugins stores by this way, use just the `firebase-auth` part within existing `plugins` item.
+
+```js
+module.exports = () => ({
+  //...
+
 "firebase-auth": {
     enabled: true,
-    resolve: "./src/plugins/firebase-auth",
   },
+  //...
+});
+```
+
   
 ...
 
-  ```
 ##Step 5 -- re-build admin:
 `npm run build`
 

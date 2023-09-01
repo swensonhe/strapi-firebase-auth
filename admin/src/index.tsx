@@ -18,7 +18,7 @@ export default {
       icon: PluginIcon,
       intlLabel: {
         id: `${pluginId}.plugin.name`,
-        defaultMessage: name,
+        defaultMessage: `Firebase Auth`,
       },
       Component: async () => {
         const component = await import(
@@ -27,13 +27,7 @@ export default {
 
         return component;
       },
-      permissions: [
-        // Uncomment to set the permissions of the plugin here
-        // {
-        //   action: '', // the action name should be plugin::plugin-name.actionType
-        //   subject: null,
-        // },
-      ],
+      permissions: [],
     });
     app.createSettingSection(
       {
