@@ -53,11 +53,9 @@ function SettingsPage() {
       setLoading(false);
       toggleNotification({
         type: "success",
-        message:
-          "Firebase configuration has successfully been removed, server is restarting",
+        message: "Firebase configuration has successfully been removed",
       });
       setIsDeleteDialogueOpen(false);
-      window.location.reload();
     } catch (err) {
       setLoading(false);
       toggleNotification({
@@ -78,7 +76,7 @@ function SettingsPage() {
         type: "success",
         message: {
           id: "notification.success",
-          defaultMessage: "Data submitted successfully, server is restarting",
+          defaultMessage: "Data submitted successfully",
         },
       });
       // restartServer();
@@ -133,7 +131,7 @@ function SettingsPage() {
                 onChange={setFirebaseJsonValueInput}
                 error={
                   firebaseJsonValueInput &&
-                    !isJsonString(firebaseJsonValueInput)
+                  !isJsonString(firebaseJsonValueInput)
                     ? "Please enter a valid JSON string"
                     : ""
                 }

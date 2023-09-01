@@ -90,7 +90,7 @@ export const FirebaseTableRows = ({
                 onClick={() => {
                   push({
                     pathname: `${pathname}/${data.uid}`,
-                    state: { from: pathname },
+                    state: { from: pathname, strapiId: data.strapiId },
                   });
                 }}
               >

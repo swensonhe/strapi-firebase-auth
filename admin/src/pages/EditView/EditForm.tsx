@@ -17,6 +17,7 @@ import { format } from "date-fns";
 import { updateUser } from "../HomePage/utils/api";
 import { Flex } from "@strapi/design-system";
 import { ProviderItem, User } from "../../../../model/User";
+import { useHistory, useLocation } from "react-router-dom";
 
 const USERS_URL =
   "/content-manager/collectionType/plugin::users-permissions.user";
@@ -56,6 +57,10 @@ export const EditForm = ({ data }: EditFormProps) => {
   const [originalUserData, setOriginalUserData] = useState(data);
   const [isLoading, setIsLoading] = useState(false);
   const toggleNotification = useNotification();
+  const location = useLocation();
+  const history = useHistory();
+
+  const locationState = location.state as any;
 
   const onTextInputChange = (e: any) => {
     e.preventDefault();
@@ -95,7 +100,7 @@ export const EditForm = ({ data }: EditFormProps) => {
         },
       });
       setIsLoading(false);
-      setUserData(() => data);
+      setUserData(data);
     }
   };
 
@@ -233,6 +238,33 @@ export const EditForm = ({ data }: EditFormProps) => {
                         {provider.uid}
                       </Typography>
                     </Flex>
+                    {locationState.strapiId ? (
+                      <Flex gap={1}>
+                        <Typography
+                          variant="sigma"
+                          textColor="neutral600"
+                          id="relations-title"
+                        >
+                          Strapi ID:
+                        </Typography>
+                        <Typography variant="sigma" id="relations-title">
+                          <button
+                            style={{
+                              color: "blue",
+                              textDecoration: "underline",
+                            }}
+                            onClick={() => {
+                              history.push(
+                                `/content-manager/collectionType/plugin::users-permissions.user/${locationState.strapiId}`
+                              );
+                              return false;
+                            }}
+                          >
+                            {locationState.strapiId}
+                          </button>
+                        </Typography>
+                      </Flex>
+                    ) : null}
                   </Flex>
                 );
               })}

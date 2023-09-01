@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { LoadingIndicatorPage, useNotification } from "@strapi/helper-plugin";
 import { Layout } from "@strapi/design-system";
@@ -18,6 +18,7 @@ import { User } from "../../../../model/User";
 import { ResponseMeta } from "../../../../model/Meta";
 import { ExclamationMarkCircle } from "@strapi/icons";
 import { useHistory } from "react-router-dom";
+import { getFirebaseConfig } from "../Settings/api";
 
 const INITIAL_USERS_DATA = {
   data: [],
@@ -31,8 +32,26 @@ export const HomePage = () => {
     meta: ResponseMeta;
   }>(INITIAL_USERS_DATA);
   const [isNotConfigured, setIsNotConfigured] = useState(false);
+  const [isLoadingConfiguration, setIsLoadingConfiguration] = useState(true);
 
   const history = useHistory();
+
+  const handleRetrieveFirebaseJsonConfig = () => {
+    getFirebaseConfig()
+      .then(() => {
+        setIsNotConfigured(false);
+        setIsLoadingConfiguration(false);
+      })
+      .catch((err) => {
+        setIsNotConfigured(true);
+        setIsLoadingConfiguration(false);
+        console.log(err);
+      });
+  };
+
+  useEffect(() => {
+    handleRetrieveFirebaseJsonConfig();
+  }, []);
 
   const { isLoading } = useQuery("firebase-auth-", () => fetchUsers(), {
     onSuccess: (result) => {
@@ -40,19 +59,19 @@ export const HomePage = () => {
     },
 
     onError: (err: any) => {
-      if (err.response.status === 500) setIsNotConfigured(true);
-      else
-        toggleNotification({
-          type: "warning",
-          message: {
-            id: "notification.error",
-            defaultMessage: "An error occured",
-          },
-        });
+      console.log(err);
+      toggleNotification({
+        type: "warning",
+        message: {
+          id: "notification.error",
+          defaultMessage: "An error occured",
+        },
+      });
     },
+    enabled: !isLoadingConfiguration && !isNotConfigured,
   });
 
-  if (isLoading) {
+  if (isLoading || isLoadingConfiguration) {
     return <LoadingIndicatorPage />;
   }
 
