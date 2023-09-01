@@ -4,3 +4,4 @@ dist
 keys
 .idea
 .npmrc
+build

@@ -15,7 +15,7 @@ export const Initializer = ({ setPlugin }: InitializerProps) => {
   const ref = useRef(setPlugin);
 
   useEffect(() => {
-    ref.current(pluginId);
+    ref.current(pluginId as string);
   }, []);
 
   return null;

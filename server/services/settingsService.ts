@@ -5,16 +5,9 @@ const { ValidationError, ApplicationError } = utils.errors;
 export default ({ strapi }) => ({
   getFirebaseConfigJson: async () => {
     try {
-      const config = await strapi.entityService.findOne(
+      return strapi.entityService.findMany(
         "plugin::firebase-auth.firebase-auth-configuration",
-        1,
       );
-      if (!config || !config["firebase-config-json"]) {
-        throw new ApplicationError("some thing went wrong", {
-          error: "no firebase config Found",
-        });
-      }
-      return config["firebase-config-json"];
     } catch (error) {
       throw new ApplicationError("some thing went wrong", {
         error: error.message,
@@ -26,10 +19,10 @@ export default ({ strapi }) => ({
     try {
       const { body: firebaseConfigJson } = ctx.request;
       if (!firebaseConfigJson) throw new ValidationError("data is missing");
-      const isExist = await strapi.entityService.findOne(
+      const isExist = await strapi.entityService.findMany(
         "plugin::firebase-auth.firebase-auth-configuration",
-        1,
       );
+      console.log("isExist", isExist);
       if (!isExist) {
         return strapi.entityService.create(
           "plugin::firebase-auth.firebase-auth-configuration",
@@ -40,10 +33,9 @@ export default ({ strapi }) => ({
       } else {
         return strapi.entityService.update(
           "plugin::firebase-auth.firebase-auth-configuration",
-          1,
+          isExist.id,
           {
             data: {
-              token: isExist.token,
               "firebase-config-json": firebaseConfigJson,
             },
           },
@@ -57,19 +49,17 @@ export default ({ strapi }) => ({
   },
   delFirebaseConfigJson: async () => {
     try {
-      const isExist = await strapi.entityService.findOne(
+      const isExist = await strapi.entityService.findMany(
         "plugin::firebase-auth.firebase-auth-configuration",
-        1,
       );
-      if (!isExist) {
-        throw new ValidationError("The Firebase configs not exist");
-      }
       return strapi.entityService.delete(
         "plugin::firebase-auth.firebase-auth-configuration",
+        isExist.id,
       );
     } catch (error) {
+      console.log("error", error);
       throw new ApplicationError("some thing went wrong", {
-        error: error.message,
+        error: error,
       });
     }
   },

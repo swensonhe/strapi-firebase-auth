@@ -27,9 +27,8 @@ export default async ({ strapi }: { strapi: Strapi | any }) => {
     );
 
     // get firebase configs json from db
-    const res = await strapi.entityService.findOne(
+    const res = await strapi.entityService.findMany(
       "plugin::firebase-auth.firebase-auth-configuration",
-      1,
     );
 
     const jsonObject = res["firebase-config-json"];

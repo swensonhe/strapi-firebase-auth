@@ -12,3 +12,27 @@ export const saveFirebaseConfig = async (json: string) => {
     return [];
   }
 };
+
+export const getFirebaseConfig = async () => {
+  try {
+    const url = `/${pluginId}/settings/firebase-config`;
+    const { get } = getFetchClient();
+    const { data } = await get(url);
+
+    return data;
+  } catch (e) {
+    return [];
+  }
+};
+
+export const delFirebaseConfig = async () => {
+  try {
+    const url = `/${pluginId}/settings/firebase-config`;
+    const { del } = getFetchClient();
+    const { data } = await del(url);
+
+    return data;
+  } catch (e) {
+    return [];
+  }
+};

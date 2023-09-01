@@ -22,16 +22,28 @@ export default {
       .service("settingsService")
       .setFirebaseConfigJson(ctx);
   },
-  async getFirebaseConfigJson(ctx: DefaultContext | Context) {
-    ctx.body = await strapi
+  getFirebaseConfigJson: async (ctx: DefaultContext | Context) => {
+    const config = await strapi
       .plugin("firebase-auth")
       .service("settingsService")
       .getFirebaseConfigJson(ctx);
+
+    if (!config || !config["firebase-config-json"]) {
+      ctx.notFound("no firebase config Found");
+      return;
+    }
+    ctx.body = config["firebase-config-json"];
   },
   async delFirebaseConfigJson(ctx: DefaultContext | Context) {
-    ctx.body = await strapi
+    const isExist = await strapi
       .plugin("firebase-auth")
       .service("settingsService")
       .delFirebaseConfigJson(ctx);
+
+    if (!isExist) {
+      ctx.notFound("No Firebase configs Exists for deletion");
+    } else {
+      ctx.body = isExist;
+    }
   },
 };
