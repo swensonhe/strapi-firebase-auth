@@ -75,7 +75,7 @@
     "@types/react-dom": "18.0.28"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/swensonhe"
+    "registry": "https://registry.npmjs.org"
   },
   "scripts": {
     "develop": "tsc -p tsconfig.server.json -w",
