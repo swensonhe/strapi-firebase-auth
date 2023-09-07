@@ -80,7 +80,7 @@
   "scripts": {
     "develop": "tsc -p tsconfig.server.json -w",
     "build:dev": "tsc -p tsconfig.server.json",
-    "publish:latest": "cd build && npm publish --tag latest",
+    "publish:latest": "cd build && npm publish --tag latest --provenance --access public",
     "prepublish:latest": "npm run clean && npm run build && node build/setup-package.js",
     "copy-assets": "copyfiles -u 1 admin/src/assets/**/* build/admin/",
     "build": "tsc && npm run copy-assets",
