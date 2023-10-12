@@ -6,6 +6,9 @@ A quick description of firebase-auth.
 
 
 ## Step 1 -- Install the plugin
+
+[![npm version](https://badge.fury.io/js/@swensonhe%2Fstrapi-plugin-firebase-auth.svg)](https://www.npmjs.com/package/@swensonhe/strapi-plugin-firebase-auth)
+
 ### Via command line
 
 (Use **yarn** to install this plugin within your Strapi project (recommended). [Install yarn with these docs](https://yarnpkg.com/lang/en/docs/install/).)
