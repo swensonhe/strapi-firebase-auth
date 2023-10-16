@@ -90,7 +90,7 @@ function ListView({ data, meta }: ListViewProps) {
   };
 
   let fetchPaginatedUsers = async () => {
-    let nextPageToken = await getNextPageToken(query.query?.page);
+    let nextPageToken = await getNextPageToken(query.query?.page as string);
 
     if (nextPageToken) {
       query.query.nextPageToken = nextPageToken;
@@ -98,7 +98,7 @@ function ListView({ data, meta }: ListViewProps) {
     const response = await fetchUsers(query.query);
 
     if (response.pageToken) {
-      setNextPageToken(query.query?.page, response.pageToken);
+      setNextPageToken(query.query?.page as string, response.pageToken);
     }
     return response;
   };
@@ -116,7 +116,7 @@ function ListView({ data, meta }: ListViewProps) {
           };
         });
         if (query.query?._q) {
-          data = matchSorter(data, query.query?._q, {
+          data = matchSorter(data, query.query?._q as string, {
             keys: ["email", "displayName", "username"],
           });
         }
@@ -132,24 +132,9 @@ function ListView({ data, meta }: ListViewProps) {
 
   const { formatMessage } = useIntl();
 
-  const handleConfirmDeleteData = async (
-    idsToDelete: string | string[],
-    isStrapiIncluded: boolean,
-    isFirebaseIncluded: boolean
-  ) => {
-    let destination: string | null = null;
-    if (isStrapiIncluded && isFirebaseIncluded) {
-      destination = null;
-    } else if (isStrapiIncluded) {
-      destination = "strapi";
-    } else if (isFirebaseIncluded) destination = "firebase";
+  const fetchData = async () => {
     try {
       setIsLoading(true);
-      if (Array.isArray(idsToDelete)) {
-        await Promise.all(idsToDelete.map((id) => deleteUser(id, null)));
-      } else {
-        await deleteUser(idsToDelete, destination);
-      }
 
       let response = await fetchPaginatedUsers();
 
@@ -180,6 +165,32 @@ function ListView({ data, meta }: ListViewProps) {
       });
       return Promise.reject([]);
     }
+  };
+
+  const handleDeleteAll = async (idsToDelete: string[] | number[]) => {
+    await Promise.all(idsToDelete.map((id) => deleteUser(id, null)));
+    fetchData();
+  };
+
+  const handleDeleteRecord = async (idsToDelete: string, destination) => {
+    await deleteUser(idsToDelete, destination);
+    const result = await fetchData();
+    return result;
+  };
+
+  const handleConfirmDeleteData = async (
+    idsToDelete: string,
+    isStrapiIncluded: boolean,
+    isFirebaseIncluded: boolean
+  ) => {
+    let destination: string | null = null;
+    if (isStrapiIncluded && isFirebaseIncluded) {
+      destination = null;
+    } else if (isStrapiIncluded) {
+      destination = "strapi";
+    } else if (isFirebaseIncluded) destination = "firebase";
+    const result = await handleDeleteRecord(idsToDelete, destination);
+    return result;
   };
 
   const getCreateAction = () => (
@@ -294,7 +305,7 @@ function ListView({ data, meta }: ListViewProps) {
             isSingleRecord
           />
           <FirebaseTable
-            onConfirmDeleteAll={handleConfirmDeleteData}
+            onConfirmDeleteAll={handleDeleteAll}
             isLoading={isLoading}
             rows={rowsData}
             action={getCreateAction()}

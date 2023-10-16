@@ -7,7 +7,7 @@
 
 import React from "react";
 import { Switch, Route } from "react-router-dom";
-import { NotFound } from "@strapi/helper-plugin";
+import { NotFound } from "@strapi/design-system";
 import pluginId from "../../pluginId";
 import { HomePage } from "../HomePage/HomePage";
 import { EditView } from "../EditView/EditView";

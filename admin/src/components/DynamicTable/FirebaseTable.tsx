@@ -9,11 +9,7 @@ interface FirebaseTableProps {
   action: React.ReactNode;
   isLoading: boolean;
   rows: User[];
-  onConfirmDeleteAll: (
-    idsToDelete: string | string[],
-    isStrapiIncluded: boolean,
-    isFirebaseIncluded: boolean
-  ) => void;
+  onConfirmDeleteAll: (idsToDelete: string[] | number[]) => Promise<void>;
   onResetPasswordClick: (data: User) => void;
   onDeleteAccountClick: (data: User) => void;
 }
@@ -37,6 +33,7 @@ export const FirebaseTable = ({
       withMainAction
       withBulkActions
       onConfirmDeleteAll={onConfirmDeleteAll}
+      footer={null}
     >
       <FirebaseTableRows
         onResetPasswordClick={onResetPasswordClick}
