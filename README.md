@@ -135,7 +135,6 @@ auth.signInWithCredential(firebaseCredential)
         } else {
             // If the sign-in fails, display a message to the user.
             Log.w(TAG, "signInWithCredential:failure", task.exception)
-            updateUI(null)
         }
     }
 ```
