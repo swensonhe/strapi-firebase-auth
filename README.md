@@ -123,21 +123,22 @@ links and their brief descriptions:
 - To set up Google Sign-In on Android, follow the official Firebase
   documentation: [Android Firebase Authentication with Google](https://firebase.google.com/docs/auth/android/google-signin)
 - After signing with Google,you need to get the GoogleAuthProvider Credential and pass it to firebaseSDK to be able to get the user token
-- Sample Code:  ```kotlin
-  // Got an ID token from Google. Use it to authenticate with Firebase.
-  val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-  auth.signInWithCredential(firebaseCredential)
-       .addOnCompleteListener(this) { task ->
-          if (task.isSuccessful) {
+- Sample Code:
+```kotlin
+// Obtain an ID token from Google. Use it to authenticate with Firebase.
+val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+auth.signInWithCredential(firebaseCredential)
+    .addOnCompleteListener(this) { task ->
+        if (task.isSuccessful) {
             val token = it.result?.token
-            // Now you need to pass the token to firebasePlugin using exchange the firebase Token using `/firebase-auth` endpoint
-          } else {
-            // If sign in fails, display a message to the user.
+            // Now, you can pass the token to the Firebase plugin by exchanging the Firebase Token using the `/firebase-auth` endpoint.
+        } else {
+            // If the sign-in fails, display a message to the user.
             Log.w(TAG, "signInWithCredential:failure", task.exception)
             updateUI(null)
-          }
-       }
-  ```
+        }
+    }
+```
 
 **iOS Sample:**
 
