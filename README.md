@@ -48,13 +48,7 @@ The **Firebase Auth** plugin should now be available in the **Plugins** section 
 
 In order to configure the Firebase Auth plugin, follow these steps:
 
-### Step 1 - Add Service Account Key
-
-Navigate to the settings page within Strapi and submit
-the `.json` [service account key file](https://firebase.google.com/docs/app-distribution/authenticate-service-account).
-This key is essential for Firebase Authentication to work properly.
-
-### Step 2 - Enable the Plugin
+### Step 1 - Enable the Plugin
 
 In your Strapi project, edit the `config/plugins.js` or `config/<env>/plugins.js` file to enable the Firebase Auth
 plugin. If the file doesn't exist, create it manually. If you already have configurations for other plugins, add
@@ -71,6 +65,12 @@ module.exports = () => ({
     // ...
 });
 ```
+
+### Step 2 - Add Service Account Key
+
+Navigate to the settings page within Strapi and submit
+the `.json` [service account key file](https://firebase.google.com/docs/app-distribution/authenticate-service-account).
+This key is essential for Firebase Authentication to work properly.
 
 ### Step 3 - Rebuild Admin Panel
 
