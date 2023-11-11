@@ -2,6 +2,7 @@ import utils from "@strapi/utils";
 import { Context, DefaultContext } from "koa";
 import admin, { ServiceAccount } from "firebase-admin";
 import checkValidJson from "../utils/check-valid-json";
+import CryptoJS from "crypto-js";
 
 const { ValidationError, ApplicationError } = utils.errors;
 
@@ -23,8 +24,13 @@ export default ({ strapi }) => ({
           await strapi.firebase.delete();
         }
         return;
-      };
-      const serviceAccount = checkValidJson(jsonObject.firebaseConfigJson);
+      }
+      const firebaseConfigJson = await this.decryptJson(
+        process.env.FIREBASE_JSON_ENCRYPTION_KEY,
+        jsonObject.firebaseConfigJson,
+      );
+
+      const serviceAccount = checkValidJson(firebaseConfigJson);
       if (!serviceAccount) return;
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount as ServiceAccount),
@@ -34,11 +40,18 @@ export default ({ strapi }) => ({
       console.log("bootstrap error", error);
     }
   },
-  getFirebaseConfigJson: async () => {
+  async getFirebaseConfigJson() {
+    const key = process.env.FIREBASE_JSON_ENCRYPTION_KEY;
     try {
-      return strapi.entityService.findMany(
+      const configObject = await strapi.entityService.findMany(
         "plugin::firebase-auth.firebase-auth-configuration",
       );
+      const firebaseConfigJsonObj = configObject["firebase-config-json"];
+      const hashedJson = firebaseConfigJsonObj["firebaseConfigJson"];
+
+      const firebaseConfigJson = await this.decryptJson(key, hashedJson);
+
+      return { firebaseConfigJson };
     } catch (error) {
       throw new ApplicationError("some thing went wrong", {
         error: error.message,
@@ -46,9 +59,18 @@ export default ({ strapi }) => ({
     }
   },
 
-  setFirebaseConfigJson: async (ctx: DefaultContext | Context) => {
+  async setFirebaseConfigJson(ctx: DefaultContext | Context) {
+    const encryptionKey = process.env.FIREBASE_JSON_ENCRYPTION_KEY;
+
     try {
       const { body: firebaseConfigJson } = ctx.request;
+      const firebaseConfigJsonString = firebaseConfigJson.firebaseConfigJson;
+
+      const hash = await this.encryptJson(
+        encryptionKey,
+        firebaseConfigJsonString,
+      );
+
       if (!firebaseConfigJson) throw new ValidationError("data is missing");
       const isExist = await strapi.entityService.findMany(
         "plugin::firebase-auth.firebase-auth-configuration",
@@ -58,7 +80,7 @@ export default ({ strapi }) => ({
         res = await strapi.entityService.create(
           "plugin::firebase-auth.firebase-auth-configuration",
           {
-            data: { "firebase-config-json": firebaseConfigJson },
+            data: { "firebase-config-json": { firebaseConfigJson: hash } },
           },
         );
       } else {
@@ -67,12 +89,18 @@ export default ({ strapi }) => ({
           isExist.id,
           {
             data: {
-              "firebase-config-json": firebaseConfigJson,
+              "firebase-config-json": { firebaseConfigJson: hash },
             },
           },
         );
       }
       await strapi.plugin("firebase-auth").service("settingsService").init();
+      const firebaseConfigHash = res["firebase-config-json"].firebaseConfigJson;
+      const firebaseConfigJsonValue = await this.decryptJson(
+        encryptionKey,
+        firebaseConfigHash,
+      );
+      res["firebase-config-json"].firebaseConfigJson = firebaseConfigJsonValue;
       return res;
     } catch (error) {
       throw new ApplicationError("some thing went wrong", {
@@ -96,6 +124,16 @@ export default ({ strapi }) => ({
         error: error,
       });
     }
+  },
+  async encryptJson(key: string, json: string) {
+    const encrypted = CryptoJS.AES.encrypt(json, key).toString();
+    return encrypted;
+  },
+  async decryptJson(key: string, hash: string) {
+    const decrypted = CryptoJS.AES.decrypt(hash, key).toString(
+      CryptoJS.enc.Utf8,
+    );
+    return decrypted;
   },
   async restart() {
     strapi.log.info("*".repeat(100));

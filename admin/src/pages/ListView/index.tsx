@@ -65,7 +65,7 @@ function ListView({ data, meta }: ListViewProps) {
 
   useFocusWhenNavigate();
 
-  let setNextPageToken = (page: string, nextPageToken: string) => {
+  const setNextPageToken = (page: string, nextPageToken: string) => {
     const formattedPage = parseInt(page) || 1;
     const storeObject = localStorage.getItem("nextPageTokens");
     let newObject: any = {};
@@ -77,7 +77,7 @@ function ListView({ data, meta }: ListViewProps) {
     localStorage.setItem("nextPageTokens", JSON.stringify(newObject));
   };
 
-  let getNextPageToken = async (page: string) => {
+  const getNextPageToken = async (page: string) => {
     const formattedPage = parseInt(page);
     const storeObject = localStorage.getItem("nextPageTokens");
 
@@ -89,10 +89,10 @@ function ListView({ data, meta }: ListViewProps) {
     return newObject[formattedPage];
   };
 
-  let fetchPaginatedUsers = async () => {
-    let nextPageToken = await getNextPageToken(query.query?.page as string);
+  const fetchPaginatedUsers = async () => {
+    const nextPageToken = await getNextPageToken(query.query?.page as string);
 
-    if (nextPageToken) {
+    if (nextPageToken && query?.query) {
       query.query.nextPageToken = nextPageToken;
     }
     const response = await fetchUsers(query.query);
@@ -108,7 +108,7 @@ function ListView({ data, meta }: ListViewProps) {
       try {
         setIsLoading(true);
 
-        let response = await fetchPaginatedUsers();
+        const response = await fetchPaginatedUsers();
         let data = response.data?.map((item: any) => {
           return {
             id: item.uid,
@@ -136,9 +136,9 @@ function ListView({ data, meta }: ListViewProps) {
     try {
       setIsLoading(true);
 
-      let response = await fetchPaginatedUsers();
+      const response = await fetchPaginatedUsers();
 
-      let newData = response.data.map((item: any) => {
+      const newData = response.data.map((item: any) => {
         return {
           id: item.uid,
           ...item,
@@ -156,7 +156,7 @@ function ListView({ data, meta }: ListViewProps) {
       const errorMessage = get(
         err,
         "response.payload.message",
-        formatMessage({ id: "error.record.delete" })
+        formatMessage({ id: "error.record.delete" }),
       );
       setIsLoading(false);
       toggleNotification({
@@ -167,8 +167,8 @@ function ListView({ data, meta }: ListViewProps) {
     }
   };
 
-  const handleDeleteAll = async (idsToDelete: string[] | number[]) => {
-    await Promise.all(idsToDelete.map((id) => deleteUser(id, null)));
+  const handleDeleteAll = async (idsToDelete: Array<string | number>) => {
+    await Promise.all(idsToDelete.map((id) => deleteUser(id as string, null)));
     fetchData();
   };
 
@@ -181,7 +181,7 @@ function ListView({ data, meta }: ListViewProps) {
   const handleConfirmDeleteData = async (
     idsToDelete: string,
     isStrapiIncluded: boolean,
-    isFirebaseIncluded: boolean
+    isFirebaseIncluded: boolean,
   ) => {
     let destination: string | null = null;
     if (isStrapiIncluded && isFirebaseIncluded) {
@@ -245,12 +245,12 @@ function ListView({ data, meta }: ListViewProps) {
 
   const deleteAccount = async (
     isStrapiIncluded: boolean,
-    isFirebaseIncluded: boolean
+    isFirebaseIncluded: boolean,
   ) => {
     const newRowsData = await handleConfirmDeleteData(
       showDeleteAccountDialogue.id,
       isStrapiIncluded,
-      isFirebaseIncluded
+      isFirebaseIncluded,
     );
     handleCloseDeleteDialogoue();
     setRowsData(newRowsData);
@@ -278,7 +278,7 @@ function ListView({ data, meta }: ListViewProps) {
                   id: "app.component.search.label",
                   defaultMessage: "Search for {target}",
                 },
-                { target: headerLayoutTitle }
+                { target: headerLayoutTitle },
               )}
               placeholder={formatMessage({
                 id: "app.component.search.placeholder",
