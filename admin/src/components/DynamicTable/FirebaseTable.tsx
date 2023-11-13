@@ -9,7 +9,7 @@ interface FirebaseTableProps {
   action: React.ReactNode;
   isLoading: boolean;
   rows: User[];
-  onConfirmDeleteAll: (idsToDelete: string[] | number[]) => Promise<void>;
+  onConfirmDeleteAll: (idsToDelete: Array<string | number>) => Promise<void>;
   onResetPasswordClick: (data: User) => void;
   onDeleteAccountClick: (data: User) => void;
 }

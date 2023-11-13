@@ -27,7 +27,7 @@ export default {
 
         return component;
       },
-      permissions: [],
+      permissions: pluginPermissions.main,
     });
     app.createSettingSection(
       {
@@ -54,7 +54,7 @@ export default {
           },
           permissions: pluginPermissions.settings,
         },
-      ]
+      ],
     );
     const plugin = {
       id: pluginId,
@@ -77,7 +77,7 @@ export default {
         return import(`./translations/${locale}.json`)
           .then(({ default: data }) => {
             return {
-              data: prefixPluginTranslations(data, pluginId),
+              data: prefixPluginTranslations(data, pluginId as string),
               locale,
             };
           })
@@ -87,7 +87,7 @@ export default {
               locale,
             };
           });
-      })
+      }),
     );
 
     return Promise.resolve(importedTrads);
