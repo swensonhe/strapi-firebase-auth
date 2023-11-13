@@ -3,7 +3,7 @@
 Welcome to the Strapi plugin for Firebase Authentication! This plugin seamlessly integrates Firebase Authentication with
 your Strapi Headless CMS, allowing you to manage and authenticate Firebase users directly from the Strapi moderation
 panel. This guide will take you through the installation and configuration process and provide information on how to use
-this plugin with iOS and Android apps.
+this plugin with iOS and Android apps. This plugin would be enabled by default for super admins only.
 
 ## How it works
 
@@ -67,6 +67,9 @@ module.exports = () => ({
 ```
 
 ### Step 2 - Add Service Account Key
+
+For security reasons we encrypt firebase config json file and save the hash to db
+so please add a KEY in the .env file `FIREBASE_JSON_ENCRYPTION_KEY` then 
 
 Navigate to the settings page within Strapi and submit
 the `.json` [service account key file](https://firebase.google.com/docs/app-distribution/authenticate-service-account).
