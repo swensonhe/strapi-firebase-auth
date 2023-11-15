@@ -66,12 +66,33 @@ module.exports = () => ({
 });
 ```
 
-### Step 2 - Add Service Account Key
+### Step 2: Firebase Configuration Encryption and Integration with Strapi
 
-For security reasons we encrypt firebase config json file and save the hash to db
-so please add a KEY in the .env file `FIREBASE_JSON_ENCRYPTION_KEY` then 
+To ensure the security of sensitive information, we have implemented a robust encryption process for the Firebase config JSON file in this project. The encrypted data is then stored as a hash in the database. Follow the steps below to set up and integrate Firebase with Strapi securely.
 
-Navigate to the settings page within Strapi and submit
+#### Step 1: Set Encryption Key in .env file
+
+In order to encrypt and decrypt the Firebase config JSON file, you need to provide an encryption key. Open your `.env` file and add the following line:
+
+```dotenv
+FIREBASE_JSON_ENCRYPTION_KEY=yourEncryptionKey
+```
+
+Replace `yourEncryptionKey` with a strong and secure key. This key will be used in the encryption and decryption process.
+
+#### Step 2: Obtain Firebase Service Account Key
+
+Navigate to the [Firebase Console](https://console.firebase.google.com/) and access your project. In the settings, locate the service account section and download the JSON key file. This file contains sensitive information required for Firebase Authentication.
+
+#### Step 3: Submit Service Account Key in Strapi Settings
+
+Access the Strapi admin panel and navigate to the settings page. Look for the section related to Firebase integration. Here, you will find an option to submit the `.json` service account key file. Upload the file you obtained in Step 2.
+
+This service account key is essential for proper authentication with Firebase. It contains the necessary credentials for your Firebase project.
+
+#### Step 4: Save Changes
+
+After submitting the service account key, make sure to save the changes in the Strapi settings. This ensures that the encrypted configuration is stored securely in the database.
 the `.json` [service account key file](https://firebase.google.com/docs/app-distribution/authenticate-service-account).
 This key is essential for Firebase Authentication to work properly.
 

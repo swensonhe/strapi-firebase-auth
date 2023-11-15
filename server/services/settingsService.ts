@@ -5,6 +5,9 @@ import checkValidJson from "../utils/check-valid-json";
 import CryptoJS from "crypto-js";
 
 const { ValidationError, ApplicationError } = utils.errors;
+const encryptionKey = strapi
+  .plugin("firebase-auth")
+  .config("FIREBASE_JSON_ENCRYPTION_KEY");
 
 export default ({ strapi }) => ({
   async init() {
@@ -26,7 +29,7 @@ export default ({ strapi }) => ({
         return;
       }
       const firebaseConfigJson = await this.decryptJson(
-        process.env.FIREBASE_JSON_ENCRYPTION_KEY,
+        encryptionKey,
         jsonObject.firebaseConfigJson,
       );
 
@@ -41,7 +44,7 @@ export default ({ strapi }) => ({
     }
   },
   async getFirebaseConfigJson() {
-    const key = process.env.FIREBASE_JSON_ENCRYPTION_KEY;
+    const key = encryptionKey;
     try {
       const configObject = await strapi.entityService.findMany(
         "plugin::firebase-auth.firebase-auth-configuration",
@@ -60,8 +63,6 @@ export default ({ strapi }) => ({
   },
 
   async setFirebaseConfigJson(ctx: DefaultContext | Context) {
-    const encryptionKey = process.env.FIREBASE_JSON_ENCRYPTION_KEY;
-
     try {
       const { body: firebaseConfigJson } = ctx.request;
       const firebaseConfigJsonString = firebaseConfigJson.firebaseConfigJson;
