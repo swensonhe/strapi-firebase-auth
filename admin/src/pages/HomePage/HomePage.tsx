@@ -45,7 +45,6 @@ export const HomePage = () => {
       .catch((err) => {
         setIsNotConfigured(true);
         setIsLoadingConfiguration(false);
-        console.log(err);
       });
   };
 
@@ -59,7 +58,6 @@ export const HomePage = () => {
     },
 
     onError: (err: any) => {
-      console.log(err);
       toggleNotification({
         type: "warning",
         message: {

@@ -31,7 +31,7 @@ export const MapProviderToIcon = ({ providerData }: any) => {
   return (
     <Flex gap={2}>
       {providerData?.map(({ providerId }: any) => (
-        <Tooltip description={providerId}>
+        <Tooltip description={providerId} key={providerId}>
           <div>{providerIconMapping[providerId] || providerId}</div>
         </Tooltip>
       ))}

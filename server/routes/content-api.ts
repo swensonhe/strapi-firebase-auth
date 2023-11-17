@@ -9,13 +9,5 @@ export default {
         policies: [],
       },
     },
-    {
-      method: "POST",
-      path: "/override",
-      handler: "firebaseController.overrideAccess",
-      config: {
-        policies: [],
-      },
-    },
   ],
 };
