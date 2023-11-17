@@ -123,7 +123,7 @@ export const FirebaseTableRows = ({
                   <Box
                     onClick={() => {
                       history.push(
-                        `/content-manager/collectionType/plugin::users-permissions.user/${data.strapiId}`
+                        `/content-manager/collectionType/plugin::users-permissions.user/${data.strapiId}`,
                       );
                     }}
                   >
