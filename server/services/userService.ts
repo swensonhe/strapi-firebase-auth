@@ -163,4 +163,5 @@ export default ({ strapi }) => ({
       throw new ApplicationError(e.message.toString());
     }
   },
+  async setSocialMetaData() {},
 });

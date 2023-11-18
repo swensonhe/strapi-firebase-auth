@@ -5,6 +5,7 @@ import { processMeData } from "../utils/fetch-me";
 import { generateReferralCode } from "../utils";
 
 interface Params {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   strapi: Strapi | any;
 }
 
@@ -30,6 +31,13 @@ const createFakeEmail = async () => {
 };
 
 export default ({ strapi }: Params) => ({
+  async getUserAttributes() {
+    console.log(
+      "000011111",
+      strapi.plugins["users-permissions"].contentTypes["user"].attributes,
+    );
+    return strapi.plugins["users-permissions"].contentTypes["user"].attributes;
+  },
   delete: async (entityId) => {
     await strapi.firebase.auth().deleteUser(entityId);
     return { success: true };
@@ -60,9 +68,10 @@ export default ({ strapi }: Params) => ({
 
     const overrideUserId = ctx.request.body.overrideUserId;
 
-    const user = await strapi.plugins["users-permissions"].services.user.fetch(
-      overrideUserId,
-    );
+    const user =
+      await strapi.plugins["users-permissions"].services.user.fetch(
+        overrideUserId,
+      );
 
     const jwt = await strapi.plugins["users-permissions"].services.jwt.issue({
       id: user.id,
@@ -76,17 +85,25 @@ export default ({ strapi }: Params) => ({
     return ctx.body;
   },
 
-  checkIfUserExists: async (decodedToken) => {
+  async checkIfUserExists(decodedToken) {
     let user;
 
     if (decodedToken.email) {
+      const userModel = await this.getUserAttributes();
+
+      const filter = Object.keys(userModel).find((key) => key === "appleEmail")
+        ? {
+            $or: [
+              { appleEmail: decodedToken.email },
+              { email: decodedToken.email },
+            ],
+          }
+        : {
+            $or: [{ email: decodedToken.email }],
+          };
+      console.log("decodedToken.email", decodedToken.email);
       user = await strapi.db.query("plugin::users-permissions.user").findOne({
-        where: {
-          $or: [
-            { appleEmail: decodedToken.email },
-            { email: decodedToken.email },
-          ],
-        },
+        where: filter,
       });
     } else if (decodedToken.phone_number) {
       user = await strapi.db.query("plugin::users-permissions.user").findOne({
@@ -107,6 +124,7 @@ export default ({ strapi }: Params) => ({
 
   fetchUser: async (decodedToken) => {
     let user;
+    //TODO FIGURE OUT HOW TO HANDLE fIREBASE USER ID
 
     user = await strapi.db.query("plugin::users-permissions.user").findOne({
       where: {
@@ -123,8 +141,10 @@ export default ({ strapi }: Params) => ({
     });
   },
 
-  createStrapiUser: async (decodedToken, idToken) => {
+  async createStrapiUser(decodedToken, idToken, profileMetaData) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userPayload: any = {};
+
     const pluginStore = await strapi.store({
       environment: "",
       type: "plugin",
@@ -138,7 +158,6 @@ export default ({ strapi }: Params) => ({
     const role = await strapi.db
       .query("plugin::users-permissions.role")
       .findOne({ where: { type: settings.default_role } });
-
     userPayload.role = role.id;
     userPayload.firebaseUserID = decodedToken.uid;
     userPayload.confirmed = true;
@@ -146,6 +165,9 @@ export default ({ strapi }: Params) => ({
     userPayload.email = decodedToken.email;
     userPayload.phoneNumber = decodedToken.phone_number;
     userPayload.idToken = idToken;
+    userPayload.firstName = profileMetaData.firstName;
+    userPayload.lastName = profileMetaData.lastName;
+    userPayload.phoneNumber = profileMetaData.phoneNumber;
 
     if (decodedToken.email) {
       const emailComponents = decodedToken.email.split("@");
@@ -173,6 +195,7 @@ export default ({ strapi }: Params) => ({
   },
 
   validateFirebaseToken: async (ctx) => {
+    const { profileMetaData } = ctx.request.body;
     await strapi
       .plugin("firebase-auth")
       .service("firebaseService")
@@ -189,7 +212,7 @@ export default ({ strapi }: Params) => ({
     const userExists = await strapi
       .plugin("firebase-auth")
       .service("firebaseService")
-      .checkIfUserExists(decodedToken);
+      .checkIfUserExists(decodedToken, profileMetaData);
 
     let user, jwt;
 
@@ -205,7 +228,7 @@ export default ({ strapi }: Params) => ({
       user = await strapi
         .plugin("firebase-auth")
         .service("firebaseService")
-        .createStrapiUser(decodedToken);
+        .createStrapiUser(decodedToken, idToken, profileMetaData);
     }
 
     jwt = await strapi
