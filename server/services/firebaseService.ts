@@ -3,6 +3,7 @@ import { Strapi } from "@strapi/strapi";
 const { ValidationError } = utils.errors;
 import { processMeData } from "../utils/fetch-me";
 import { generateReferralCode } from "../utils";
+import { promiseHandler } from "../utils/promiseHandler";
 
 interface Params {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,10 +33,6 @@ const createFakeEmail = async () => {
 
 export default ({ strapi }: Params) => ({
   async getUserAttributes() {
-    console.log(
-      "000011111",
-      strapi.plugins["users-permissions"].contentTypes["user"].attributes,
-    );
     return strapi.plugins["users-permissions"].contentTypes["user"].attributes;
   },
   delete: async (entityId) => {
@@ -50,11 +47,7 @@ export default ({ strapi }: Params) => ({
       throw new ValidationError("idToken is missing!");
     }
 
-    try {
-      await strapi.firebase.auth().verifyIdToken(idToken);
-    } catch (e) {
-      throw new ValidationError(e.message);
-    }
+    return strapi.firebase.auth().verifyIdToken(idToken);
   },
 
   decodeIDToken: async (idToken) => {
@@ -88,9 +81,8 @@ export default ({ strapi }: Params) => ({
   async checkIfUserExists(decodedToken) {
     let user;
 
+    const userModel = await this.getUserAttributes();
     if (decodedToken.email) {
-      const userModel = await this.getUserAttributes();
-
       const filter = Object.keys(userModel).find((key) => key === "appleEmail")
         ? {
             $or: [
@@ -101,7 +93,7 @@ export default ({ strapi }: Params) => ({
         : {
             $or: [{ email: decodedToken.email }],
           };
-      console.log("decodedToken.email", decodedToken.email);
+
       user = await strapi.db.query("plugin::users-permissions.user").findOne({
         where: filter,
       });
@@ -111,7 +103,7 @@ export default ({ strapi }: Params) => ({
           phoneNumber: decodedToken.phone_number,
         },
       });
-    } else {
+    } else if (Object.keys(userModel).find((key) => key === "firebaseUserID")) {
       user = await strapi.db.query("plugin::users-permissions.user").findOne({
         where: {
           firebaseUserID: decodedToken.user_id || decodedToken.uid,
@@ -123,14 +115,13 @@ export default ({ strapi }: Params) => ({
   },
 
   fetchUser: async (decodedToken) => {
-    let user;
-    //TODO FIGURE OUT HOW TO HANDLE fIREBASE USER ID
-
-    user = await strapi.db.query("plugin::users-permissions.user").findOne({
-      where: {
-        firebaseUserID: decodedToken.uid,
-      },
-    });
+    const { data: user, error } = await promiseHandler(
+      strapi.db.query("plugin::users-permissions.user").findOne({
+        where: {
+          firebaseUserID: decodedToken.uid,
+        },
+      }),
+    );
 
     return user;
   },
@@ -165,9 +156,11 @@ export default ({ strapi }: Params) => ({
     userPayload.email = decodedToken.email;
     userPayload.phoneNumber = decodedToken.phone_number;
     userPayload.idToken = idToken;
-    userPayload.firstName = profileMetaData.firstName;
-    userPayload.lastName = profileMetaData.lastName;
-    userPayload.phoneNumber = profileMetaData.phoneNumber;
+    if (profileMetaData) {
+      userPayload.firstName = profileMetaData?.firstName;
+      userPayload.lastName = profileMetaData?.lastName;
+      userPayload.phoneNumber = profileMetaData?.phoneNumber;
+    }
 
     if (decodedToken.email) {
       const emailComponents = decodedToken.email.split("@");
@@ -177,7 +170,7 @@ export default ({ strapi }: Params) => ({
       }
     } else {
       userPayload.username = userPayload.phoneNumber;
-      userPayload.email = await createFakeEmail();
+      userPayload.email = profileMetaData?.email;
     }
 
     return strapi
@@ -196,10 +189,16 @@ export default ({ strapi }: Params) => ({
 
   validateFirebaseToken: async (ctx) => {
     const { profileMetaData } = ctx.request.body;
-    await strapi
-      .plugin("firebase-auth")
-      .service("firebaseService")
-      .validateExchangeTokenPayload(ctx.request.body);
+    const { error } = await promiseHandler(
+      strapi
+        .plugin("firebase-auth")
+        .service("firebaseService")
+        .validateExchangeTokenPayload(ctx.request.body),
+    );
+    if (error) {
+      ctx.status = 400;
+      return { error: error.message };
+    }
 
     const { idToken } = ctx.request.body;
     const populate = ctx.request.query.populate || [];
