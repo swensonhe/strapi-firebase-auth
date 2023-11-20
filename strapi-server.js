@@ -1,3 +1,6 @@
 "use strict";
 
-module.exports = require("./server");
+module.exports =
+  process.env.NODE_ENV === "local"
+    ? require("./dist/server")
+    : require("./server");
