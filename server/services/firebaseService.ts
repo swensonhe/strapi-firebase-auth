@@ -123,6 +123,10 @@ export default ({ strapi }: Params) => ({
       }),
     );
 
+    if (error) {
+      throw new ValidationError(error?.message || "User not found", error);
+    }
+
     return user;
   },
 
@@ -170,7 +174,7 @@ export default ({ strapi }: Params) => ({
       }
     } else {
       userPayload.username = userPayload.phoneNumber;
-      userPayload.email = profileMetaData?.email;
+      userPayload.email = profileMetaData?.email || (await createFakeEmail());
     }
 
     return strapi
