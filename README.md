@@ -100,7 +100,7 @@ npm run build
 
 Alternatively, you can simply delete the existing `./build` directory.
 
-### Step 4 - Grant Public Permissions
+### Step 5 - Grant Public Permissions
 
 From the Strapi admin panel, navigate to "Users-permissions" and grant public role
 to `{Your domain or localhost}/admin/settings/users-permissions/roles/2`. Make sure to enable public access to the
@@ -109,6 +109,42 @@ Firebase Authentication endpoint.
 That's it! You're ready to use Firebase Authentication in your Strapi project. Enjoy! 🎉
 
 ## Usage
+
+
+### Handling User Information
+
+To ensure proper handling of user information, make sure to include the following fields in the user object:
+
+- `firstName`
+- `lastName`
+- `phoneNumber`
+- `email`
+
+These fields can be populated during the creation of the user object if `profileMetaData` is provided.
+
+#### Using `firebase-auth` Endpoint
+
+When interacting with the `firebase-auth` endpoint, use the following JSON structure in the request body:
+
+```json
+{
+    "idToken": "{{idToken}}",
+    "profileMetaData": {
+        "firstName": "name",
+        "lastName": "name",
+        "email": "email@gmail.com",
+        "phoneNumber" : "+100000000"
+    }
+}
+```
+
+These values will be utilized only when the user does not exist and will be ignored in other cases.
+
+#### Hint for strapiKMM SDK Users
+
+If you are using our `strapiKMM SDK`, which is fully compatible with the plugin, user information will be populated automatically when signing in with Google or Apple. You don't need to manually handle these fields when using the SDK.
+
+These values will be applied only when the user is being created for the first time. If the user already exists, the provided data will be ignored, and the existing user information will be retained.
 
 ### Client Links and Token Retrieval
 
