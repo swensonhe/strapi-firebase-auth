@@ -115,12 +115,14 @@ That's it! You're ready to use Firebase Authentication in your Strapi project. E
 
 To ensure proper handling of user information, make sure to include the following fields in the user object:
 
+- `firebaseUserID` is the field that maps firebase user object to strapi user object.
+
+These fields can be populated during the creation of the user object if `profileMetaData` is provided.
 - `firstName`
 - `lastName`
 - `phoneNumber`
 - `email`
 
-These fields can be populated during the creation of the user object if `profileMetaData` is provided.
 
 #### Using `firebase-auth` Endpoint
 
