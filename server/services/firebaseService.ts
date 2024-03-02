@@ -12,7 +12,7 @@ interface Params {
 
 const createFakeEmail = async () => {
   let randomString = generateReferralCode(8).toLowerCase();
-  const fakeEmail = `${randomString}@$maz.com`;
+  const fakeEmail = `${randomString}@maz.com`;
   let anotherUserWithTheSameReferralCode = await strapi.db
     .query("plugin::users-permissions.user")
     .findOne({
@@ -85,14 +85,14 @@ export default ({ strapi }: Params) => ({
     if (decodedToken.email) {
       const filter = Object.keys(userModel).find((key) => key === "appleEmail")
         ? {
-            $or: [
-              { appleEmail: decodedToken.email },
-              { email: decodedToken.email },
-            ],
-          }
+          $or: [
+            { appleEmail: decodedToken.email },
+            { email: decodedToken.email },
+          ],
+        }
         : {
-            $or: [{ email: decodedToken.email }],
-          };
+          $or: [{ email: decodedToken.email }],
+        };
 
       user = await strapi.db.query("plugin::users-permissions.user").findOne({
         where: filter,
