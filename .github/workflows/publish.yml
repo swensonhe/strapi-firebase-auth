@@ -20,7 +20,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           # Defaults to the user or organization that owns the workflow file
           # scope: '@swensonhe'
-      - run: npm ci --legacy-peer-deps
+      - name: Clear npm cache
+        run: npm cache clean --force
+      - name: Install Deps 
+        run: npm ci --legacy-peer-deps
       - run: npm run publish:latest --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
