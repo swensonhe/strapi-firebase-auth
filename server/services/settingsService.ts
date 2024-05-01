@@ -22,7 +22,7 @@ export default ({ strapi }) => {
           }
           return;
         }
-        const jsonObject = res["firebase-config-json"];
+        const jsonObject = res["firebase_config_json"];
         if (!jsonObject || !jsonObject.firebaseConfigJson) {
           if (strapi.firebase) {
             await strapi.firebase.delete();
@@ -50,7 +50,7 @@ export default ({ strapi }) => {
         const configObject = await strapi.entityService.findMany(
           "plugin::firebase-auth.firebase-auth-configuration",
         );
-        const firebaseConfigJsonObj = configObject["firebase-config-json"];
+        const firebaseConfigJsonObj = configObject["firebase_config_json"];
         const hashedJson = firebaseConfigJsonObj["firebaseConfigJson"];
 
         const firebaseConfigJson = await this.decryptJson(key, hashedJson);
@@ -82,7 +82,7 @@ export default ({ strapi }) => {
           res = await strapi.entityService.create(
             "plugin::firebase-auth.firebase-auth-configuration",
             {
-              data: { "firebase-config-json": { firebaseConfigJson: hash } },
+              data: { "firebase_config_json": { firebaseConfigJson: hash } },
             },
           );
         } else {
@@ -91,19 +91,19 @@ export default ({ strapi }) => {
             isExist.id,
             {
               data: {
-                "firebase-config-json": { firebaseConfigJson: hash },
+                "firebase_config_json": { firebaseConfigJson: hash },
               },
             },
           );
         }
         await strapi.plugin("firebase-auth").service("settingsService").init();
         const firebaseConfigHash =
-          res["firebase-config-json"].firebaseConfigJson;
+          res["firebase_config_json"].firebaseConfigJson;
         const firebaseConfigJsonValue = await this.decryptJson(
           encryptionKey,
           firebaseConfigHash,
         );
-        res["firebase-config-json"].firebaseConfigJson =
+        res["firebase_config_json"].firebaseConfigJson =
           firebaseConfigJsonValue;
         return res;
       } catch (error) {
