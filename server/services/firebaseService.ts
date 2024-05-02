@@ -105,10 +105,6 @@ export default ({ strapi }: Params) => ({
 			query.$or.push({ firebaseUserID });
 		}
 
-		console.log("-------------------");
-		console.log(query);
-		console.log("-------------------");
-
 		// Execute a single database query with constructed conditions
 		const user = await strapi.db
 			.query("plugin::users-permissions.user")
