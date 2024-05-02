@@ -5,3 +5,4 @@ keys
 .idea
 .npmrc
 build
+.DS_Store
