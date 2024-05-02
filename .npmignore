@@ -10,4 +10,4 @@ codecov.yml
 *.spec.*
 setup-package.*
 **/__tests__/**
-**/__mocks__/** 
+**/__mocks__/**
