@@ -81,10 +81,11 @@ export default ({ strapi }: Params) => ({
 	async checkIfUserExists(decodedToken) {
 		const userModel = await this.getUserAttributes();
 		let query: any = {};
+		query.$or = [];
 
 		// Check if email is available and construct query
 		if (decodedToken.email) {
-			query.$or = [{ email: decodedToken.email }];
+			query.$or.push({ email: decodedToken.email });
 			// Extend the query with appleEmail if that attribute exists in the userModel
 			if (userModel.hasOwnProperty("appleEmail")) {
 				query.$or.push({ appleEmail: decodedToken.email });
