@@ -80,7 +80,26 @@ export default ({ strapi }: Params) => ({
 
 	async checkIfUserExists(decodedToken) {
 		const userModel = await this.getUserAttributes();
+
 		let query: any = {};
+		let dbUser = null;
+
+		// First Check if the user exists in the database with firebaseUserID
+		if (
+			userModel.hasOwnProperty("firebaseUserID") &&
+			(decodedToken.user_id || decodedToken.uid)
+		) {
+			const firebaseUserID = decodedToken.user_id || decodedToken.uid;
+			dbUser = await strapi.db.query("plugin::users-permissions.user").findOne({
+				where: {
+					firebaseUserID,
+				},
+			});
+			if (dbUser) {
+				return dbUser;
+			}
+		}
+
 		query.$or = [];
 
 		// Check if email is available and construct query
@@ -97,24 +116,13 @@ export default ({ strapi }: Params) => ({
 			query.$or.push({ phoneNumber: decodedToken.phone_number });
 		}
 
-		// Check for firebaseUserID in userModel to decide if it should be added to the query
-		if (
-			userModel.hasOwnProperty("firebaseUserID") &&
-			(decodedToken.user_id || decodedToken.uid)
-		) {
-			const firebaseUserID = decodedToken.user_id || decodedToken.uid;
-			query.$or.push({ firebaseUserID });
-		}
-
 		// Execute a single database query with constructed conditions
-		const user = await strapi.db
-			.query("plugin::users-permissions.user")
-			.findOne({
-				where: query,
-			});
+		dbUser = await strapi.db.query("plugin::users-permissions.user").findOne({
+			where: query,
+		});
 
 		// Return user or null if not found
-		return user || null;
+		return dbUser;
 	},
 
 	fetchUser: async (decodedToken) => {
