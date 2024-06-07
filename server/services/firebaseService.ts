@@ -82,8 +82,6 @@ export default ({ strapi }: Params) => ({
 		const userModel = await this.getUserAttributes();
 
 		let query: any = {};
-<<<<<<< Updated upstream
-=======
 		let dbUser = null;
 
 		// First Check if the user exists in the database with firebaseUserID
@@ -103,7 +101,6 @@ export default ({ strapi }: Params) => ({
 		}
 
 		query.$or = [];
->>>>>>> Stashed changes
 
 		// Check if email is available and construct query
 		if (decodedToken.email) {
