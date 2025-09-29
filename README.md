@@ -124,7 +124,7 @@ module.exports = () => ({
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `emailRequired` | boolean | `true` | Whether to generate dummy emails for phone-only users |
-| `emailPattern` | string | `'{randomString}@maz.com'` | Template pattern for generating dummy emails |
+| `emailPattern` | string | `'{randomString}@phone-user.firebase.local'` | Template pattern for generating dummy emails |
 
 **Available Pattern Tokens:**
 
@@ -133,7 +133,7 @@ module.exports = () => ({
 - `{timestamp}` - Unix timestamp in milliseconds (e.g., "1704067200000")
 
 **Pattern Examples:**
-- `'{randomString}@maz.com'` → `a1b2c3d4@maz.com`
+- `'{randomString}@phone-user.firebase.local'` → `a1b2c3d4@phone-user.firebase.local`
 - `'phone_{phoneNumber}@myapp.local'` → `phone_12345678900@myapp.local`
 - `'user_{timestamp}@temp.local'` → `user_1704067200000@temp.local`
 - `'{phoneNumber}_{randomString}@app.com'` → `12345678900_a1b2c3d4@app.com`
@@ -188,7 +188,7 @@ The plugin fully supports phone-only user authentication with configurable email
 | Scenario | `emailRequired` | Resulting Email |
 |----------|----------------|-----------------|
 | Phone-only signup | `false` | `null` |
-| Phone-only signup | `true` | Generated from pattern (e.g., `a1b2c3d4@maz.com`) |
+| Phone-only signup | `true` | Generated from pattern (e.g., `a1b2c3d4@phone-user.firebase.local`) |
 | Phone signup with email in `profileMetaData` | Any | Uses provided email |
 | Email/social signup | Any | Uses actual Firebase email |
 
@@ -221,7 +221,7 @@ Content-Type: application/json
   "_debug": {
     "emailConfig": {
       "emailRequired": false,
-      "emailPattern": "{randomString}@maz.com"
+      "emailPattern": "{randomString}@phone-user.firebase.local"
     }
   }
 }
