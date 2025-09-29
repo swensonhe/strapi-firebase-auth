@@ -80,11 +80,6 @@ export const FirebaseTableRows = ({
                   }}
                 />
               </Box>
-              <Td key={data.email} style={{ padding: 16 }}>
-                <TypographyMaxWidth ellipsis textColor="neutral800">
-                  {data.email}
-                </TypographyMaxWidth>
-              </Td>
               <CellLink
                 key={data.uid}
                 onClick={() => {
@@ -98,26 +93,6 @@ export const FirebaseTableRows = ({
                   {data.uid}
                 </TypographyMaxWidth>
               </CellLink>
-              <Td>
-                <MapProviderToIcon
-                  providerData={data.providerData}
-                ></MapProviderToIcon>
-              </Td>
-              <Td>
-                <TypographyMaxWidth ellipsis textColor="neutral800">
-                  {data.displayName}
-                </TypographyMaxWidth>
-              </Td>
-              <Td>
-                {data.emailVerified ? (
-                  <RxCheck size={24} />
-                ) : (
-                  <RxCross2 size={24} />
-                )}
-              </Td>
-              <Td key={data.disabled}>
-                {data.disabled ? <RxCheck size={24} /> : <RxCross2 size={24} />}
-              </Td>
               <CellLink key={data.strapiId}>
                 <TypographyMaxWidth ellipsis textColor="neutral800">
                   <Box
@@ -135,6 +110,36 @@ export const FirebaseTableRows = ({
                 <TypographyMaxWidth ellipsis textColor="neutral800">
                   {data.username}
                 </TypographyMaxWidth>
+              </Td>
+              <Td>
+                <TypographyMaxWidth ellipsis textColor="neutral800">
+                  {data.displayName}
+                </TypographyMaxWidth>
+              </Td>
+              <Td key={data.email} style={{ padding: 16 }}>
+                <TypographyMaxWidth ellipsis textColor="neutral800">
+                  {data.email}
+                </TypographyMaxWidth>
+              </Td>
+              <Td key={data.phoneNumber} style={{ padding: 16 }}>
+                <TypographyMaxWidth ellipsis textColor="neutral800">
+                  {data.phoneNumber || '-'}
+                </TypographyMaxWidth>
+              </Td>
+              <Td>
+                <MapProviderToIcon
+                  providerData={data.providerData}
+                ></MapProviderToIcon>
+              </Td>
+              <Td>
+                {data.emailVerified ? (
+                  <RxCheck size={24} />
+                ) : (
+                  <RxCross2 size={24} />
+                )}
+              </Td>
+              <Td key={data.disabled}>
+                {data.disabled ? <RxCheck size={24} /> : <RxCross2 size={24} />}
               </Td>
               <Flex alignItems="center" paddingTop={3} gap={4}>
                 <Box key={data.uid}>

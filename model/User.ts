@@ -31,6 +31,7 @@ export interface StrapiUser {
   id: string;
   username: string;
   email: string;
+  phoneNumber: string;
   password: string | null;
   passwordHash: string;
   passwordSalt: string;
@@ -42,7 +43,7 @@ export interface StrapiUser {
   blocked: boolean;
   appleEmail: string | null;
   createdAt: string;
-  firebaseUserID: string;
+  firebaseUserId: string;
 }
 
 export type User = FirebaseUser & StrapiUser;

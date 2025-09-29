@@ -41,7 +41,7 @@ export default ({ strapi }) => {
         });
         strapi.firebase = admin;
       } catch (error) {
-        console.log("bootstrap error -->", error);
+        strapi.log.error("Firebase bootstrap error:", error);
       }
     },
     async getFirebaseConfigJson() {

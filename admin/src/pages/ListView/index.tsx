@@ -8,6 +8,7 @@ import {
   useNotification,
 } from "@strapi/helper-plugin";
 import { Main } from "@strapi/design-system";
+import { Box } from "@strapi/design-system";
 import {
   ContentLayout,
   HeaderLayout,
@@ -290,7 +291,7 @@ function ListView({ data, meta }: ListViewProps) {
         }
       />
       <ContentLayout>
-        <>
+        <Box maxWidth="100%">
           <ResetPassword
             isOpen={showResetPasswordDialogue.isOpen}
             email={showResetPasswordDialogue.email}
@@ -325,7 +326,7 @@ function ListView({ data, meta }: ListViewProps) {
             }}
           />
           <PaginationFooter pageCount={rowsMeta?.pagination?.pageCount || 1} />
-        </>
+        </Box>
       </ContentLayout>
     </Main>
   );
