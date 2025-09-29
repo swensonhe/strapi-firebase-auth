@@ -5,7 +5,7 @@ your Strapi Headless CMS, allowing you to manage and authenticate Firebase users
 panel. This guide will take you through the installation and configuration process and provide information on how to use
 this plugin with iOS and Android apps. This plugin would be enabled by default for super admins only.
 
-## How it works
+## How It Works
 
 The Firebase Auth plugin works by authenticating users using Firebase Authentication. Once a user is authenticated, the
 plugin creates a Strapi user account for them if it doesn't already exist. The plugin also syncs the user's Firebase
@@ -13,11 +13,14 @@ data with their Strapi account.
 
 ## Table of Contents
 
-1. [Installation](#installation)
-2. [Configuration](#configuration)
-3. [Usage](#usage)
-4. [Client Setup](#client-setup)
-5. [Question and issues](#questions-and-issues)
+1. [How It Works](#how-it-works)
+2. [Installation](#installation)
+3. [Configuration](#configuration)
+4. [Usage](#usage)
+5. [Client Setup](#client-setup)
+6. [After Configuration Changes](#after-configuration-changes)
+7. [Troubleshooting](#troubleshooting)
+8. [Questions and Issues](#questions-and-issues)
 
 ## Installation
 
@@ -54,8 +57,6 @@ In your Strapi project, edit the `config/plugins.js` or `config/<env>/plugins.js
 plugin. If the file doesn't exist, create it manually. If you already have configurations for other plugins, add
 the `firebase-auth` section to your existing `plugins` configuration.
 
-To ensure the security of sensitive information, we have implemented a robust encryption process for the Firebase config JSON file in this project. The encrypted data is then stored as a hash in the database. Follow the steps below to set up and integrate Firebase with Strapi securely.
-
 ```js
 module.exports = () => ({
     // ...
@@ -68,29 +69,16 @@ module.exports = () => ({
     // ...
 });
 ```
-Replace `"encryptMe"` with a strong and secure key. This key will be used in the encryption and decryption process.
+Replace `"encryptMe"` with a strong and secure key. This key will be used to encrypt the Firebase configuration stored in the database.
 
-### Step 2: Firebase Configuration Encryption and Integration with Strapi
+### Step 2 - Upload Firebase Service Account Key
 
-To ensure the security of sensitive information, we have implemented a robust encryption process for the Firebase config JSON file in this project. The encrypted data is then stored as a hash in the database. Follow the steps below to set up and integrate Firebase with Strapi securely.
+1. Navigate to the [Firebase Console](https://console.firebase.google.com/) and download your project's service account JSON key file from the settings
+2. Access the Strapi admin panel and navigate to the Firebase plugin settings
+3. Upload the `.json` [service account key file](https://firebase.google.com/docs/app-distribution/authenticate-service-account)
+4. Save the changes - the configuration will be encrypted and stored securely in the database
 
-#### Step 1: Obtain Firebase Service Account Key
-
-Navigate to the [Firebase Console](https://console.firebase.google.com/) and access your project. In the settings, locate the service account section and download the JSON key file. This file contains sensitive information required for Firebase Authentication.
-
-#### Step 2: Submit Service Account Key in Strapi Settings
-
-Access the Strapi admin panel and navigate to the settings page. Look for the section related to Firebase integration. Here, you will find an option to submit the `.json` service account key file. Upload the file you obtained in Step 2.
-
-This service account key is essential for proper authentication with Firebase. It contains the necessary credentials for your Firebase project.
-
-#### Step 3: Save Changes
-
-After submitting the service account key, make sure to save the changes in the Strapi settings. This ensures that the encrypted configuration is stored securely in the database.
-the `.json` [service account key file](https://firebase.google.com/docs/app-distribution/authenticate-service-account).
-This key is essential for Firebase Authentication to work properly.
-
-### Step 4 - Rebuild Admin Panel
+### Step 3 - Rebuild Admin Panel
 
 After configuring the plugin, rebuild the Strapi admin panel:
 
@@ -100,7 +88,7 @@ npm run build
 
 Alternatively, you can simply delete the existing `./build` directory.
 
-### Step 5 - Grant Public Permissions
+### Step 4 - Grant Public Permissions
 
 From the Strapi admin panel, navigate to "Users-permissions" and grant public role
 to `{Your domain or localhost}/admin/settings/users-permissions/roles/2`. Make sure to enable public access to the
@@ -108,8 +96,154 @@ Firebase Authentication endpoint.
 
 That's it! You're ready to use Firebase Authentication in your Strapi project. Enjoy! 🎉
 
+### Step 5 - Configure Phone-Only User Email Handling (Optional)
+
+For phone-based authentication, you can configure how email addresses are handled:
+
+```js
+module.exports = () => ({
+    // ...
+
+    "firebase-auth": {
+        enabled: true,
+        config:{
+            FIREBASE_JSON_ENCRYPTION_KEY:"encryptMe",
+
+            // Phone-Only User Email Configuration
+            emailRequired: false,  // Set to false to allow null emails for phone-only users
+            emailPattern: 'phone_{phoneNumber}@myapp.local',  // Custom pattern if emailRequired is true
+        }
+    },
+
+    // ...
+});
+```
+
+**Available Configuration Options:**
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `emailRequired` | boolean | `true` | Whether to generate dummy emails for phone-only users |
+| `emailPattern` | string | `'{randomString}@maz.com'` | Template pattern for generating dummy emails |
+
+**Available Pattern Tokens:**
+
+- `{randomString}` - 8-character random alphanumeric string (e.g., "a1b2c3d4")
+- `{phoneNumber}` - Phone number digits only (e.g., "12345678900")
+- `{timestamp}` - Unix timestamp in milliseconds (e.g., "1704067200000")
+
+**Pattern Examples:**
+- `'{randomString}@maz.com'` → `a1b2c3d4@maz.com`
+- `'phone_{phoneNumber}@myapp.local'` → `phone_12345678900@myapp.local`
+- `'user_{timestamp}@temp.local'` → `user_1704067200000@temp.local`
+- `'{phoneNumber}_{randomString}@app.com'` → `12345678900_a1b2c3d4@app.com`
+
+⚠️ **Important:** Pattern must include `{randomString}` or `{timestamp}` for uniqueness. The plugin will fail to start if pattern lacks these tokens.
+
+**Configuration Scenarios:**
+
+**Scenario 1: Phone-Only App (No Dummy Emails)**
+```js
+config: {
+    emailRequired: false,  // Users can have null email
+}
+```
+
+**Scenario 2: Custom Phone-Based Pattern**
+```js
+config: {
+    emailRequired: true,
+    emailPattern: 'phone_{phoneNumber}_{randomString}@myapp.local',
+}
+```
+
+**Scenario 3: Timestamp-Based Uniqueness**
+```js
+config: {
+    emailRequired: true,
+    emailPattern: 'user_{timestamp}@temp.local',
+}
+```
+
 ## Usage
 
+### Phone-Only User Authentication
+
+The plugin fully supports phone-only user authentication with configurable email handling.
+
+#### How It Works
+
+**When a user authenticates with only a phone number:**
+
+1. **Firebase Authentication:** User completes SMS verification through Firebase client SDK
+2. **Token Exchange:** Client sends Firebase ID token to `/api/firebase-auth` endpoint
+3. **Email Handling:** Plugin checks `emailRequired` configuration:
+   - If `emailRequired: false` → User created with `email: null`
+   - If `emailRequired: true` → Dummy email generated using `emailPattern`
+4. **Strapi User:** User record created/updated in Strapi database
+5. **JWT Token:** Strapi JWT token returned to client for subsequent API calls
+
+#### Email Field Behavior
+
+| Scenario | `emailRequired` | Resulting Email |
+|----------|----------------|-----------------|
+| Phone-only signup | `false` | `null` |
+| Phone-only signup | `true` | Generated from pattern (e.g., `a1b2c3d4@maz.com`) |
+| Phone signup with email in `profileMetaData` | Any | Uses provided email |
+| Email/social signup | Any | Uses actual Firebase email |
+
+#### Testing Phone-Only Users (Development)
+
+Use the debug endpoint (disabled in production):
+
+```bash
+POST http://localhost:8081/api/debug/create-phone-user
+Content-Type: application/json
+
+{
+  "phoneNumber": "+1234567890",
+  "firstName": "Test",
+  "lastName": "User"
+}
+```
+
+**Response:**
+```json
+{
+  "user": {
+    "id": 123,
+    "email": null,  // or generated email if emailRequired: true
+    "phoneNumber": "+1234567890",
+    "firebaseUserId": "firebase_uid_string",
+    "username": "phone_user_1234567890"
+  },
+  "jwt": "eyJhbGciOiJIUzI1NiIs...",
+  "_debug": {
+    "emailConfig": {
+      "emailRequired": false,
+      "emailPattern": "{randomString}@maz.com"
+    }
+  }
+}
+```
+
+#### Important Considerations
+
+**✅ Supported Features:**
+- User authentication and JWT issuance
+- User lookup by phone number
+- Profile management
+- Strapi admin panel (users display with null email)
+
+**❌ Not Available for Phone-Only Users Without Email:**
+- Password reset functionality
+- Email-based notifications
+- Email-based user search in Firebase
+
+**🔍 User Identification Priority:**
+1. `firebaseUserId` (primary identifier)
+2. `phoneNumber` (secondary identifier)
+3. `email` (tertiary, may be null)
 
 ### Handling User Information
 
@@ -172,7 +306,7 @@ links and their brief descriptions:
   guidance on setting up Firebase in a web project. It's an essential resource for web-based authentication using
   Firebase._
 
-## Client setup
+## Client Setup
 
 **Android Sample:**
 
@@ -292,5 +426,61 @@ To ensure a smooth user login experience with Apple authentication, it’s essen
 
 These short links will take you directly to Firebase's official documentation pages for each authentication method, where you can find in-depth information and code samples.
 
-### Questions and Issues
+## After Configuration Changes
+
+This plugin is written in TypeScript. After modifying configuration files or plugin code, you must rebuild the plugin:
+
+```bash
+# Navigate to plugin directory
+cd src/plugins/firebase
+
+# Rebuild plugin
+yarn build
+
+# Return to project root
+cd ../../..
+
+# Restart Strapi
+yarn debug  # or yarn develop
+```
+
+The build process compiles TypeScript files to JavaScript in the `build/` directory, which Strapi uses at runtime.
+
+## Troubleshooting
+
+### Email Pattern Validation Errors
+
+**Error:** `emailPattern must include {randomString} or {timestamp} for uniqueness`
+
+**Solution:** Update your pattern to include uniqueness tokens:
+```js
+// ❌ Bad - no uniqueness
+emailPattern: 'phone_{phoneNumber}@myapp.local'
+
+// ✅ Good - includes uniqueness
+emailPattern: 'phone_{phoneNumber}_{randomString}@myapp.local'
+```
+
+### User Creation Fails After 3 Attempts
+
+**Error:** `Failed to generate unique email after 3 attempts`
+
+**Cause:** Your email pattern doesn't generate enough unique values.
+
+**Solution:** Ensure pattern includes `{randomString}` or `{timestamp}`:
+```js
+emailPattern: '{phoneNumber}_{randomString}_{timestamp}@app.local'
+```
+
+### Strapi Won't Start After Changes
+
+**Cause:** Plugin not rebuilt after TypeScript changes.
+
+**Solution:**
+```bash
+cd src/plugins/firebase && yarn build && cd ../../.. && yarn debug
+```
+
+## Questions and Issues
+
 Please provide any feedback via a [GitHub Issue](https://github.com/swensonhe/strapi-firebase-auth/issues/new?template=bug_report.md).
