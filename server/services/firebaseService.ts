@@ -10,25 +10,56 @@ interface Params {
 	strapi: Strapi | any;
 }
 
-const createFakeEmail = async () => {
-	let randomString = generateReferralCode(8).toLowerCase();
-	const fakeEmail = `${randomString}@maz.com`;
-	let anotherUserWithTheSameReferralCode = await strapi.db
-		.query("plugin::users-permissions.user")
-		.findOne({
-			where: { email: fakeEmail },
-		});
+// Default email pattern - matches the default in server/config/index.ts
+const DEFAULT_EMAIL_PATTERN = '{randomString}@phone-user.firebase.local';
 
-	while (anotherUserWithTheSameReferralCode) {
-		randomString = generateReferralCode(8);
-		anotherUserWithTheSameReferralCode = await strapi.db
+/**
+ * Generate a fake email for phone-only users based on configured pattern
+ * @param phoneNumber - Optional phone number (e.g., "+1-234-567-8900")
+ * @param pattern - Optional email pattern template with tokens
+ * @returns Generated unique email address
+ * @throws Error if unable to generate unique email after MAX_RETRIES attempts
+ */
+const createFakeEmail = async (phoneNumber?: string, pattern?: string) => {
+	const MAX_RETRIES = 3;
+	let retryCount = 0;
+
+	const emailPattern = pattern || DEFAULT_EMAIL_PATTERN;
+
+	while (retryCount < MAX_RETRIES) {
+		const randomString = generateReferralCode(8).toLowerCase();
+		const timestamp = Date.now().toString();
+		const phoneDigits = phoneNumber ? phoneNumber.replace(/[^0-9]/g, '') : '';
+
+		let fakeEmail = emailPattern
+			.replace('{randomString}', randomString)
+			.replace('{timestamp}', timestamp)
+			.replace('{phoneNumber}', phoneDigits);
+
+		const existingUser = await strapi.db
 			.query("plugin::users-permissions.user")
 			.findOne({
 				where: { email: fakeEmail },
 			});
+
+		if (!existingUser) {
+			return fakeEmail;
+		}
+
+		retryCount++;
 	}
 
-	return fakeEmail;
+	throw new ValidationError(
+		`[Firebase Auth Plugin] Failed to generate unique email after ${MAX_RETRIES} attempts.\n` +
+		`Pattern used: "${emailPattern}"\n` +
+		`Phone number: "${phoneNumber || 'N/A'}"\n\n` +
+		`This usually means your emailPattern doesn't include enough uniqueness.\n` +
+		`Make sure your pattern includes {randomString} or {timestamp} tokens.\n\n` +
+		`Valid pattern examples:\n` +
+		`  - "phone_{phoneNumber}_{randomString}@myapp.local"\n` +
+		`  - "user_{timestamp}@temp.local"\n` +
+		`  - "{randomString}@phone-user.firebase.local"`
+	);
 };
 
 export default ({ strapi }: Params) => ({
@@ -84,15 +115,15 @@ export default ({ strapi }: Params) => ({
 		let query: any = {};
 		let dbUser = null;
 
-		// First Check if the user exists in the database with firebaseUserID
+		// First Check if the user exists in the database with firebaseUserId
 		if (
-			userModel.hasOwnProperty("firebaseUserID") &&
+			userModel.hasOwnProperty("firebaseUserId") &&
 			(decodedToken.user_id || decodedToken.uid)
 		) {
-			const firebaseUserID = decodedToken.user_id || decodedToken.uid;
+			const firebaseUserId = decodedToken.user_id || decodedToken.uid;
 			dbUser = await strapi.db.query("plugin::users-permissions.user").findOne({
 				where: {
-					firebaseUserID,
+					firebaseUserId,
 				},
 			});
 			if (dbUser) {
@@ -129,7 +160,7 @@ export default ({ strapi }: Params) => ({
 		const { data: user, error } = await promiseHandler(
 			strapi.db.query("plugin::users-permissions.user").findOne({
 				where: {
-					firebaseUserID: decodedToken.uid,
+					firebaseUserId: decodedToken.uid,
 				},
 			}),
 		);
@@ -165,7 +196,7 @@ export default ({ strapi }: Params) => ({
 			.query("plugin::users-permissions.role")
 			.findOne({ where: { type: settings.default_role } });
 		userPayload.role = role.id;
-		userPayload.firebaseUserID = decodedToken.uid;
+		userPayload.firebaseUserId = decodedToken.uid;
 		userPayload.confirmed = true;
 
 		userPayload.email = decodedToken.email;
@@ -184,8 +215,19 @@ export default ({ strapi }: Params) => ({
 				userPayload.appleEmail = decodedToken.email;
 			}
 		} else {
+			// Phone-only user - handle email based on plugin configuration
 			userPayload.username = userPayload.phoneNumber;
-			userPayload.email = profileMetaData?.email || (await createFakeEmail());
+
+			const emailRequired = strapi.plugin("firebase-auth").config("emailRequired");
+			const emailPattern = strapi.plugin("firebase-auth").config("emailPattern");
+
+			if (profileMetaData?.email) {
+				userPayload.email = profileMetaData.email;
+			} else if (emailRequired) {
+				userPayload.email = await createFakeEmail(userPayload.phoneNumber, emailPattern);
+			} else {
+				userPayload.email = null;
+			}
 		}
 
 		return strapi
@@ -198,7 +240,7 @@ export default ({ strapi }: Params) => ({
 			where: {
 				id: user.id,
 			},
-			data: { idToken, firebaseUserID: decodedToken.uid },
+			data: { idToken, firebaseUserId: decodedToken.uid },
 		});
 	},
 
