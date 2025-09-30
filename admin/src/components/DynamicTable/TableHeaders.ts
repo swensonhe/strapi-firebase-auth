@@ -16,11 +16,11 @@ export const tableHeaders = [
     name: "strapiId",
     fieldSchema: {
       configurable: false,
-      type: "object",
+      type: "string",
     },
     metadatas: {
       label: "Strapi id",
-      sortable: false,
+      sortable: true,
       searchable: true,
     },
     key: "__strapiid_key__",
