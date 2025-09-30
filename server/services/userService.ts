@@ -68,7 +68,16 @@ export default ({ strapi }) => ({
     // When sorting, fetch ALL users to sort the complete dataset
     let allFirebaseUsers;
     if (sort) {
-      allFirebaseUsers = await strapi.firebase.auth().listUsers();
+      // Fetch ALL users by following pagination tokens
+      let allUsers = [];
+      let pageToken = undefined;
+      do {
+        const result = await strapi.firebase.auth().listUsers(1000, pageToken);
+        allUsers.push(...result.users);
+        pageToken = result.pageToken;
+      } while (pageToken);
+
+      allFirebaseUsers = { users: allUsers };
     } else {
       // Normal pagination - fetch only the requested page
       allFirebaseUsers = await strapi.firebase
@@ -90,14 +99,20 @@ export default ({ strapi }) => ({
       const [sortField, sortOrder] = sort.split(':');
 
       sortedUsers = [...allUsers.users].sort((a, b) => {
-        const aValue = a[sortField] || '';
-        const bValue = b[sortField] || '';
+        const aValue = a[sortField];
+        const bValue = b[sortField];
 
-        // Handle null/undefined values
-        if (!aValue && !bValue) return 0;
-        if (!aValue) return 1;
-        if (!bValue) return -1;
+        // Handle null/undefined values - push them to the end
+        if (aValue == null && bValue == null) return 0;
+        if (aValue == null) return 1;
+        if (bValue == null) return -1;
 
+        // For numeric fields, use numeric comparison
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return sortOrder === 'DESC' ? bValue - aValue : aValue - bValue;
+        }
+
+        // For string fields, use locale comparison
         const comparison = String(aValue).toLowerCase().localeCompare(String(bValue).toLowerCase());
 
         return sortOrder === 'DESC' ? -comparison : comparison;

@@ -1,93 +1,93 @@
 {
-  "name": "@swensonhe/strapi-plugin-firebase-auth",
-  "version": "1.0.13",
-  "description": "This is a Strapi plugin connect and authenticate users using firebase",
-  "strapi": {
-    "name": "firebase-auth",
-    "displayName": "Firebase Auth",
-    "description": "This is a Strapi plugin connect and authenticate users using firebase",
-    "kind": "plugin"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/swensonhe/strapi-firebase-auth.git"
-  },
-  "dependencies": {
-    "@strapi/design-system": "1.6.3",
-    "@strapi/helper-plugin": "^4.12.6",
-    "@strapi/icons": "^1.8.2",
-    "@strapi/strapi": "4.12.7",
-    "@strapi/utils": "4.12.7",
-    "@types/react": "^18.2.28",
-    "@types/react-dom": "^18.2.13",
-    "@types/react-helmet": "^6.1.7",
-    "@types/react-router-dom": "^5.3.3",
-    "@types/styled-components": "^5.1.28",
-    "crypto-js": "^4.2.0",
-    "firebase-admin": "^11.10.1",
-    "lodash": "^4.17.21",
-    "prop-types": "^15.7.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-helmet": "^6.1.0",
-    "react-icons": "^4.10.1",
-    "react-router-dom": "5.3.4"
-  },
-  "devDependencies": {
-    "@strapi/typescript-utils": "^4.6.0",
-    "@types/koa": "^2.13.8",
-    "@types/lodash": "^4.14.197",
-    "@typescript-eslint/eslint-plugin": "^6.3.0",
-    "@typescript-eslint/parser": "^6.3.0",
-    "copyfiles": "^2.4.1",
-    "eslint": "^8.47.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.0",
-    "eslint-plugin-react": "^7.33.1",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
-    "prettier": "^3.0.1",
-    "rimraf": "^5.0.1",
-    "semantic-release": "^21.1.1",
-    "styled-components": "^5.3.6",
-    "typescript": "5.0.4"
-  },
-  "peerDependencies": {
-    "@strapi/strapi": "4.12.7",
-    "styled-components": "^5.3.6"
-  },
-  "author": {
-    "name": "SwensonHe, LLC"
-  },
-  "maintainers": [
-    {
-      "name": "Eslam Mahmoud"
-    },
-    {
-      "name": "James Wesly"
-    },
-    {
-      "name": "Muhammad Akram"
-    }
-  ],
-  "engines": {
-    "node": ">=16.0.0 <=20.x.x",
-    "npm": ">=6.0.0"
-  },
-  "resolutions": {
-    "@types/react": "^18.2.13",
-    "@types/react-dom": "^18.2.13"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  },
-  "scripts": {
-    "develop": "tsc -p tsconfig.server.json -w",
-    "build:dev": "tsc -p tsconfig.server.json",
-    "publish:latest": "cd build && npm publish --tag latest --access public",
-    "prepublish:latest": "npm run clean && npm run build && node build/setup-package.js",
-    "copy-assets": "copyfiles -u 1 admin/src/assets/**/* build/admin/",
-    "build": "tsc && npm run copy-assets",
-    "clean": "rm -rf build"
-  },
-  "license": "MIT"
+	"name": "@swensonhe/strapi-plugin-firebase-auth",
+	"version": "1.0.14",
+	"description": "This is a Strapi plugin connect and authenticate users using firebase",
+	"strapi": {
+		"name": "firebase-auth",
+		"displayName": "Firebase Auth",
+		"description": "This is a Strapi plugin connect and authenticate users using firebase",
+		"kind": "plugin"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/swensonhe/strapi-firebase-auth.git"
+	},
+	"dependencies": {
+		"@strapi/design-system": "1.6.3",
+		"@strapi/helper-plugin": "^4.12.6",
+		"@strapi/icons": "^1.8.2",
+		"@strapi/strapi": "4.12.7",
+		"@strapi/utils": "4.12.7",
+		"@types/react": "^18.2.28",
+		"@types/react-dom": "^18.2.13",
+		"@types/react-helmet": "^6.1.7",
+		"@types/react-router-dom": "^5.3.3",
+		"@types/styled-components": "^5.1.28",
+		"crypto-js": "^4.2.0",
+		"firebase-admin": "^11.10.1",
+		"lodash": "^4.17.21",
+		"prop-types": "^15.7.2",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-helmet": "^6.1.0",
+		"react-icons": "^4.10.1",
+		"react-router-dom": "5.3.4"
+	},
+	"devDependencies": {
+		"@strapi/typescript-utils": "^4.6.0",
+		"@types/koa": "^2.13.8",
+		"@types/lodash": "^4.14.197",
+		"@typescript-eslint/eslint-plugin": "^6.3.0",
+		"@typescript-eslint/parser": "^6.3.0",
+		"copyfiles": "^2.4.1",
+		"eslint": "^8.47.0",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-prettier": "^5.0.0",
+		"eslint-plugin-react": "^7.33.1",
+		"eslint-plugin-simple-import-sort": "^10.0.0",
+		"prettier": "^3.0.1",
+		"rimraf": "^5.0.1",
+		"semantic-release": "^21.1.1",
+		"styled-components": "^5.3.6",
+		"typescript": "5.0.4"
+	},
+	"peerDependencies": {
+		"@strapi/strapi": "4.12.7",
+		"styled-components": "^5.3.6"
+	},
+	"author": {
+		"name": "SwensonHe, LLC"
+	},
+	"maintainers": [
+		{
+			"name": "Eslam Mahmoud"
+		},
+		{
+			"name": "James Wesly"
+		},
+		{
+			"name": "Muhammad Akram"
+		}
+	],
+	"engines": {
+		"node": ">=16.0.0 <=20.x.x",
+		"npm": ">=6.0.0"
+	},
+	"resolutions": {
+		"@types/react": "^18.2.13",
+		"@types/react-dom": "^18.2.13"
+	},
+	"publishConfig": {
+		"registry": "https://registry.npmjs.org"
+	},
+	"scripts": {
+		"develop": "tsc -p tsconfig.server.json -w",
+		"build:dev": "tsc -p tsconfig.server.json",
+		"publish:latest": "cd build && npm publish --tag latest --access public",
+		"prepublish:latest": "npm run clean && npm run build && node build/setup-package.js",
+		"copy-assets": "copyfiles -u 1 admin/src/assets/**/* build/admin/",
+		"build": "tsc && npm run copy-assets",
+		"clean": "rm -rf build"
+	},
+	"license": "MIT"
 }
