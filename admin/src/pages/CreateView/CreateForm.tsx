@@ -77,7 +77,7 @@ const CreateForm = () => {
         initialData={originalUserData}
         modifiedData={userData}
         isSubmitButtonDisabled={
-          !userData?.email ||
+          (!userData?.email && !userData?.phoneNumber) ||
           !!(userData?.password?.length && userData?.password?.length < 6)
         }
       />
@@ -93,8 +93,7 @@ const CreateForm = () => {
                   onChange={onTextInputChange}
                   label="Email"
                   value={userData?.email}
-                  error={!userData?.email ? "Email is required" : ""}
-                  required
+                  error={!userData?.email && !userData?.phoneNumber ? "Email or Phone Number is required" : ""}
                 />
                 <TextInput
                   id="displayName"
