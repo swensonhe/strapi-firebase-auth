@@ -99,13 +99,30 @@ export default ({ strapi }) => ({
       const [sortField, sortOrder] = sort.split(':');
 
       sortedUsers = [...allUsers.users].sort((a, b) => {
-        const aValue = a[sortField];
-        const bValue = b[sortField];
+        let aValue = a[sortField];
+        let bValue = b[sortField];
+
+        // Special handling for createdAt and lastSignInTime - use Firebase metadata
+        if (sortField === 'createdAt') {
+          aValue = aValue || a.metadata?.creationTime;
+          bValue = bValue || b.metadata?.creationTime;
+        } else if (sortField === 'lastSignInTime') {
+          // For Last Sign In, only use Firebase metadata (no fallback to Strapi updatedAt)
+          aValue = a.metadata?.lastSignInTime;
+          bValue = b.metadata?.lastSignInTime;
+        }
 
         // Handle null/undefined values - push them to the end
         if (aValue == null && bValue == null) return 0;
         if (aValue == null) return 1;
         if (bValue == null) return -1;
+
+        // For date fields (createdAt, lastSignInTime), parse as dates
+        if (sortField === 'createdAt' || sortField === 'lastSignInTime') {
+          const aDate = new Date(aValue).getTime();
+          const bDate = new Date(bValue).getTime();
+          return sortOrder === 'DESC' ? bDate - aDate : aDate - bDate;
+        }
 
         // For numeric fields, use numeric comparison
         if (typeof aValue === 'number' && typeof bValue === 'number') {

@@ -11,6 +11,7 @@ import { CarretDown } from "@strapi/icons";
 import { RxCross2, RxCheck } from "react-icons/rx";
 import { Typography } from "@strapi/design-system";
 import styled from "styled-components";
+import { format } from "date-fns";
 import { MapProviderToIcon } from "../../../utils/provider";
 import { User } from "../../../../../model/User";
 
@@ -140,6 +141,22 @@ export const FirebaseTableRows = ({
               </Td>
               <Td key={data.disabled}>
                 {data.disabled ? <RxCheck size={24} /> : <RxCross2 size={24} />}
+              </Td>
+              <Td key={data.createdAt}>
+                <TypographyMaxWidth ellipsis textColor="neutral800">
+                  {data.createdAt
+                    ? format(new Date(data.createdAt), "yyyy/MM/dd kk:mm")
+                    : data.metadata?.creationTime
+                    ? format(new Date(data.metadata.creationTime), "yyyy/MM/dd kk:mm")
+                    : '-'}
+                </TypographyMaxWidth>
+              </Td>
+              <Td key={data.lastSignInTime}>
+                <TypographyMaxWidth ellipsis textColor="neutral800">
+                  {data.metadata?.lastSignInTime
+                    ? format(new Date(data.metadata.lastSignInTime), "yyyy/MM/dd kk:mm")
+                    : '-'}
+                </TypographyMaxWidth>
               </Td>
               <Flex alignItems="center" paddingTop={3} gap={4}>
                 <Box key={data.uid}>

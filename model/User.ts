@@ -24,6 +24,7 @@ export interface FirebaseUser {
   tokensValidAfterTime: string;
   phoneNumber: string;
   localUser?: StrapiUser;
+  lastSignInTime?: string; // Computed field for table display
 }
 
 export interface StrapiUser {
