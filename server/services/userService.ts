@@ -17,16 +17,23 @@ export default ({ strapi }) => ({
 
   create: async (payload) => {
     try {
-      const userRecord = await strapi.firebase
-        .auth()
-        .getUserByEmail(payload.email)
-        .catch(async (e) => {
-          if (e.code === "auth/user-not-found") {
-            const response = await strapi.firebase.auth().createUser(payload);
+      // Support lookup by email OR phone number
+      let getUserPromise;
+      if (payload.email) {
+        getUserPromise = strapi.firebase.auth().getUserByEmail(payload.email);
+      } else if (payload.phoneNumber) {
+        getUserPromise = strapi.firebase.auth().getUserByPhoneNumber(payload.phoneNumber);
+      } else {
+        throw new ApplicationError('Either email or phoneNumber is required');
+      }
 
-            return response.toJSON();
-          }
-        });
+      const userRecord = await getUserPromise.catch(async (e) => {
+        if (e.code === "auth/user-not-found") {
+          const response = await strapi.firebase.auth().createUser(payload);
+          return response.toJSON();
+        }
+        throw e;
+      });
 
       if (userRecord) {
         return userRecord;
@@ -49,7 +56,7 @@ export default ({ strapi }) => ({
         .auth()
         .generatePasswordResetLink(payload.email, actionCodeSettings);
       await strapi.plugin("users-permissions").service("user").edit(userID, {
-        firebaseUserID: res.uid,
+        firebaseUserId: res.uid,
         passwordResetLink: link,
       });
     } catch (e) {
@@ -57,23 +64,59 @@ export default ({ strapi }) => ({
     }
   },
 
-  list: async (pagination, nextPageToken) => {
-    const response = await strapi.firebase
-      .auth()
-      .listUsers(parseInt(pagination.pageSize), nextPageToken);
+  list: async (pagination, nextPageToken, sort) => {
+    // When sorting, fetch ALL users to sort the complete dataset
+    let allFirebaseUsers;
+    if (sort) {
+      allFirebaseUsers = await strapi.firebase.auth().listUsers();
+    } else {
+      // Normal pagination - fetch only the requested page
+      allFirebaseUsers = await strapi.firebase
+        .auth()
+        .listUsers(parseInt(pagination.pageSize), nextPageToken);
+    }
+
     const totalUserscount = await strapi.firebase.auth().listUsers();
     const strapiUsers = await strapi.db
       .query("plugin::users-permissions.user")
       .findMany();
 
-    const allUsers = formatUserData(response, strapiUsers);
+    const allUsers = formatUserData(allFirebaseUsers, strapiUsers);
+
+    let sortedUsers = allUsers.users;
+    let paginatedData = sortedUsers;
+
+    if (sort) {
+      const [sortField, sortOrder] = sort.split(':');
+
+      sortedUsers = [...allUsers.users].sort((a, b) => {
+        const aValue = a[sortField] || '';
+        const bValue = b[sortField] || '';
+
+        // Handle null/undefined values
+        if (!aValue && !bValue) return 0;
+        if (!aValue) return 1;
+        if (!bValue) return -1;
+
+        const comparison = String(aValue).toLowerCase().localeCompare(String(bValue).toLowerCase());
+
+        return sortOrder === 'DESC' ? -comparison : comparison;
+      });
+
+      // Apply pagination after sorting - ensure page is at least 1
+      const page = pagination.page || 1;
+      const pageSize = parseInt(pagination.pageSize);
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      paginatedData = sortedUsers.slice(startIndex, endIndex);
+    }
 
     const { meta } = paginate(
-      response.users,
+      sort ? sortedUsers : allFirebaseUsers.users,
       totalUserscount.users.length,
       pagination,
     );
-    return { data: allUsers.users, pageToken: response.pageToken, meta };
+    return { data: paginatedData, pageToken: allFirebaseUsers.pageToken, meta };
   },
 
   updateFirebaseUser: async (entityId, payload) => {
@@ -105,7 +148,7 @@ export default ({ strapi }) => ({
     try {
       return strapi
         .query("plugin::users-permissions.user")
-        .update({ where: { firebaseUserID: entityId }, data: payload });
+        .update({ where: { firebaseUserId: entityId }, data: payload });
     } catch (e) {
       throw new ApplicationError(e.message.toString());
     }
@@ -117,7 +160,7 @@ export default ({ strapi }) => ({
         .updateUser(entityId, payload);
       const strapiPromise = strapi
         .query("plugin::users-permissions.user")
-        .update({ where: { firebaseUserID: entityId }, data: payload });
+        .update({ where: { firebaseUserId: entityId }, data: payload });
 
       return Promise.allSettled([firebasePromise, strapiPromise]);
     } catch (e) {
@@ -129,7 +172,7 @@ export default ({ strapi }) => ({
       const firebasePromise = strapi.firebase.auth().deleteUser(entityId);
       const strapiPromise = strapi
         .query("plugin::users-permissions.user")
-        .delete({ where: { firebaseUserID: entityId } });
+        .delete({ where: { firebaseUserId: entityId } });
       return Promise.allSettled([firebasePromise, strapiPromise]);
     } catch (e) {
       throw new ApplicationError(e.message.toString());
@@ -147,7 +190,7 @@ export default ({ strapi }) => ({
     try {
       const response = await strapi
         .query("plugin::users-permissions.user")
-        .delete({ where: { firebaseUserID: entityId } });
+        .delete({ where: { firebaseUserId: entityId } });
       return response;
     } catch (e) {
       throw new ApplicationError(e.message.toString());

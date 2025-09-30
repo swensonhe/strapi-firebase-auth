@@ -91,7 +91,6 @@ export const EditForm = ({ data }: EditFormProps) => {
         message: { id: "notification.success", defaultMessage: "Saved" },
       });
     } catch (e) {
-      console.log("err --> ", e);
       toggleNotification({
         type: "warning",
         message: {
@@ -116,7 +115,7 @@ export const EditForm = ({ data }: EditFormProps) => {
         initialData={originalUserData}
         modifiedData={userData}
         isSubmitButtonDisabled={
-          !userData?.email ||
+          (!userData?.email && !userData?.phoneNumber) ||
           !!(userData?.password?.length && userData?.password?.length < 6)
         }
       />
@@ -132,8 +131,7 @@ export const EditForm = ({ data }: EditFormProps) => {
                   onChange={onTextInputChange}
                   label="Email"
                   value={userData.email}
-                  error={!userData?.email ? "Email is required" : ""}
-                  required
+                  error={!userData?.email && !userData?.phoneNumber ? "Email or Phone Number is required" : ""}
                 />
                 <TextInput
                   id="displayName"

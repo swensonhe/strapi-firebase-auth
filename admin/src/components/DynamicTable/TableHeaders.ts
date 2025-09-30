@@ -1,18 +1,5 @@
 export const tableHeaders = [
   {
-    name: "email",
-    fieldSchema: {
-      configurable: false,
-      type: "email",
-    },
-    metadatas: {
-      label: "Email",
-      sortable: true,
-      searchable: true,
-    },
-    key: "__email_key__",
-  },
-  {
     name: "uid",
     fieldSchema: {
       configurable: false,
@@ -24,58 +11,6 @@ export const tableHeaders = [
       searchable: true,
     },
     key: "__uid_key__",
-  },
-  {
-    name: "providers",
-    fieldSchema: {
-      configurable: false,
-      type: "icon",
-    },
-    metadatas: {
-      label: "Providers",
-      sortable: false,
-      searchable: false,
-    },
-    key: "__provider_key__",
-  },
-  {
-    name: "displayName",
-    fieldSchema: {
-      configurable: false,
-      type: "string",
-    },
-    metadatas: {
-      label: "Display Name",
-      sortable: true,
-      searchable: true,
-    },
-    key: "__displayName_key__",
-  },
-  {
-    name: "emailVerified",
-    fieldSchema: {
-      configurable: false,
-      type: "boolean",
-    },
-    metadatas: {
-      label: "Email Verified",
-      sortable: false,
-      searchable: false,
-    },
-    key: "__emailVerified_key__",
-  },
-  {
-    name: "disabled",
-    fieldSchema: {
-      configurable: false,
-      type: "boolean",
-    },
-    metadatas: {
-      label: "Disabled",
-      sortable: false,
-      searchable: false,
-    },
-    key: "__disabled_key__",
   },
   {
     name: "strapiId",
@@ -102,5 +37,83 @@ export const tableHeaders = [
       searchable: true,
     },
     key: "__username_key__",
+  },
+  {
+    name: "displayName",
+    fieldSchema: {
+      configurable: false,
+      type: "string",
+    },
+    metadatas: {
+      label: "Display Name",
+      sortable: true,
+      searchable: true,
+    },
+    key: "__displayName_key__",
+  },
+  {
+    name: "email",
+    fieldSchema: {
+      configurable: false,
+      type: "email",
+    },
+    metadatas: {
+      label: "Email",
+      sortable: true,
+      searchable: true,
+    },
+    key: "__email_key__",
+  },
+  {
+    name: "phoneNumber",
+    fieldSchema: {
+      configurable: false,
+      type: "string",
+    },
+    metadatas: {
+      label: "Phone Number",
+      sortable: true,
+      searchable: true,
+    },
+    key: "__phoneNumber_key__",
+  },
+  {
+    name: "providers",
+    fieldSchema: {
+      configurable: false,
+      type: "icon",
+    },
+    metadatas: {
+      label: "Providers",
+      sortable: false,
+      searchable: false,
+    },
+    key: "__provider_key__",
+  },
+  {
+    name: "emailVerified",
+    fieldSchema: {
+      configurable: false,
+      type: "boolean",
+    },
+    metadatas: {
+      label: "Email Verified",
+      sortable: false,
+      searchable: false,
+    },
+    key: "__emailVerified_key__",
+  },
+  {
+    name: "disabled",
+    fieldSchema: {
+      configurable: false,
+      type: "boolean",
+    },
+    metadatas: {
+      label: "Disabled",
+      sortable: false,
+      searchable: false,
+    },
+    key: "__disabled_key__",
   },
 ];
