@@ -116,4 +116,30 @@ export const tableHeaders = [
     },
     key: "__disabled_key__",
   },
+  {
+    name: "createdAt",
+    fieldSchema: {
+      configurable: false,
+      type: "string",
+    },
+    metadatas: {
+      label: "Created At",
+      sortable: true,
+      searchable: false,
+    },
+    key: "__createdAt_key__",
+  },
+  {
+    name: "lastSignInTime",
+    fieldSchema: {
+      configurable: false,
+      type: "string",
+    },
+    metadatas: {
+      label: "Last Sign In",
+      sortable: true,
+      searchable: false,
+    },
+    key: "__lastSignInTime_key__",
+  },
 ];
