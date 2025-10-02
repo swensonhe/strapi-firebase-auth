@@ -17,7 +17,7 @@ const SearchURLQuery = ({ label, placeholder }: SearchURLQuery) => {
   const iconButtonRef = useRef(null);
 
   const { query, setQuery } = useQueryParams();
-  const [value, setValue] = useState(query?._q || "");
+  const [value, setValue] = useState(query?.search || "");
   const [isOpen, setIsOpen] = useState(!!value);
   const { formatMessage } = useIntl();
 
@@ -33,17 +33,17 @@ const SearchURLQuery = ({ label, placeholder }: SearchURLQuery) => {
 
   const handleClear = () => {
     setValue("");
-    setQuery({ _q: "" }, "remove");
+    setQuery({ search: "" }, "remove");
   };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
 
     if (value) {
-      setQuery({ _q: value, page: 1 });
+      setQuery({ search: value, page: 1 });
     } else {
       handleToggle();
-      setQuery({ _q: "" }, "remove");
+      setQuery({ search: "" }, "remove");
     }
   };
 
