@@ -64,10 +64,101 @@ export default ({ strapi }) => ({
     }
   },
 
-  list: async (pagination, nextPageToken, sort) => {
-    // When sorting, fetch ALL users to sort the complete dataset
+  list: async (pagination, nextPageToken, sort, searchQuery) => {
+    // If search query exists, try exact match lookups first
+    if (searchQuery) {
+      try {
+        let foundUser = null;
+
+        // Trim whitespace and normalize the search query
+        searchQuery = searchQuery.trim();
+
+        // Try exact phone lookup first (if it starts with + or looks like a phone)
+        if (searchQuery.startsWith('+') || searchQuery.match(/^\d{10,15}$/)) {
+          // Ensure phone has + prefix for Firebase lookup
+          const phoneWithPlus = searchQuery.startsWith('+') ? searchQuery : `+${searchQuery}`;
+          try {
+            foundUser = await strapi.firebase.auth().getUserByPhoneNumber(phoneWithPlus);
+          } catch (e) {
+            // Not a valid phone, continue
+          }
+        }
+
+        // Try exact email lookup
+        if (!foundUser && searchQuery.includes('@')) {
+          try {
+            foundUser = await strapi.firebase.auth().getUserByEmail(searchQuery);
+          } catch (e) {
+            // Not a valid email, continue
+          }
+        }
+
+        // Try exact UID lookup (Firebase UIDs are alphanumeric strings)
+        if (!foundUser && searchQuery.length >= 20) {
+          try {
+            foundUser = await strapi.firebase.auth().getUser(searchQuery);
+          } catch (e) {
+            // Not a valid UID, continue
+          }
+        }
+
+        // Try Strapi ID lookup (short numbers only, to avoid confusion with phone)
+        if (!foundUser && searchQuery.match(/^\d{1,6}$/)) {
+          try {
+            const strapiUser = await strapi.db
+              .query("plugin::users-permissions.user")
+              .findOne({ where: { id: parseInt(searchQuery) } });
+
+            if (strapiUser?.firebaseUserId) {
+              foundUser = await strapi.firebase.auth().getUser(strapiUser.firebaseUserId);
+            } else if (strapiUser) {
+              // Fallback: Try to find Firebase user by email or phone from Strapi data
+              if (strapiUser.email) {
+                try {
+                  foundUser = await strapi.firebase.auth().getUserByEmail(strapiUser.email);
+                } catch (e) {
+                  // Email lookup failed, continue
+                }
+              }
+
+              if (!foundUser && strapiUser.phoneNumber) {
+                try {
+                  foundUser = await strapi.firebase.auth().getUserByPhoneNumber(strapiUser.phoneNumber);
+                } catch (e) {
+                  // Phone lookup failed, continue
+                }
+              }
+            }
+          } catch (e) {
+            // Not a valid Strapi ID, continue
+          }
+        }
+
+        // If we found an exact match, return it immediately
+        if (foundUser) {
+          const totalUserscount = await strapi.firebase.auth().listUsers();
+          const strapiUsers = await strapi.db
+            .query("plugin::users-permissions.user")
+            .findMany();
+
+          const formattedUser = formatUserData({ users: [foundUser] }, strapiUsers);
+
+          const { meta } = paginate(
+            formattedUser.users,
+            1, // Only 1 result for exact match
+            pagination,
+          );
+
+          return { data: formattedUser.users, pageToken: undefined, meta };
+        }
+      } catch (e) {
+        // If exact match fails, fall through to normal pagination
+      }
+    }
+
+    // When sorting OR searching, fetch ALL users to sort/filter the complete dataset
     let allFirebaseUsers;
-    if (sort) {
+    if (sort || searchQuery) {
       // Fetch ALL users by following pagination tokens
       let allUsers = [];
       let pageToken = undefined;
@@ -95,10 +186,27 @@ export default ({ strapi }) => ({
     let sortedUsers = allUsers.users;
     let paginatedData = sortedUsers;
 
+    // Apply search filter if provided (partial matching across all fields)
+    if (searchQuery) {
+      const searchLower = searchQuery.toLowerCase();
+      sortedUsers = sortedUsers.filter((user) => {
+        return (
+          user.uid?.toLowerCase().includes(searchLower) ||
+          user.email?.toLowerCase().includes(searchLower) ||
+          user.phoneNumber?.includes(searchQuery) ||
+          user.displayName?.toLowerCase().includes(searchLower) ||
+          user.username?.toLowerCase().includes(searchLower) ||
+          user.firstName?.toLowerCase().includes(searchLower) ||
+          user.lastName?.toLowerCase().includes(searchLower) ||
+          user.strapiId?.toString().includes(searchQuery)
+        );
+      });
+    }
+
     if (sort) {
       const [sortField, sortOrder] = sort.split(':');
 
-      sortedUsers = [...allUsers.users].sort((a, b) => {
+      sortedUsers = [...sortedUsers].sort((a, b) => {
         let aValue = a[sortField];
         let bValue = b[sortField];
 
@@ -134,8 +242,10 @@ export default ({ strapi }) => ({
 
         return sortOrder === 'DESC' ? -comparison : comparison;
       });
+    }
 
-      // Apply pagination after sorting - ensure page is at least 1
+    // Apply pagination after sorting/filtering - ensure page is at least 1
+    if (sort || searchQuery) {
       const page = pagination.page || 1;
       const pageSize = parseInt(pagination.pageSize);
       const startIndex = (page - 1) * pageSize;
@@ -144,8 +254,8 @@ export default ({ strapi }) => ({
     }
 
     const { meta } = paginate(
-      sort ? sortedUsers : allFirebaseUsers.users,
-      totalUserscount.users.length,
+      sort || searchQuery ? sortedUsers : allFirebaseUsers.users,
+      sort || searchQuery ? sortedUsers.length : totalUserscount.users.length,
       pagination,
     );
     return { data: paginatedData, pageToken: allFirebaseUsers.pageToken, meta };

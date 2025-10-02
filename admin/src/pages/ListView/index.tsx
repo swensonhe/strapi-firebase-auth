@@ -27,7 +27,6 @@ import {
 } from "../HomePage/utils/api";
 import { PaginationFooter } from "./PaginationFooter";
 import SearchURLQuery from "../../components/SearchURLQuery/SearchURLQuery";
-import { matchSorter } from "match-sorter";
 import { User } from "../../../../model/User";
 import { ResponseMeta } from "../../../../model/Meta";
 import { DeleteAccount } from "../../components/UserManagement/DeleteAccount";
@@ -110,17 +109,13 @@ function ListView({ data, meta }: ListViewProps) {
         setIsLoading(true);
 
         const response = await fetchPaginatedUsers();
-        let data = response.data?.map((item: any) => {
+        const data = response.data?.map((item: any) => {
           return {
             id: item.uid,
             ...item,
           };
         });
-        if ((query.query as any)?._q) {
-          data = matchSorter(data, (query.query as any)?._q as string, {
-            keys: ["email", "displayName", "username"],
-          });
-        }
+
         setRowsData(data);
         setRowsMeta(response.meta);
         setIsLoading(false);

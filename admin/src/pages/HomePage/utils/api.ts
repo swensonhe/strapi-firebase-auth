@@ -59,6 +59,10 @@ const fetchUsers = async (query: Query = {}) => {
 		url += `&sort=${query.sort}`;
 	}
 
+	if (query.search) {
+		url += `&search=${encodeURIComponent(query.search)}`;
+	}
+
 	const { get } = getFetchClient();
 	const { data: users } = await get(url);
 	return users;
